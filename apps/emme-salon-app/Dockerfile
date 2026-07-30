@@ -30,7 +30,7 @@ FROM nginx:1.27-alpine AS production
 
 LABEL org.opencontainers.image.title="Emme Salon App"
 LABEL org.opencontainers.image.description="EmmeNails Studio Manager PWA"
-LABEL org.opencontainers.image.source="https://github.com/emme/emme-modulith"
+LABEL org.opencontainers.image.source="https://github.com/migangdelzar/emme-web"
 
 RUN rm /etc/nginx/conf.d/default.conf
 COPY apps/emme-salon-app/nginx.conf /etc/nginx/conf.d/default.conf

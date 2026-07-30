@@ -91,6 +91,18 @@ cross-feature providers. Shared code must be stable and genuinely reused.
 Backend internals are never imported; all communication crosses the typed HTTP
 contract through `@emme/api-client` and `@emme/contracts`.
 
+## Container image
+
+The production web image is published as:
+
+```text
+ghcr.io/migangdelzar/emme-web
+```
+
+The Dockerfile labels this image with the web repository as its source. Image
+publishing and deployment credentials belong to CI or the deployment secret
+manager; they must never be placed in `VITE_*` variables or committed files.
+
 ## Verification
 
 ```bash

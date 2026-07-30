@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "emme-modulith",
+      "name": "emme-web",
       "devDependencies": {
         "@types/node": "^26.1.1",
       },
