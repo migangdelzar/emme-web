@@ -1,0 +1,38 @@
+{
+  "title": "Appointments",
+  "new_appointment": "New Appointment",
+  "edit_appointment": "Edit Appointment",
+  "cancel_appointment": "Cancel Appointment",
+  "appointment_created": "Appointment booked successfully",
+  "appointment_updated": "Appointment rescheduled",
+  "appointment_cancelled": "Appointment cancelled",
+  "no_appointments": "No appointments scheduled",
+  "select_client": "Select client",
+  "select_service": "Select service",
+  "select_date": "Select date",
+  "select_time": "Select time",
+  "status": {
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "no_show": "No show"
+  },
+  "views": {
+    "list": "List",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
+  },
+  "duration_min": "{{minutes}} min",
+  "slot_unavailable": "The selected time slot is not available",
+  "status_updated": "Status updated",
+  "confirmation_rate": "Confirmations",
+  "cancellation_rate": "Cancellations",
+  "reschedule_changes": "Date and time changes",
+  "color_by_service": "By service",
+  "color_by_status": "By status",
+  "reminder_sent": "Reminder sent",
+  "google_sync": "Sync with Google Calendar",
+  "google_synced": "Synced with Google Calendar"
+}

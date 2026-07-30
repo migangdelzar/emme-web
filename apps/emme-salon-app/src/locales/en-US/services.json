@@ -1,0 +1,22 @@
+{
+  "title": "Services",
+  "subtitle": "Service catalog",
+  "new_service": "New Service",
+  "edit_service": "Edit Service",
+  "service_created": "Service created",
+  "service_updated": "Service updated",
+  "service_deleted": "Service deleted",
+  "no_services": "No services registered",
+  "design_treatment": "Design Treatment",
+  "design_cta": "Design a new luxury experience for your exclusive catalog.",
+  "design": "Design.",
+  "describe_treatment": "Describe the essence and flawless result of this treatment...",
+  "category": "Category",
+  "all_categories": "All",
+  "active_visible": "Active and visible",
+  "standard": "Standard",
+  "premium_standard": "Premium Standard",
+  "service_name_required": "Service name is required",
+  "adjust_excellence": "Fine-tune every detail to maintain EmmeNails excellence.",
+  "adjust": "Adjust"
+}

@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": { "testId": "nav-dashboard", "i18nKey": "common.dashboard" },
+    "services":  { "testId": "nav-services",  "i18nKey": "common.services" },
+    "clients":   { "testId": "nav-clients",   "i18nKey": "common.clients" },
+    "agenda":    { "testId": "nav-agenda",    "i18nKey": "common.appointments" },
+    "finances":  { "testId": "nav-finances",  "i18nKey": "common.finances" },
+    "settings":  { "testId": "nav-settings",  "i18nKey": "common.settings" }
+  },
+  "sidebar": {
+    "container": { "testId": "sidebar-container" },
+    "brand":     { "testId": "sidebar-brand" }
+  },
+  "dashboard": {
+    "greeting":       { "testId": "greeting-heading", "i18nKey": "dashboard.greeting" },
+    "incomeToday":    { "testId": "kpi-income",       "i18nKey": "dashboard.incomeToday" },
+    "confirmedToday": { "testId": "kpi-confirmed",    "i18nKey": "dashboard.confirmedToday" },
+    "occupancy":      { "testId": "kpi-occupancy",    "i18nKey": "dashboard.occupancy" },
+    "newClients":     { "testId": "kpi-newClients",   "i18nKey": "dashboard.newClients" },
+    "goalCard":       { "testId": "goal-card",        "i18nKey": "dashboard.goalCard" },
+    "missionCard":    { "testId": "mission-card",     "i18nKey": "dashboard.missionCard" },
+    "agendaSection":  { "testId": "dashboard-agenda" },
+    "emptyAgenda":    { "testId": "dashboard-empty-agenda", "i18nKey": "dashboard.emptyAgenda" },
+    "tenantSelector": { "testId": "dashboard-tenant" }
+  },
+  "appointments": {
+    "header":          { "testId": "appt-header",    "i18nKey": "appointments.header" },
+    "projectedIncome": { "testId": "appt-income",    "i18nKey": "appointments.projectedIncome" },
+    "addButton":       { "testId": "appt-add",       "i18nKey": "appointments.addButton" },
+    "dateStrip":       { "testId": "appt-date-strip" },
+    "emptyState":      { "testId": "appt-empty",     "i18nKey": "appointments.empty" },
+    "dialog":          { "testId": "appt-dialog" },
+    "stepIndicator":   { "testId": "appt-step" }
+  },
+  "clients": {
+    "header":    { "testId": "clients-header", "i18nKey": "clients.header" },
+    "search":    { "testId": "clients-search", "i18nKey": "clients.search" },
+    "empty":     { "testId": "clients-empty",  "i18nKey": "clients.empty" },
+    "addButton": { "testId": "clients-add",    "i18nKey": "clients.addButton" },
+    "dialog":    { "testId": "clients-dialog" }
+  },
+  "services": {
+    "header":       { "testId": "svc-header",   "i18nKey": "services.header" },
+    "search":       { "testId": "svc-search",   "i18nKey": "services.search" },
+    "empty":        { "testId": "svc-empty",    "i18nKey": "services.empty" },
+    "addButton":    { "testId": "svc-add",      "i18nKey": "services.addButton" },
+    "dialog":       { "testId": "svc-dialog" },
+    "categoryChip": { "testId": "svc-category" }
+  },
+  "settings": {
+    "header":    { "testId": "settings-header", "i18nKey": "settings.header" },
+    "tabs":      { "testId": "settings-tabs" }
+  },
+  "finances": {
+    "header": { "testId": "finances-header", "i18nKey": "finances.header" },
+    "heading": { "testId": "finances-heading", "i18nKey": "finances.heading" }
+  },
+  "auth": {
+    "submitBtn":    { "testId": "auth-submit",   "i18nKey": "auth.submit" },
+    "emailInput":   { "testId": "auth-email",    "i18nKey": "auth.email" },
+    "passwordInput":{ "testId": "auth-password", "i18nKey": "auth.password" },
+    "landingBtn":   { "testId": "auth-landing" }
+  },
+  "onboarding": {
+    "skipBtn": { "testId": "onboarding-skip" },
+    "nextBtn": { "testId": "onboarding-next" },
+    "dialog":  { "testId": "onboarding-dialog" }
+  },
+  "layout": {
+    "main":          { "testId": "main-content" },
+    "pageContainer": { "testId": "page-container" }
+  }
+}

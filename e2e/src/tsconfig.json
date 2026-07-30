@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@emme/contracts": [
+        "../../packages/contracts/src/index.ts"
+      ],
+      "@emme/i18n": [
+        "../../packages/i18n/src/index.ts"
+      ],
+      "@fixtures/*": [
+        "./fixtures/*"
+      ],
+      "@pages/*": [
+        "./pages/*"
+      ],
+      "@flows/*": [
+        "./flows/*"
+      ],
+      "@providers/*": [
+        "./providers/*"
+      ],
+      "@routes/*": [
+        "./routes/*"
+      ],
+      "@helpers/*": [
+        "./helpers/*"
+      ],
+      "@specs/*": [
+        "./specs/*"
+      ],
+      "@shared/*": [
+        "./shared/*"
+      ]
+    },
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "test-results"
+  ]
+}

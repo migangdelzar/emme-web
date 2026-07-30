@@ -1,0 +1,95 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "appointments": "Agenda",
+    "services": "Services",
+    "clients": "Clients",
+    "finances": "Finances",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "back": "Back"
+  },
+  "dashboard": {
+    "greeting": "Hello",
+    "incomeToday": "Income today",
+    "confirmedToday": "Confirmed",
+    "occupancy": "Occupancy",
+    "newClients": "New clients",
+    "goalCard": "Monthly Goal",
+    "missionCard": "Mission",
+    "emptyAgenda": "No agenda items",
+    "studioLevel": "Atelier Professional",
+    "sessionsConfirmed": "sessions confirmed for today",
+    "viewAll": "View all",
+    "mission": "Mission",
+    "atelierPhilosophy": "Atelier Philosophy",
+    "goalSubtitle": "Monthly Milestone",
+    "goalTitle": "Goal.",
+    "of": "of"
+  },
+  "appointments": {
+    "header": "Agenda",
+    "projectedIncome": "Projected income",
+    "step01": "Step 1",
+    "step02": "Step 2",
+    "addButton": "Add appointment",
+    "dateStrip": "Week",
+    "empty": "No appointments"
+  },
+  "clients": {
+    "header": "Clients",
+    "search": "Search clients...",
+    "empty": "No clients",
+    "addButton": "Add client"
+  },
+  "services": {
+    "header": "Services",
+    "search": "Search services...",
+    "empty": "No services",
+    "addButton": "Add service",
+    "pricesFrom": "Prices from",
+    "allCategories": "All"
+  },
+  "settings": {
+    "header": "Settings",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "advanced": "Advanced",
+    "security": "Security"
+  },
+  "finances": {
+    "header": "Finances",
+    "heading": "Finances",
+    "currency": "USD"
+  },
+  "landing": {
+    "enter": "Enter my account",
+    "register": "Create professional profile",
+    "title": "emmenails",
+    "subtitle": "Studio Management Pro",
+    "poweredBy": "Powered by emme nails suite"
+  },
+  "auth": {
+    "submit": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "poweredBy": "Powered by emme nails suite",
+    "register": "Register",
+    "logout": "Log out",
+    "back": "Back",
+    "welcome": "Welcome.",
+    "landingEnter": "Enter",
+    "landingRegister": "Register"
+  },
+  "onboarding": {
+    "title": "Welcome to EmmeNails!",
+    "description": "Your new control center to take your manicure studio to the next level.",
+    "skip": "Skip",
+    "next": "Next",
+    "step": "Step"
+  }
+}

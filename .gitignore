@@ -1,0 +1,59 @@
+# Build
+build/
+bin/
+dist/
+/out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Node
+node_modules/
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local agent configuration and credentials
+.opencode/opencode.json
+.opencode/opencode.local.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.credentials.json
+
+# Capacitor
+apps/*/android/app/build/
+apps/*/ios/App/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+e2e/src/hars/
+
+# Local Superpowers visual brainstorming sessions
+.superpowers/
+.worktrees/
+
+# SOPS
+*secret*.yml
+
+.playwright-mcp/
+
+# Test artifacts
+e2e/src/test-results.json
+tasks/test-outputs/
+.superpowers/

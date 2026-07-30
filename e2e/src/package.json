@@ -1,0 +1,25 @@
+{
+  "name": "@emme/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bunx playwright test --project=mock",
+    "test:smoke": "bunx playwright test --project=mock --grep @smoke",
+    "test:critical": "bunx playwright test --project=mock --grep '@smoke|@critical'",
+    "test:headed": "bunx playwright test --project=mock --headed",
+    "test:retry": "bunx playwright test --project=mock --last-failed",
+    "test:real": "bunx playwright test --project=real",
+    "test:real:headed": "bunx playwright test --project=real --headed",
+    "test:services": "bunx playwright test --project=mock --grep @services",
+    "test:clients": "bunx playwright test --project=mock --grep @clients",
+    "test:appointments": "bunx playwright test --project=mock --grep @appointments",
+    "test:errors": "bunx playwright test --project=mock --grep @error-state",
+    "test:debug": "bunx playwright test --project=mock --debug",
+    "report": "bunx playwright show-report"
+  },
+  "devDependencies": {
+    "@emme/contracts": "workspace:*",
+    "@emme/i18n": "workspace:*",
+    "@playwright/test": "^1.60.0"
+  }
+}

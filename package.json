@@ -1,0 +1,24 @@
+{
+  "name": "emme-web",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "e2e/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter @emme/salon-app dev",
+    "typecheck": "bun run --filter '*' typecheck",
+    "build": "bun run --filter '*' build",
+    "lint": "bun run --filter '*' lint",
+    "test": "bun run --filter @emme/emme-salon-app test && bun run --filter @emme/api-client test",
+    "test:e2e": "bun run --filter @emme/e2e test"
+  },
+  "engines": {
+    "bun": ">=1.2"
+  },
+  "packageManager": "bun@1.2.0",
+  "devDependencies": {
+    "@types/node": "^26.1.1"
+  }
+}

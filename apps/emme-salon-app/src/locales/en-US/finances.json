@@ -1,0 +1,22 @@
+{
+  "title": "Finances",
+  "subtitle": "Financial reports",
+  "revenue": "Revenue",
+  "revenue_month": "Monthly revenue",
+  "revenue_today": "Today's revenue",
+  "revenue_week": "Weekly revenue",
+  "average_ticket": "Average ticket",
+  "top_services": "Top services",
+  "top_clients": "Frequent clients",
+  "payment_methods": "Payment methods",
+  "cash": "Cash",
+  "card": "Card",
+  "transfer": "Transfer",
+  "expenses": "Expenses",
+  "net_profit": "Net profit",
+  "export_report": "Export report",
+  "export_sheets": "Export to Google Sheets",
+  "date_range": "Date range",
+  "no_data": "No data for this period",
+  "data": "Data"
+}

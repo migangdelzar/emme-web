@@ -1,0 +1,26 @@
+[tools]
+bun = "1.2"
+
+[tasks.install]
+description = "Install the locked web workspace dependencies"
+run = "bun install --frozen-lockfile"
+
+[tasks.dev]
+description = "Run the salon web application"
+run = "bun run dev"
+
+[tasks.typecheck]
+description = "Type-check all web workspace packages"
+run = "bun run typecheck"
+
+[tasks.test]
+description = "Run frontend unit and component tests"
+run = "bun run test"
+
+[tasks.test-e2e]
+description = "Run Playwright journeys; requires the sibling backend for real mode"
+run = "bun run test:e2e"
+
+[tasks.build]
+description = "Build all web workspace packages"
+run = "bun run build"
