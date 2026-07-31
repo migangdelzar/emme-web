@@ -1,14 +1,15 @@
 name: Dependency Review
 
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   dependency-review:
+    # GitHub Dependency Graph is not enabled for this repository configuration.
+    # Run manually after an administrator enables it; Bun audit remains blocking.
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
