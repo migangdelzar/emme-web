@@ -1,17 +1,18 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { translations } from '@emme/i18n';
+import { translations, type Locale } from '@emme/i18n';
+import { getInitialLocale, persistLocale } from './app/locale';
 
 export const NAMESPACES = ['common', 'dashboard', 'appointments', 'clients', 'services', 'finances', 'settings', 'auth'] as const;
 
-const DEFAULT_LOCALE = 'es-MX';
+const DEFAULT_LOCALE: Locale = 'en-US';
 
 const i18nBackend = {
   type: 'backend' as const,
   init() {},
   read(locale: string, namespace: string, callback: Function) {
     try {
-      const all = (translations as Record<string, any>)[locale] || translations[DEFAULT_LOCALE];
+      const all = translations[locale as Locale] || translations[DEFAULT_LOCALE];
       // Return namespace-specific portion (e.g., namespace "nav" → all.nav)
       callback(null, all[namespace] || all);
     } catch {
@@ -20,11 +21,19 @@ const i18nBackend = {
   },
 };
 
+function synchronizeDocumentLanguage(locale: string): void {
+  if (typeof document !== 'undefined') document.documentElement.lang = locale;
+}
+
+const initialLocale = getInitialLocale();
+synchronizeDocumentLanguage(initialLocale);
+i18n.on('languageChanged', synchronizeDocumentLanguage);
+
 i18n
   .use(i18nBackend)
   .use(initReactI18next)
   .init({
-    lng: DEFAULT_LOCALE,
+    lng: initialLocale,
     fallbackLng: DEFAULT_LOCALE,
     ns: NAMESPACES as unknown as string[],
     defaultNS: 'common',
@@ -36,12 +45,16 @@ i18n
     returnNull: false,
   });
 
-export async function changeLanguage(locale: string): Promise<void> {
+export async function setApplicationLocale(locale: Locale): Promise<void> {
+  persistLocale(locale);
   await i18n.changeLanguage(locale);
-  document.documentElement.lang = locale;
 }
 
-export function getAvailableLocales() {
+export async function changeLanguage(locale: Locale): Promise<void> {
+  await setApplicationLocale(locale);
+}
+
+export function getAvailableLocales(): readonly { code: Locale; name: string; flag: string }[] {
   return [
     { code: 'es-MX', name: 'Español (México)', flag: '🇲🇽' },
     { code: 'en-US', name: 'English (US)', flag: '🇺🇸' },

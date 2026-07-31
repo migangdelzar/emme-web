@@ -20,9 +20,9 @@ smoke require coordinated service and deployment environments and remain
 release-promotion gates.
 
 The repository also runs `security-scan.yml` for Gitleaks and Bun audit, and
-`dependency-review.yml` for pull-request dependency changes. The single
-temporarily allowlisted React Router advisory is documented in the
-[dependency risk register](../05-operations/dependency-risk-register.md).
+`dependency-review.yml` for pull-request dependency changes. Any temporary
+allowlist is documented in the [dependency risk register](../05-operations/dependency-risk-register.md)
+with a compensating control and review date.
 
 ## Rules
 

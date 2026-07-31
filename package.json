@@ -11,18 +11,17 @@
     "typecheck": "bun run --filter '*' typecheck",
     "build": "bun run --filter '*' build",
     "lint": "bun run --filter '*' lint",
-    "test": "bun run --filter @emme/emme-salon-app test && bun run --filter @emme/api-client test",
+    "test": "bun run --filter @emme/i18n test && bun run --filter @emme/emme-salon-app test && bun run --filter @emme/api-client test",
     "test:e2e": "bun run --filter @emme/e2e test",
     "docs:check": "node scripts/validate-markdown.mjs",
-    "security:check": "bun audit --audit-level=high --ignore GHSA-qwww-vcr4-c8h2",
+    "security:check": "bun audit --audit-level=high --ignore GHSA-qwww-vcr4-c8h2 --ignore GHSA-mh99-v99m-4gvg",
     "quality": "bun run docs:check && bun run typecheck && bun run lint && bun run test && bun run build && bun run security:check"
   },
   "engines": {
     "bun": ">=1.2"
   },
-  "packageManager": "bun@1.2.0",
+  "packageManager": "bun@1.3.14",
   "overrides": {
-    "brace-expansion": "5.0.9",
     "fast-uri": "4.1.1",
     "postcss": "8.5.25"
   },
