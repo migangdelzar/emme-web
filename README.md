@@ -127,6 +127,7 @@ recordings, or environment files.
 
 | Topic | Location |
 |---|---|
+| Architecture handbook | [`docs/architecture/README.md`](docs/architecture/README.md) |
 | App shell | [`docs/architecture/02-frontend/app.md`](docs/architecture/02-frontend/app.md) |
 | Frontend modules | [`docs/architecture/02-frontend/module.md`](docs/architecture/02-frontend/module.md) |
 | Features | [`docs/architecture/02-frontend/feature.md`](docs/architecture/02-frontend/feature.md) |
@@ -134,6 +135,11 @@ recordings, or environment files.
 | Vite | [`docs/architecture/02-frontend/vite.md`](docs/architecture/02-frontend/vite.md) |
 | Testing | [`docs/architecture/02-frontend/testing.md`](docs/architecture/02-frontend/testing.md) |
 | Backend integration | [`docs/architecture/03-integration/frontend-backend.md`](docs/architecture/03-integration/frontend-backend.md) |
+| Contract consumption | [`docs/architecture/03-integration/contracts.md`](docs/architecture/03-integration/contracts.md) |
+| End-to-end | [`docs/architecture/03-integration/end-to-end.md`](docs/architecture/03-integration/end-to-end.md) |
+| Delivery | [`docs/architecture/04-delivery/`](docs/architecture/04-delivery/) |
+| Operations | [`docs/architecture/05-operations/production-readiness.md`](docs/architecture/05-operations/production-readiness.md) |
+| Policies | [`docs/principles.md`](docs/principles.md), [`docs/security.md`](docs/security.md), [`docs/testing.md`](docs/testing.md) |
 
 ## License
 
