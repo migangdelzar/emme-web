@@ -1,12 +1,22 @@
 # EMME Web Documentation
 
-The web repository contains the frontend architecture and consumer-side
-integration guidance. The backend repository owns the canonical HTTP and event
-contracts:
+This directory is the web repository's frontend architecture and consumer-side
+integration handbook. The backend repository owns business truth and canonical
+HTTP/event contracts:
 
-- [Frontend architecture](architecture/02-frontend/app.md)
-- [Frontend module model](architecture/02-frontend/module.md)
-- [Feature model](architecture/02-frontend/feature.md)
-- [Frontend testing](architecture/02-frontend/testing.md)
-- [Frontend/backend integration](architecture/03-integration/frontend-backend.md)
-- [Canonical backend architecture](https://github.com/migangdelzar/emme-service/tree/main/docs/architecture)
+1. Start with the [web architecture handbook](architecture/README.md).
+2. Use the [frontend feature template](templates/frontend-feature-template.md)
+   for new user-facing capabilities.
+3. Read the [contract consumption guide](architecture/03-integration/contracts.md)
+   before changing API adapters or view models.
+4. Use [web production readiness](architecture/05-operations/production-readiness.md)
+   for release evidence.
+
+| Area | Canonical location |
+|---|---|
+| Frontend principles | [`principles.md`](principles.md) |
+| Security and privacy | [`security.md`](security.md) |
+| Testing policy | [`testing.md`](testing.md) |
+| Architecture | [`architecture/`](architecture/) |
+| Feature template | [`templates/frontend-feature-template.md`](templates/frontend-feature-template.md) |
+| Backend source of truth | [emme-service architecture](https://github.com/migangdelzar/emme-service/tree/main/docs/architecture) |

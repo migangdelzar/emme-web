@@ -1,10 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createGoogleOAuthApi, type GoogleOAuthStatus } from "@emme/contracts";
 import { api } from "@/api/restClient";
+import { apiErrorMessage } from "@/api/apiErrorMessage";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 const oauthApi = createGoogleOAuthApi(api);
 
 export function useGoogleOAuth() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const status = useQuery<GoogleOAuthStatus>({
@@ -15,6 +19,8 @@ export function useGoogleOAuth() {
   const disconnect = useMutation({
     mutationFn: () => oauthApi.disconnect(),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["google-oauth-status"] }),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t, "common.errors.google_oauth_failed")),
   });
 
   const connect = (personaType: "STAFF" | "CLIENT" = "STAFF") => {

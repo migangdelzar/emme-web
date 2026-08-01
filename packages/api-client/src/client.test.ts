@@ -57,6 +57,21 @@ describe("createApiClient", () => {
     await expect(client.getHealth()).rejects.toBeInstanceOf(ApiHttpError);
   });
 
+  it("preserves a backend problem code for localized UI mapping", async () => {
+    const fetcher = vi.fn<Fetcher>(async () =>
+      new Response(JSON.stringify({ status: 409, code: "CALENDAR_SYNC_CONFLICT" }), {
+        status: 409,
+        headers: { "Content-Type": "application/problem+json" },
+      }),
+    );
+    const client = createApiClient({ baseUrl: "https://api.emme.app", fetcher });
+
+    await expect(client.getHealth()).rejects.toMatchObject({
+      status: 409,
+      code: "CALENDAR_SYNC_CONFLICT",
+    });
+  });
+
   it("builds URLs without duplicate slashes", async () => {
     const fetcher = vi.fn<Fetcher>(async () => new Response("{}", { status: 200 }));
     const client = createApiClient({ baseUrl: "https://api.emme.app/", fetcher });
