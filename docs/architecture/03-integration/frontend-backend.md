@@ -84,6 +84,33 @@ frontend request
 
 Document whether a successful mutation means committed state, accepted asynchronous work, or an intermediate status. The frontend must not display success when the backend has only accepted a request for later processing.
 
+### Problem details and localized messages
+
+The backend returns a structured Problem Details response when an operation
+fails. The frontend preserves the machine-readable `code` and chooses the user
+message from the active locale; backend prose is treated as diagnostic context,
+not as presentation copy.
+
+```mermaid
+sequenceDiagram
+    participant UI as Feature hook
+    participant C as Typed API client
+    participant B as Backend
+    participant I as i18n catalog
+
+    UI->>C: mutation
+    C->>B: request
+    B-->>C: application/problem+json { code }
+    C-->>UI: ApiHttpError.code
+    UI->>I: translate(code mapping)
+    I-->>UI: localized fallback/message
+```
+
+Calendar mappings currently include `CALENDAR_SYNC_CONFLICT`,
+`GOOGLE_OAUTH_FAILED`, and `SHEETS_EXPORT_FAILED`. Unknown codes safely use the
+feature fallback. Translation keys are present in every supported locale and
+are validated by the i18n quality gate.
+
 ### Integration checklist
 
 - [ ] Schema/client compatibility is checked before release.

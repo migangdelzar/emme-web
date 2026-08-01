@@ -11,4 +11,4 @@ export type {
   TenantSlugProvider,
 } from "./client.js";
 export { createApiClient } from "./client.js";
-export { ApiHttpError } from "./errors.js";
+export { ApiHttpError, type ApiProblem } from "./errors.js";

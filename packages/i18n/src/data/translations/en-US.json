@@ -11,7 +11,14 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "back": "Back"
+    "back": "Back",
+    "export_complete": "Export complete",
+    "errors": {
+      "calendar_sync_failed": "Calendar synchronization failed. Please try again.",
+      "calendar_sync_conflict": "Calendar synchronization is already in progress.",
+      "google_oauth_failed": "Google connection could not be completed.",
+      "sheets_export_failed": "The spreadsheet export failed. Please try again."
+    }
   },
   "dashboard": {
     "greeting": "Hello",

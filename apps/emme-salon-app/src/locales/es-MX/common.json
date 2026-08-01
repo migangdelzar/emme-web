@@ -5,6 +5,13 @@
   "tagline": "Plataforma premium de gestión integral para salones de uñas.",
   "loading": "Cargando...",
   "error_generic": "Algo salió mal. Intenta de nuevo.",
+  "export_complete": "Exportación completada",
+  "errors": {
+    "calendar_sync_failed": "La sincronización del calendario falló. Intenta de nuevo.",
+    "calendar_sync_conflict": "La sincronización del calendario ya está en progreso.",
+    "google_oauth_failed": "No se pudo completar la conexión con Google.",
+    "sheets_export_failed": "La exportación a la hoja de cálculo falló. Intenta de nuevo."
+  },
   "save": "Guardar",
   "cancel": "Cancelar",
   "delete": "Eliminar",
