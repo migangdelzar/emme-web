@@ -2,7 +2,11 @@
 
 ## Purpose
 
-The frontend and backend are independently structured applications joined by explicit HTTP contracts. The frontend owns presentation and interaction; the backend owns authorization, tenancy, validation, and business truth.
+The frontend and backend are independently structured applications joined by
+explicit HTTP contracts. The service repository is the canonical contract owner;
+this page defines the web consumer obligations. See the service-side
+[integration contract](https://github.com/migangdelzar/emme-service/blob/main/docs/architecture/03-integration/frontend-backend.md)
+for backend ownership and release policy.
 
 ## Request flow
 
@@ -35,10 +39,10 @@ sequenceDiagram
     CLIENT-->>UI: View state
 ```
 
-## Contract rules
+## Consumer rules
 
-- Use versioned API routes.
-- Generate or centrally maintain request/response types where practical.
+- Consume versioned API routes through `@emme/api-client` and
+  `@emme/contracts`.
 - Treat backend validation and authorization as authoritative.
 - Define loading, empty, validation, conflict, unauthorized, and unavailable states in the frontend.
 - Propagate correlation IDs for support and tracing.
@@ -48,16 +52,16 @@ sequenceDiagram
 ## Local development
 
 - Vite proxies API requests to the local backend.
-- The backend exposes a documented health endpoint.
+- The sibling service exposes the documented health endpoint.
 - Authentication and tenant fixtures are deterministic for tests.
-- CORS, cookie, and token behavior is tested in the same shape used by local development.
+- CORS, cookie, and session behavior is tested in the same shape used by local development.
 
 ## Integration guardrails
 
-### API contract
+### API consumption
 
-- Keep OpenAPI/schema definitions versioned with the backend contract owner.
-- Generate client types where practical, then adapt them to feature view models.
+- Keep OpenAPI/schema definitions with the backend contract owner.
+- Adapt transport types to feature view models where their lifecycles differ.
 - Detect breaking schema changes in CI before deployment.
 - Define maximum request/response sizes, pagination, timeout, and rate-limit behavior.
 
@@ -79,6 +83,33 @@ frontend request
 ```
 
 Document whether a successful mutation means committed state, accepted asynchronous work, or an intermediate status. The frontend must not display success when the backend has only accepted a request for later processing.
+
+### Problem details and localized messages
+
+The backend returns a structured Problem Details response when an operation
+fails. The frontend preserves the machine-readable `code` and chooses the user
+message from the active locale; backend prose is treated as diagnostic context,
+not as presentation copy.
+
+```mermaid
+sequenceDiagram
+    participant UI as Feature hook
+    participant C as Typed API client
+    participant B as Backend
+    participant I as i18n catalog
+
+    UI->>C: mutation
+    C->>B: request
+    B-->>C: application/problem+json { code }
+    C-->>UI: ApiHttpError.code
+    UI->>I: translate(code mapping)
+    I-->>UI: localized fallback/message
+```
+
+Calendar mappings currently include `CALENDAR_SYNC_CONFLICT`,
+`GOOGLE_OAUTH_FAILED`, and `SHEETS_EXPORT_FAILED`. Unknown codes safely use the
+feature fallback. Translation keys are present in every supported locale and
+are validated by the i18n quality gate.
 
 ### Integration checklist
 

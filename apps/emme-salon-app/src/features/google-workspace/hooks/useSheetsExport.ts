@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createGoogleSheetsApi, type SpreadsheetLink } from "@emme/contracts";
 import { api } from "@/api/restClient";
+import { apiErrorMessage } from "@/api/apiErrorMessage";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 const sheetsApi = createGoogleSheetsApi(api);
 
 export function useSheetsExport() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const sheets = useQuery<SpreadsheetLink[]>({
@@ -18,9 +21,10 @@ export function useSheetsExport() {
       sheetsApi.exportData({ exportType }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["google-sheets"] });
-      toast.success("Export complete");
+      toast.success(t("common.export_complete"));
     },
-    onError: () => toast.error("Export failed"),
+    onError: (error) =>
+      toast.error(apiErrorMessage(error, t, "common.errors.sheets_export_failed")),
   });
 
   return { sheets, exportData: exportData.mutate, isExporting: exportData.isPending };
