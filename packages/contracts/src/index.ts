@@ -1,5 +1,5 @@
 /**
- * @emme/contracts — TypeScript type definitions matching GraphQL/gRPC contracts.
+ * @emme/contracts — TypeScript REST transport contracts and feature adapters.
  *
  * Barrel re-export. See individual domain modules for details:
  *   common.ts, auth.ts, clients.ts, services.ts, appointments.ts, provider.ts, routes.ts
