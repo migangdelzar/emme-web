@@ -32,33 +32,94 @@ export interface CustomerApiResponse {
   status: string;
 }
 
-export const mapAppointmentApiResponse = (item: any) => ({
-  id: item.id,
-  customerName: item.customerName ?? '',
-  clientId: item.customerId ?? item.clientId ?? '',
-  serviceId: item.serviceId ?? '',
-  startTime: item.startsAt ?? (item.date && item.startTime ? `${item.date}T${item.startTime}:00` : ''),
-  endTime: item.endsAt ?? (item.date && item.endTime ? `${item.date}T${item.endTime}:00` : ''),
-  status: item.status ?? '',
-});
+type TransportRecord = Record<string, unknown>;
 
-export const mapServiceApiResponse = (item: any) => ({
-  id: item.id,
-  code: item.code ?? '',
-  name: item.name,
-  category: item.category ?? '',
-  durationMinutes: item.durationMinutes ?? item.duration ?? 0,
-  description: item.description ?? null,
-  priceRange: String(item.basePrice ?? item.price ?? 0),
-  isActive: item.isActive ?? (item.status === 'ACTIVE'),
-});
+function asRecord(value: unknown, resource: string): TransportRecord {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`Invalid ${resource} response`);
+  }
+  return value as TransportRecord;
+}
 
-export const mapCustomerApiResponse = (item: any) => ({
-  id: item.id,
-  name: item.name,
-  phone: item.phone ?? '',
-  email: item.email ?? '',
-});
+function requiredString(record: TransportRecord, field: string, resource: string): string {
+  const value = record[field];
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid ${resource} response: ${field} must be a string`);
+  }
+  return value;
+}
+
+function optionalString(record: TransportRecord, field: string): string | undefined {
+  const value = record[field];
+  return typeof value === 'string' ? value : undefined;
+}
+
+function firstString(record: TransportRecord, fields: readonly string[]): string {
+  for (const field of fields) {
+    const value = record[field];
+    if (typeof value === 'string') return value;
+  }
+  return '';
+}
+
+function firstNumber(record: TransportRecord, fields: readonly string[]): number {
+  for (const field of fields) {
+    const value = record[field];
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+  }
+  return 0;
+}
+
+function firstBoolean(record: TransportRecord, fields: readonly string[], fallback: boolean): boolean {
+  for (const field of fields) {
+    const value = record[field];
+    if (typeof value === 'boolean') return value;
+  }
+  return fallback;
+}
+
+export const mapAppointmentApiResponse = (payload: unknown) => {
+  const item = asRecord(payload, 'appointment');
+  return {
+    id: requiredString(item, 'id', 'appointment'),
+    customerName: firstString(item, ['customerName']),
+    clientId: firstString(item, ['customerId', 'clientId']),
+    serviceId: firstString(item, ['serviceId']),
+    startTime: firstString(item, ['startsAt']) ||
+      (firstString(item, ['date']) && firstString(item, ['startTime'])
+        ? `${firstString(item, ['date'])}T${firstString(item, ['startTime'])}:00`
+        : ''),
+    endTime: firstString(item, ['endsAt']) ||
+      (firstString(item, ['date']) && firstString(item, ['endTime'])
+        ? `${firstString(item, ['date'])}T${firstString(item, ['endTime'])}:00`
+        : ''),
+    status: firstString(item, ['status']),
+  };
+};
+
+export const mapServiceApiResponse = (payload: unknown) => {
+  const item = asRecord(payload, 'service');
+  return {
+    id: requiredString(item, 'id', 'service'),
+    code: firstString(item, ['code']),
+    name: requiredString(item, 'name', 'service'),
+    category: firstString(item, ['category']),
+    durationMinutes: firstNumber(item, ['durationMinutes', 'duration']),
+    description: optionalString(item, 'description') ?? null,
+    priceRange: String(firstNumber(item, ['basePrice', 'price'])),
+    isActive: firstBoolean(item, ['isActive'], item.status === 'ACTIVE'),
+  };
+};
+
+export const mapCustomerApiResponse = (payload: unknown) => {
+  const item = asRecord(payload, 'customer');
+  return {
+    id: requiredString(item, 'id', 'customer'),
+    name: requiredString(item, 'name', 'customer'),
+    phone: firstString(item, ['phone']),
+    email: optionalString(item, 'email') ?? '',
+  };
+};
 
 export function serviceCode(name: string): string {
   const normalized = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');

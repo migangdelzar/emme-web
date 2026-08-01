@@ -1,5 +1,12 @@
-import type { HttpClient } from "@emme/api-client";
 import { API } from "./routes.js";
+import {
+  asRecord,
+  asRecordArray,
+  firstStringField,
+  optionalStringField,
+  stringField,
+  type HttpClient,
+} from "./transport.js";
 
 export type AppointmentStatus =
   | "pending"
@@ -33,14 +40,15 @@ export interface AppointmentApi {
 }
 
 export function createAppointmentApi(http: HttpClient): AppointmentApi {
-  const mapAppointment = (raw: any): Appointment => {
+  const mapAppointment = (payload: unknown): Appointment => {
+    const raw = asRecord(payload, "appointment");
     // Parse ISO datetime from API or use contract fields from mock
-    const startsAt: string = raw.startsAt ?? '';
-    const endsAt: string = raw.endsAt ?? '';
+    const startsAt = optionalStringField(raw, "startsAt") ?? '';
+    const endsAt = optionalStringField(raw, "endsAt") ?? '';
     const [date, timeWithMs] = startsAt.split('T');
-    const startTime = timeWithMs ? timeWithMs.substring(0, 5) : (raw.startTime ?? '');
+    const startTime = timeWithMs ? timeWithMs.substring(0, 5) : firstStringField(raw, ["startTime"]);
     const [, endTimeWithMs] = endsAt.split('T');
-    const endTime = endTimeWithMs ? endTimeWithMs.substring(0, 5) : (raw.endTime ?? '');
+    const endTime = endTimeWithMs ? endTimeWithMs.substring(0, 5) : firstStringField(raw, ["endTime"]);
 
     const statusMap: Record<string, AppointmentStatus> = {
       SCHEDULED: 'pending',
@@ -50,21 +58,21 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
     };
 
     return {
-      id: raw.id,
-      clientId: raw.customerId ?? raw.clientId ?? '',
-      serviceId: raw.serviceId ?? '',
-      date: date || (raw.date ?? ''),
+      id: stringField(raw, "id", "appointment"),
+      clientId: firstStringField(raw, ["customerId", "clientId"]),
+      serviceId: firstStringField(raw, ["serviceId"]),
+      date: date || firstStringField(raw, ["date"]),
       startTime,
       endTime,
-      status: statusMap[raw.status] || raw.status || 'pending',
-      notes: raw.notes ?? undefined,
+      status: statusMap[firstStringField(raw, ["status"])] || 'pending',
+      notes: optionalStringField(raw, "notes"),
     };
   };
 
   return {
     list: async () => {
-      const arr = await http.get<any[]>(API.APPOINTMENTS);
-      return (arr || []).map(mapAppointment);
+      const arr = await http.get<unknown>(API.APPOINTMENTS);
+      return asRecordArray(arr, "appointment").map((item) => mapAppointment(item));
     },
     create: async (data) => {
       const body = {
@@ -73,15 +81,15 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
         startsAt: `${data.date}T${data.startTime}:00`,
         endsAt: `${data.date}T${data.endTime}:00`,
       };
-      const raw = await http.post<any>(API.APPOINTMENTS, body);
+      const raw = await http.post<unknown>(API.APPOINTMENTS, body);
       return mapAppointment(raw);
     },
     getById: async (id) => {
-      const raw = await http.get<any>(`${API.APPOINTMENTS}/${id}`);
+      const raw = await http.get<unknown>(`${API.APPOINTMENTS}/${id}`);
       return mapAppointment(raw);
     },
     cancel: async (id) => {
-      const raw = await http.post<any>(`${API.APPOINTMENTS}/${id}/cancel`);
+      const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/cancel`);
       return mapAppointment(raw);
     },
   };

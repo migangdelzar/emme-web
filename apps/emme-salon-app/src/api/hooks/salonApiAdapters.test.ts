@@ -57,4 +57,10 @@ describe('salon REST API adapters', () => {
       email: 'alice@example.com',
     });
   });
+
+  it('rejects malformed customer transport payloads', () => {
+    expect(() => mapCustomerApiResponse({ name: 'Alice' })).toThrow(
+      'Invalid customer response: id must be a string',
+    );
+  });
 });

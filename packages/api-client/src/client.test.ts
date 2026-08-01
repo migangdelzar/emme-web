@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ApiHttpError, createApiClient } from "./index.js";
+import { ApiHttpError, createApiClient, createHttpClient } from "./index.js";
 
 type FetchCall = [RequestInfo | URL, RequestInit?];
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -149,5 +149,38 @@ describe("createApiClient", () => {
 
     const [input] = fetcher.mock.calls[0] as FetchCall;
     expect(input.toString()).toBe("https://api.emme.app/api/me/tenants");
+  });
+});
+
+describe("createHttpClient", () => {
+  it("shares auth, tenant, and problem-details behavior with domain clients", async () => {
+    const fetcher = vi.fn<Fetcher>(async () =>
+      new Response(JSON.stringify({ detail: "Conflict", code: "CONFLICT" }), {
+        status: 409,
+        headers: { "Content-Type": "application/problem+json" },
+      }),
+    );
+    const client = createHttpClient({
+      baseUrl: "https://api.emme.app",
+      getAccessToken: () => "access-token",
+      getTenantSlug: () => "studio-a",
+      fetcher,
+    });
+
+    await expect(client.post("/api/v1/appointments", {})).rejects.toMatchObject({
+      status: 409,
+      code: "CONFLICT",
+    });
+    expect(fetcher.mock.calls[0]?.[1]?.headers).toMatchObject({
+      Authorization: "Bearer access-token",
+      "X-Emme-Tenant-Slug": "studio-a",
+    });
+  });
+
+  it("returns undefined for successful no-content responses", async () => {
+    const fetcher = vi.fn<Fetcher>(async () => new Response(null, { status: 204 }));
+    const client = createHttpClient({ baseUrl: "https://api.emme.app", fetcher });
+
+    await expect(client.delete("/api/v1/appointments/appointment-1")).resolves.toBeUndefined();
   });
 });

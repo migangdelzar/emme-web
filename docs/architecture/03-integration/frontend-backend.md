@@ -43,6 +43,11 @@ sequenceDiagram
 
 - Consume versioned API routes through `@emme/api-client` and
   `@emme/contracts`.
+- Keep `@emme/contracts` independent of `@emme/api-client`: contracts define
+  transport types, routes, and minimal HTTP ports; the API client implements
+  HTTP execution, authentication headers, tenant context, and Problem Details.
+- Application features may adapt contract payloads into view models, but must
+  not call `fetch` directly from feature components or hooks.
 - Treat backend validation and authorization as authoritative.
 - Define loading, empty, validation, conflict, unauthorized, and unavailable states in the frontend.
 - Propagate correlation IDs for support and tracing.
@@ -61,6 +66,9 @@ sequenceDiagram
 ### API consumption
 
 - Keep OpenAPI/schema definitions with the backend contract owner.
+- Preserve the dependency direction: feature adapter → contracts/API client →
+  browser transport. The contracts package must never import the concrete API
+  client package.
 - Adapt transport types to feature view models where their lifecycles differ.
 - Detect breaking schema changes in CI before deployment.
 - Define maximum request/response sizes, pagination, timeout, and rate-limit behavior.

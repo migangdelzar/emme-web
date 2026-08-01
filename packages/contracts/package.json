@@ -12,13 +12,11 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "echo 'No tests yet'",
+    "test": "vitest run",
     "build": "tsc"
   },
-  "dependencies": {
-    "@emme/api-client": "workspace:*"
-  },
   "devDependencies": {
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.8"
   }
 }

@@ -38,28 +38,57 @@ interface RequestContext {
   options: ApiClientOptions;
 }
 
-export function createApiClient(options: ApiClientOptions): ApiClient {
-  const baseUrl = normalizeBaseUrl(options.baseUrl);
-  const fetcher = options.fetcher ?? globalThis.fetch.bind(globalThis);
+export function createHttpClient(options: ApiClientOptions): HttpClient {
+  const context: RequestContext = {
+    baseUrl: normalizeBaseUrl(options.baseUrl),
+    fetcher: options.fetcher ?? globalThis.fetch.bind(globalThis),
+    options,
+  };
 
   return {
-    getHealth: () => request<HealthResponse>("/q/health", { baseUrl, fetcher, options }),
-    getCurrentUser: () => request<CurrentUser>("/api/me", { baseUrl, fetcher, options }),
+    get: <T>(path: string, params?: Record<string, string>) =>
+      request<T>(path, context, { method: "GET", params }),
+    post: <T>(path: string, body?: unknown) =>
+      request<T>(path, context, { method: "POST", body }),
+    put: <T>(path: string, body?: unknown) =>
+      request<T>(path, context, { method: "PUT", body }),
+    patch: <T>(path: string, body?: unknown) =>
+      request<T>(path, context, { method: "PATCH", body }),
+    delete: <T>(path: string) => request<T>(path, context, { method: "DELETE" }),
+  };
+}
+
+export function createApiClient(options: ApiClientOptions): ApiClient {
+  const http = createHttpClient(options);
+
+  return {
+    getHealth: () => http.get<HealthResponse>("/q/health"),
+    getCurrentUser: () => http.get<CurrentUser>("/api/me"),
     listTenantMemberships: async () => {
-      const response = await request<TenantMembershipsResponse>("/api/me/tenants", {
-        baseUrl,
-        fetcher,
-        options,
-      });
+      const response = await http.get<TenantMembershipsResponse>("/api/me/tenants");
       return response.memberships;
     },
   };
 }
 
-async function request<T>(path: string, context: RequestContext): Promise<T> {
+interface RequestOptions {
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  body?: unknown;
+  params?: Record<string, string>;
+}
+
+async function request<T>(
+  path: string,
+  context: RequestContext,
+  requestOptions: RequestOptions,
+): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
   };
+
+  if (requestOptions.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
 
   const token = context.options.getAccessToken
     ? await context.options.getAccessToken()
@@ -73,10 +102,17 @@ async function request<T>(path: string, context: RequestContext): Promise<T> {
     headers["X-Emme-Tenant-Slug"] = tenantSlug;
   }
 
-  const response = await context.fetcher(new URL(trimPath(path), context.baseUrl), {
+  const url = new URL(trimPath(path), context.baseUrl);
+  for (const [key, value] of Object.entries(requestOptions.params ?? {})) {
+    if (value) url.searchParams.set(key, value);
+  }
+
+  const response = await context.fetcher(url, {
+    method: requestOptions.method,
     headers,
+    body: requestOptions.body === undefined ? undefined : JSON.stringify(requestOptions.body),
   });
-  const body = await parseBody(response);
+  const body = response.status === 204 ? undefined : await parseBody(response);
 
   if (!response.ok) {
     throw new ApiHttpError(

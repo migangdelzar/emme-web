@@ -1,5 +1,13 @@
-import type { HttpClient } from "@emme/api-client";
 import { API } from "./routes.js";
+import {
+  asRecord,
+  asRecordArray,
+  booleanField,
+  firstStringField,
+  optionalStringField,
+  stringField,
+  type HttpClient,
+} from "./transport.js";
 
 export interface Client {
   id: string;
@@ -28,33 +36,36 @@ export interface ClientApi {
 }
 
 export function createClientApi(http: HttpClient): ClientApi {
-  const mapClient = (raw: any): Client => ({
-    id: raw.id,
-    name: raw.name,
-    phone: raw.phone ?? '',
-    email: raw.email ?? undefined,
-    birthday: raw.birthday ?? undefined,
-    isVip: raw.isVip ?? false,
-    notes: raw.notes ?? undefined,
-    preferences: raw.preferences ?? undefined,
-    allergies: raw.allergies ?? undefined,
-  });
+  const mapClient = (payload: unknown): Client => {
+    const raw = asRecord(payload, "customer");
+    return {
+      id: stringField(raw, "id", "customer"),
+      name: stringField(raw, "name", "customer"),
+      phone: firstStringField(raw, ["phone"]),
+      email: optionalStringField(raw, "email"),
+      birthday: optionalStringField(raw, "birthday"),
+      isVip: booleanField(raw, "isVip"),
+      notes: optionalStringField(raw, "notes"),
+      preferences: optionalStringField(raw, "preferences"),
+      allergies: optionalStringField(raw, "allergies"),
+    };
+  };
 
   return {
     list: async () => {
-      const arr = await http.get<any[]>(API.CUSTOMERS);
-      return (arr || []).map(mapClient);
+      const arr = await http.get<unknown>(API.CUSTOMERS);
+      return asRecordArray(arr, "customer").map((item) => mapClient(item));
     },
     create: async (data) => {
-      const raw = await http.post<any>(API.CUSTOMERS, data);
+      const raw = await http.post<unknown>(API.CUSTOMERS, data);
       return mapClient(raw);
     },
     getById: async (id) => {
-      const raw = await http.get<any>(`${API.CUSTOMERS}/${id}`);
+      const raw = await http.get<unknown>(`${API.CUSTOMERS}/${id}`);
       return mapClient(raw);
     },
     update: async (id, data) => {
-      const raw = await http.put<any>(`${API.CUSTOMERS}/${id}`, data);
+      const raw = await http.put<unknown>(`${API.CUSTOMERS}/${id}`, data);
       return mapClient(raw);
     },
   };

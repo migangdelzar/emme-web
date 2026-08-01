@@ -1,5 +1,15 @@
-import type { HttpClient } from "@emme/api-client";
 import { API } from "./routes.js";
+import {
+  asRecord,
+  asRecordArray,
+  booleanField,
+  firstBooleanField,
+  firstNumberField,
+  firstStringField,
+  optionalStringField,
+  stringField,
+  type HttpClient,
+} from "./transport.js";
 
 export interface Service {
   id: string;
@@ -28,20 +38,23 @@ export interface ServiceApi {
 }
 
 export function createServiceApi(http: HttpClient): ServiceApi {
-  const mapService = (raw: any): Service => ({
-    id: raw.id,
-    name: raw.name,
-    price: raw.basePrice ?? raw.price ?? 0,                  // real API: basePrice, mock: price
-    duration: raw.durationMinutes ?? raw.duration ?? 0,       // real API: durationMinutes, mock: duration
-    category: raw.category ?? '',
-    isActive: raw.isActive ?? (raw.status === 'ACTIVE'),      // mock: isActive, real API: status
-    description: raw.description ?? undefined,
-  });
+  const mapService = (payload: unknown): Service => {
+    const raw = asRecord(payload, "service");
+    return {
+      id: stringField(raw, "id", "service"),
+      name: stringField(raw, "name", "service"),
+      price: firstNumberField(raw, ["basePrice", "price"]),
+      duration: firstNumberField(raw, ["durationMinutes", "duration"]),
+      category: firstStringField(raw, ["category"]),
+      isActive: firstBooleanField(raw, ["isActive"], raw.status === 'ACTIVE'),
+      description: optionalStringField(raw, "description"),
+    };
+  };
 
   return {
     list: async () => {
-      const arr = await http.get<any[]>(API.SERVICES);
-      return (arr || []).map(mapService);
+      const arr = await http.get<unknown>(API.SERVICES);
+      return asRecordArray(arr, "service").map((item) => mapService(item));
     },
     create: async (data) => {
       const body = {
@@ -51,15 +64,15 @@ export function createServiceApi(http: HttpClient): ServiceApi {
         durationMinutes: data.duration,
         description: data.description || '',
       };
-      const raw = await http.post<any>(API.SERVICES, body);
+      const raw = await http.post<unknown>(API.SERVICES, body);
       return mapService(raw);
     },
     getById: async (id) => {
-      const raw = await http.get<any>(`${API.SERVICES}/${id}`);
+      const raw = await http.get<unknown>(`${API.SERVICES}/${id}`);
       return mapService(raw);
     },
     update: async (id, data) => {
-      const raw = await http.put<any>(`${API.SERVICES}/${id}`, data);
+      const raw = await http.put<unknown>(`${API.SERVICES}/${id}`, data);
       return mapService(raw);
     },
     retire: (id) => http.post<void>(`${API.SERVICES}/${id}/retire`),
