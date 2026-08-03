@@ -34,7 +34,7 @@ export function useNailServicesRest(category?: string) {
     queryKey: ['services', { category }],
     queryFn: async () => ({
       services: (await api.get<ServiceApiResponse[]>(
-        '/api/v1/services',
+        '/api/services',
         category ? { category } : undefined,
       )).map(mapServiceApiResponse),
     }),
@@ -45,7 +45,7 @@ export function useCreateService() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateServiceInput) => api.post<ServiceApiResponse>(
-      '/api/v1/services',
+      '/api/services',
       {
         code: serviceCode(input.name),
         name: input.name,
@@ -65,7 +65,7 @@ export function useUpdateService() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...data }: UpdateServiceInput) => api.put<ServiceApiResponse>(
-      `/api/v1/services/${id}`,
+      `/api/services/${id}`,
       {
         name: data.name,
         category: data.category,
@@ -83,7 +83,7 @@ export function useUpdateService() {
 export function useDeleteService() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.post(`/api/v1/services/${id}/retire`),
+    mutationFn: (id: string) => api.post(`/api/services/${id}/retire`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['services'] });
     },

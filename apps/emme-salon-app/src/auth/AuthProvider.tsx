@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './useAuth';
 import type { AuthState, AuthContextValue } from './useAuth';
-import type { CurrentUser } from '@emme/contracts';
+import { API_VERSION, type CurrentUser } from '@emme/contracts';
 
 interface Props {
   children: React.ReactNode;
@@ -31,6 +31,7 @@ export function AuthProvider({ children }: Props) {
         }
         const headers: Record<string, string> = {
           Authorization: `Bearer ${token}`,
+          'API-Version': API_VERSION,
         };
 
         const res = await fetch('/api/me', { headers });
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: Props) {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'API-Version': API_VERSION },
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {

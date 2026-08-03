@@ -38,7 +38,7 @@ describe("createApiClient", () => {
     await client.getHealth();
 
     const [, init] = fetcher.mock.calls[0] as FetchCall;
-    expect(init?.headers).toEqual({ Accept: "application/json" });
+    expect(init?.headers).toEqual({ Accept: "application/json", "API-Version": "1.0" });
   });
 
   it("throws typed HTTP errors with parsed response body", async () => {
@@ -153,6 +153,17 @@ describe("createApiClient", () => {
 });
 
 describe("createHttpClient", () => {
+  it("uses the header-based API version and removes legacy path versioning", async () => {
+    const fetcher = vi.fn<Fetcher>(async () => new Response("{}", { status: 200 }));
+    const client = createHttpClient({ baseUrl: "https://api.emme.app", fetcher });
+
+    await client.get("/api/appointments");
+
+    const [input, init] = fetcher.mock.calls[0] as FetchCall;
+    expect(input.toString()).toBe("https://api.emme.app/api/appointments");
+    expect(init?.headers).toMatchObject({ "API-Version": "1.0" });
+  });
+
   it("shares auth, tenant, and problem-details behavior with domain clients", async () => {
     const fetcher = vi.fn<Fetcher>(async () =>
       new Response(JSON.stringify({ detail: "Conflict", code: "CONFLICT" }), {
@@ -167,7 +178,7 @@ describe("createHttpClient", () => {
       fetcher,
     });
 
-    await expect(client.post("/api/v1/appointments", {})).rejects.toMatchObject({
+    await expect(client.post("/api/appointments", {})).rejects.toMatchObject({
       status: 409,
       code: "CONFLICT",
     });
@@ -181,6 +192,6 @@ describe("createHttpClient", () => {
     const fetcher = vi.fn<Fetcher>(async () => new Response(null, { status: 204 }));
     const client = createHttpClient({ baseUrl: "https://api.emme.app", fetcher });
 
-    await expect(client.delete("/api/v1/appointments/appointment-1")).resolves.toBeUndefined();
+    await expect(client.delete("/api/appointments/appointment-1")).resolves.toBeUndefined();
   });
 });

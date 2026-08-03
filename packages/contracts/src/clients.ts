@@ -25,7 +25,7 @@ export interface Client {
 export type CreateClient = Omit<Client, "id">;
 
 export const CLIENT_ROUTES = {
-  CUSTOMERS: "/api/v1/customers",
+  CUSTOMERS: "/api/customers",
 } as const;
 
 export interface ClientApi {

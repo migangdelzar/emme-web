@@ -25,8 +25,8 @@ export interface Service {
 export type CreateService = Omit<Service, "id" | "isActive">;
 
 export const SERVICE_ROUTES = {
-  SERVICES: "/api/v1/services",
-  ARTISTS: "/api/v1/artists",
+  SERVICES: "/api/services",
+  ARTISTS: "/api/artists",
 } as const;
 
 export interface ServiceApi {

@@ -1,8 +1,9 @@
-import type {
-  CurrentUser,
-  HealthResponse,
-  TenantMembership,
-  TenantMembershipsResponse,
+import {
+  API_VERSION,
+  type CurrentUser,
+  type HealthResponse,
+  type TenantMembership,
+  type TenantMembershipsResponse,
 } from "@emme/contracts";
 
 import { ApiHttpError } from "./errors.js";
@@ -12,6 +13,7 @@ export type TenantSlugProvider = () => string | null;
 
 export interface ApiClientOptions {
   baseUrl: string;
+  apiVersion?: string;
   getAccessToken?: AccessTokenProvider;
   getTenantSlug?: TenantSlugProvider;
   fetcher?: typeof fetch;
@@ -84,6 +86,7 @@ async function request<T>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
+    "API-Version": context.options.apiVersion ?? API_VERSION,
   };
 
   if (requestOptions.body !== undefined) {

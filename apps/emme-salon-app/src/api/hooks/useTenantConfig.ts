@@ -26,7 +26,7 @@ export interface BusinessPolicy {
 export function useBusinessProfile() {
   return useQuery<BusinessProfile>({
     queryKey: ['businessProfile'],
-    queryFn: () => api.get<BusinessProfile>('/api/v1/business-config/profile'),
+    queryFn: () => api.get<BusinessProfile>('/api/business-config/profile'),
     retry: false,   // 404 expected for new tenants — don't spam retries
   });
 }
@@ -34,13 +34,13 @@ export function useBusinessProfile() {
 export function useBusinessHours() {
   return useQuery<BusinessHours[]>({
     queryKey: ['businessHours'],
-    queryFn: () => api.get<BusinessHours[]>('/api/v1/business-config/hours'),
+    queryFn: () => api.get<BusinessHours[]>('/api/business-config/hours'),
   });
 }
 
 export function useBusinessPolicy() {
   return useQuery<BusinessPolicy>({
     queryKey: ['businessPolicy'],
-    queryFn: () => api.get<BusinessPolicy>('/api/v1/business-config/policy'),
+    queryFn: () => api.get<BusinessPolicy>('/api/business-config/policy'),
   });
 }

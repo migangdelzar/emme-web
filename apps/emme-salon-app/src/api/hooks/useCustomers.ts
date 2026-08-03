@@ -38,7 +38,7 @@ export function useCustomers() {
   return useQuery<CustomerListResponse>({
     queryKey: ['customers'],
     queryFn: async () => ({
-      customers: (await api.get<CustomerApiResponse[]>('/api/v1/customers'))
+      customers: (await api.get<CustomerApiResponse[]>('/api/customers'))
         .map(mapCustomerApiResponse),
     }),
   });
@@ -48,7 +48,7 @@ export function useCreateCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateCustomerInput) =>
-      api.post<Customer>('/api/v1/customers', input),
+      api.post<Customer>('/api/customers', input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
     },
@@ -59,7 +59,7 @@ export function useUpdateCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...data }: UpdateCustomerInput) =>
-      api.put<Customer>(`/api/v1/customers/${id}`, data),
+      api.put<Customer>(`/api/customers/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
     },
@@ -69,7 +69,7 @@ export function useUpdateCustomer() {
 export function useDeleteCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.post(`/api/v1/customers/${id}/retire`),
+    mutationFn: (id: string) => api.post(`/api/customers/${id}/retire`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
     },

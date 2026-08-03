@@ -53,7 +53,7 @@ export function useDashboardData(): DashboardData {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
     // SSE doesn't support custom headers natively. Token passed via
     // query param; backend also reads session cookie if using Keycloak.
-    const url = new URL(`${apiUrl}/api/v1/dashboard/stream`);
+    const url = new URL(`${apiUrl}/api/dashboard/stream`);
     const source = new EventSource(url.toString());
 
     source.addEventListener('connected', () => setConnected(true));

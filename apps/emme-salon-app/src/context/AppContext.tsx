@@ -208,7 +208,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addService = async (s: Omit<Service, 'id' | 'isActive'>) => {
     try {
-      const result = await api.post<any>('/api/v1/services', {
+      const result = await api.post<any>('/api/services', {
         name: s.name, code: 'SVC-' + Date.now(), basePrice: s.price,
         durationMinutes: s.duration, category: s.category, description: s.description || '',
       });
@@ -218,7 +218,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addClient = async (c: Omit<Client, 'id'>) => {
     try {
-      const result = await api.post<any>('/api/v1/customers', {
+      const result = await api.post<any>('/api/customers', {
         name: c.name, email: c.email || c.name.replace(/\s/g,'').toLowerCase() + '@emme.app', phone: c.phone || '000-0000',
       });
       setClients([...clients, { ...c, id: result.id }]);
@@ -231,10 +231,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const endsAt = a.date + 'T' + a.endTime + ':00Z';
       let artistId = (a as any).artistId;
       if (!artistId) {
-        const artists = await api.get<any[]>('/api/v1/artists');
+        const artists = await api.get<any[]>('/api/artists');
         if (artists?.length) artistId = artists[0].id;
       }
-      await api.post('/api/v1/appointments', { customerId: a.clientId, serviceId: a.serviceId, artistId, startsAt, endsAt });
+      await api.post('/api/appointments', { customerId: a.clientId, serviceId: a.serviceId, artistId, startsAt, endsAt });
       setAppointments((prev) => [...prev, { ...a, id: crypto.randomUUID() }]);
     } catch (e) { console.error('addAppointment API failed:', e); throw e; }
   };

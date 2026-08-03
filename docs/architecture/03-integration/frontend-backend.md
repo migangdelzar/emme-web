@@ -13,7 +13,7 @@ for backend ownership and release policy.
 ```text
 React feature
    ↓ typed API client
-HTTP /api/v1
+HTTP /api
    ↓ auth + tenant context
 controller
    ↓ application use case

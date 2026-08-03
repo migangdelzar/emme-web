@@ -30,7 +30,7 @@ export function useAppointmentsRest(date?: string) {
     queryKey: ['appointments', { date }],
     queryFn: async () => ({
       appointments: (await api.get<AppointmentApiResponse[]>(
-        '/api/v1/appointments',
+        '/api/appointments',
         date ? { date } : undefined,
       )).map(mapAppointmentApiResponse),
     }),
@@ -41,7 +41,7 @@ export function useCreateAppointmentRest() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateAppointmentInput) => api.post<AppointmentApiResponse>(
-      '/api/v1/appointments',
+      '/api/appointments',
       {
         customerId: input.clientId,
         serviceId: input.serviceId,
@@ -60,7 +60,7 @@ export function useCancelAppointmentRest() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) =>
-      api.post(`/api/v1/appointments/${id}/cancel`),
+      api.post(`/api/appointments/${id}/cancel`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
     },

@@ -24,7 +24,7 @@ export function useGoogleOAuth() {
   });
 
   const connect = (personaType: "STAFF" | "CLIENT" = "STAFF") => {
-    window.location.href = `/api/v1/google/oauth/authorize?personaType=${personaType}`;
+    window.location.href = `/api/google/oauth/authorize?personaType=${personaType}`;
   };
 
   return { status, connect, disconnect };

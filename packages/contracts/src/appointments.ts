@@ -29,7 +29,7 @@ export interface Appointment {
 export type CreateAppointment = Omit<Appointment, "id">;
 
 export const APPOINTMENT_ROUTES = {
-  APPOINTMENTS: "/api/v1/appointments",
+  APPOINTMENTS: "/api/appointments",
 } as const;
 
 export interface AppointmentApi {
