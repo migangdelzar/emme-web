@@ -6,6 +6,9 @@ import { db } from './store';
 import { API } from '@routes/routes';
 import { type RouteOverride, matchPattern } from './shared';
 
+/** Match API requests at the host root without intercepting source modules such as `/src/api/*`. */
+const API_REQUEST = /https?:\/\/[^/]+\/api(?:\/|$)/;
+
 // Playwright test runner runs in Node.js — require() is available at runtime.
 declare function require(module: string): any;
 
@@ -62,7 +65,7 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
         route.fulfill({ status: 200, contentType: 'text/event-stream', body: 'event: connected\ndata: {}\n\n' })),
 
       // Single catch-all with entity dispatch (no race condition)
-      page.route('**/api/v1/**', async (route) => {
+      page.route(API_REQUEST, async (route) => {
         if (!user) return route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ detail: 'Unauthorized' }) });
         const pathname = new URL(route.request().url()).pathname;
         const method = route.request().method();
@@ -86,15 +89,15 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
         }
 
         // Special routes
-        if (pathname.startsWith('/api/v1/finances'))
+        if (pathname.startsWith('/api/finances'))
           return fulfill(route, json({ revenue: 12500.50, expenses: 3200 }));
-        if (pathname.startsWith('/api/v1/business-config'))
+        if (pathname.startsWith('/api/business-config'))
           return fulfill(route, json(method === 'GET'
             ? { tenantId: 'default-tenant', businessName: 'Mock Studio', ownerName: 'Test Owner', monthlyGoal: '25000', workingHours: '09:00-18:00', language: 'es', notificationsEnabled: true }
             : (route.request().postDataJSON() || {})));
 
         // Fallback: return empty array for entity-like paths, empty object for others
-        const isEntityPath = ['appointments', 'services', 'customers', 'artists'].some(p => pathname.includes(`/api/v1/${p}`));
+        const isEntityPath = ['appointments', 'services', 'customers', 'artists'].some(p => pathname.includes(`/api/${p}`));
         return fulfill(route, json(isEntityPath ? [] : {}));
       }),
 

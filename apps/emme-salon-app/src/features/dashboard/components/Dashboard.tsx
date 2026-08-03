@@ -466,7 +466,10 @@ export function Dashboard() {
                       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#515154]">
                         {t('dashboard:goalSubtitle', 'Hito del Mes')}
                       </p>
-                      <h3 className="text-2xl font-display font-semibold tracking-tight text-foreground">
+                      <h3
+                        data-testid={els.dashboard.goalTitle.testId}
+                        className="text-2xl font-display font-semibold tracking-tight text-foreground"
+                      >
                         {t('dashboard:goalTitle', 'Objetivo.')}
                       </h3>
                     </div>

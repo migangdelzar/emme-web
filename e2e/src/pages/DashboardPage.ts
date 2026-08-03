@@ -22,7 +22,7 @@ export class DashboardPage {
   // Fallback: text-based (i18n coverage)
   readonly greetingByText = () =>
     this.page.getByRole('heading', { name: t('dashboard.greeting') });
-  readonly goalLabel = () => this.page.getByText('Objetivo.');
+  readonly goalLabel = () => this.page.getByTestId(tid('dashboard.goalTitle')!);
   readonly goalProgressPercent = () =>
     this.goalCard().locator('span').filter({ hasText: /%/ }).first();
   readonly emptyAgenda = () =>

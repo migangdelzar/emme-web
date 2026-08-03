@@ -34,6 +34,6 @@ export interface ApiProvider {
   /** Whether this provider is mock or real. */
   readonly mode: 'mock' | 'real';
 
-  /** Configure a route. Pattern: 'GET /api/v1/services' or 'GET /api/v1/**'. */
+  /** Configure a route. Pattern: 'GET /api/services' or 'GET /api/**'. */
   route(pattern: string): RouteConfig;
 }

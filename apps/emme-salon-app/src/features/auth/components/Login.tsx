@@ -125,6 +125,7 @@ export function Login() {
               >
                 <div className="space-y-1">
                   <button
+                    data-testid={els.auth.backBtn.testId}
                     onClick={() => setView('landing')}
                     className="text-[10px] font-bold uppercase tracking-[.25em] text-primary/60 mb-6 flex items-center gap-1.5 hover:text-primary transition-colors"
                   >

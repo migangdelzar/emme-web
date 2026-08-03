@@ -10,13 +10,13 @@ export class LoginPage {
   readonly passwordInput = () => this.page.getByTestId(tid('auth.passwordInput')!);
   readonly submitBtn = () => this.page.getByTestId(tid('auth.submitBtn')!);
   readonly landingBtn = () => this.page.getByTestId(tid('auth.landingBtn')!);
+  readonly backBtn = () => this.page.getByTestId(tid('auth.backBtn')!);
 
   // Fallback: text-based (i18n coverage)
   readonly heading = () => this.page.locator('h1');
   readonly landingEnterBtn = () => this.page.getByRole('button', { name: t('landing.enter') });
   readonly landingRegisterBtn = () => this.page.getByRole('button', { name: t('landing.register') });
   readonly registerSubmitBtn = () => this.page.getByRole('button', { name: t('auth.register') });
-  readonly backBtn = () => this.page.getByRole('button', { name: t('common.back') });
   readonly poweredBy = () => this.page.getByText(t('auth.poweredBy'));
 
   async goto() {

@@ -18,6 +18,7 @@
     "occupancy":      { "testId": "kpi-occupancy",    "i18nKey": "dashboard.occupancy" },
     "newClients":     { "testId": "kpi-newClients",   "i18nKey": "dashboard.newClients" },
     "goalCard":       { "testId": "goal-card",        "i18nKey": "dashboard.goalCard" },
+    "goalTitle":      { "testId": "goal-title",       "i18nKey": "dashboard.goalTitle" },
     "missionCard":    { "testId": "mission-card",     "i18nKey": "dashboard.missionCard" },
     "agendaSection":  { "testId": "dashboard-agenda" },
     "emptyAgenda":    { "testId": "dashboard-empty-agenda", "i18nKey": "dashboard.emptyAgenda" },
@@ -59,7 +60,8 @@
     "submitBtn":    { "testId": "auth-submit",   "i18nKey": "auth.submit" },
     "emailInput":   { "testId": "auth-email",    "i18nKey": "auth.email" },
     "passwordInput":{ "testId": "auth-password", "i18nKey": "auth.password" },
-    "landingBtn":   { "testId": "auth-landing" }
+    "landingBtn":   { "testId": "auth-landing" },
+    "backBtn":      { "testId": "auth-back" }
   },
   "onboarding": {
     "skipBtn": { "testId": "onboarding-skip" },

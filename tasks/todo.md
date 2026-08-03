@@ -56,3 +56,35 @@ stable public module barrels.
   not require Keycloak, a backend, or credentials.
 - Videos and reports remain ignored locally and are uploaded only as short-lived
   GitHub Actions artifacts.
+
+## API version contract normalization
+
+### Goal
+
+Remove path-based API versioning from the web application and standardize every
+frontend request on the version-neutral `/api` path plus the `API-Version: 1.0`
+request header. No `/api/v1` compatibility alias is retained.
+
+### Acceptance criteria
+
+- [x] `@emme/contracts` exposes one canonical `API_VERSION` constant.
+- [x] Route constants and application request paths use `/api`, never `/api/v1`.
+- [x] The shared API client sends `API-Version: 1.0` by default.
+- [x] Direct authentication requests send the same version header.
+- [x] Mock E2E providers use the canonical version-neutral paths.
+- [x] Playwright starts the app with deterministic runtime configuration.
+- [x] Unit tests, typecheck, lint, build, and documentation checks pass.
+- [x] Mock E2E suite passes with the final runtime configuration.
+- [x] Changes are committed and pushed on the feature branch.
+
+### Verification commands
+
+```text
+bun run test
+bun run typecheck
+bun run lint
+bun run build
+bun run docs:check
+bun run --filter @emme/e2e test
+rg -n '/api/v1' --glob '!node_modules/**' --glob '!dist/**' --glob '!test-results/**' .
+```
