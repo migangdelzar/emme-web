@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+const recordDemo = process.env.RECORD_DEMO === 'true';
+
 export default defineConfig({
   testDir: './specs',
   timeout: 30000,
@@ -16,12 +18,14 @@ export default defineConfig({
     ['json', { outputFile: 'test-results.json' }],
   ],
 
+  outputDir: recordDemo ? 'test-results/demo-recordings' : 'test-results',
+
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    video: recordDemo ? 'on' : 'retain-on-failure',
+    trace: recordDemo ? 'on' : 'on-first-retry',
+    screenshot: recordDemo ? 'on' : 'only-on-failure',
   },
 
   projects: [

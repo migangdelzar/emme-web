@@ -118,6 +118,11 @@ For real browser verification, start the sibling backend and run:
 E2E_MODE=real bun run --filter @emme/e2e test:real
 ```
 
+For deterministic product-flow videos, run `bun run --filter @emme/e2e
+test:demo` locally or manually dispatch the `Playwright demo recordings`
+GitHub Actions workflow. Videos and reports are uploaded as a 14-day artifact;
+they are not committed.
+
 The default `test` command is intentionally limited to unit/component tests.
 Run `bun run test:e2e` for Playwright; critical real journeys require the
 sibling backend, deterministic users/tenants, and must not commit tokens,

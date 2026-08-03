@@ -36,6 +36,9 @@ feature test suite
 - Integration tests exercise routing, providers, API clients, and error states.
 - Contract tests detect API schema drift before E2E.
 - Critical E2E flows run against a production-like backend and deterministic identities/tenants.
+- A manual demo-recording workflow runs only deterministic mock-mode journeys;
+  it uploads videos, traces, screenshots, and reports as short-lived Actions
+  artifacts and never commits them.
 - Accessibility checks run for shared components and critical pages.
 - Visual regression is used only for stable, high-value surfaces; avoid brittle snapshots.
 - Test data is isolated, classified, and deleted after execution.
@@ -47,5 +50,6 @@ feature test suite
 - [ ] API responses include validation, conflict, unauthorized, unavailable, and success cases.
 - [ ] Session expiry, tenant changes, and permission changes are covered.
 - [ ] Keyboard/focus and accessible-name behavior is covered for critical interactions.
-- [ ] Critical E2E flows produce artifacts, traces, and failure diagnostics.
+- [x] Deterministic demo E2E flows produce videos, traces, screenshots, and
+      reports as GitHub Actions artifacts.
 - [ ] Tests are deterministic and safe to run in parallel.

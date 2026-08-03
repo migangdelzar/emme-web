@@ -49,7 +49,7 @@ export class ServicesPage {
   readonly discardBtn = () =>
     this.addDialogByRole().getByRole('button', { name: 'Descartar' });
   readonly emptySearchMsg = () =>
-    this.page.getByText(t('services.empty'));
+    this.emptyState();
   readonly noServicesMsg = () =>
     this.page.getByText('EL TELÓN ESTÁ CERRADO');
   readonly deleteDialog = () =>

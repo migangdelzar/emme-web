@@ -6,6 +6,7 @@ import { AppointmentsPage } from '../../pages/AppointmentsPage';
 import { FinancesPage } from '../../pages/FinancesPage';
 import { SettingsPage } from '../../pages/SettingsPage';
 import { Tag } from '../../shared/tags';
+import { makeClient } from '../../shared/factories/clientFactory';
 
 test.describe('Data Persistence', { tag: [Tag.DASHBOARD, Tag.SERVICES, Tag.CLIENTS, Tag.APPOINTMENTS, Tag.CRITICAL, Tag.HAPPY_PATH] }, () => {
   test.beforeAll(() => {
@@ -69,7 +70,7 @@ test.describe('Data Persistence', { tag: [Tag.DASHBOARD, Tag.SERVICES, Tag.CLIEN
   test('seed client via API → appears in UI', async ({ authenticatedPage, provider }) => {
     const uniqueName = `API-${Date.now().toString(36)}`;
     // Seed via RealProvider (POST to real backend)
-    await provider.seed({ customers: [{ name: uniqueName, phone: '555-9999', email: `${uniqueName}@test.com` }] });
+    await provider.seed({ customers: [makeClient({ name: uniqueName, phone: '555-9999', email: `${uniqueName}@test.com` })] });
     // Verify appears in UI
     await authenticatedPage.goto('/#/clients');
     await expect(new ClientsPage(authenticatedPage).header()).toBeVisible({ timeout: 10000 });

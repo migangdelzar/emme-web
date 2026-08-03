@@ -14,10 +14,10 @@ flowchart LR
 
 Pull requests MUST run documentation validation, typecheck, lint, unit/component
 tests, production build, and high-severity dependency audit. Mock Playwright
-journeys remain an explicit local/manual workflow until their current fixture
-and backend-health assumptions are made deterministic. Real-stack E2E and image
-smoke require coordinated service and deployment environments and remain
-release-promotion gates.
+journeys remain an explicit local/manual workflow. The manual demo-recording
+workflow runs deterministic mock flows and archives videos and reports for 14
+days. Real-stack E2E and image smoke require coordinated service and deployment
+environments and remain release-promotion gates.
 
 The repository also runs `security-scan.yml` for Gitleaks and Bun audit. The
 `dependency-review.yml` workflow is available for manual dispatch after GitHub

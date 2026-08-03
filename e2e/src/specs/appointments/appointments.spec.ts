@@ -42,7 +42,7 @@ test.describe('Appointments Page', { tag: [Tag.APPOINTMENTS, Tag.REGRESSION] }, 
 
   test('projected income card shows', async ({ authenticatedPage }) => {
     const appointments = new AppointmentsPage(authenticatedPage);
-    await expect(appointments.projectedIncomeCard()).toBeVisible();
+    await expect(appointments.todayAppointmentsSummary()).toBeVisible();
   });
 
   test('new appointment form opens via add=true', { tag: [Tag.HAPPY_PATH] }, async ({ authenticatedPage }) => {

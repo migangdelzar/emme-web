@@ -10,6 +10,8 @@ export const Tag = {
   SMOKE: "@smoke",
   /** Key business flow — run pre-commit. */
   CRITICAL: "@critical",
+  /** Stable, deterministic flow selected for manual video recording. */
+  DEMO: "@demo",
   /** Normal behavior coverage — run pre-merge. */
   REGRESSION: "@regression",
 

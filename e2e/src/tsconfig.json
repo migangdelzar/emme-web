@@ -19,9 +19,6 @@
       "@pages/*": [
         "./pages/*"
       ],
-      "@flows/*": [
-        "./flows/*"
-      ],
       "@providers/*": [
         "./providers/*"
       ],

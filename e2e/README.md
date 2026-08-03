@@ -11,4 +11,16 @@ fixture that contains no credentials before proposing a new recording.
 ```bash
 bun run --filter @emme/e2e test
 bun run --filter @emme/e2e test:real
+bun run --filter @emme/e2e test:demo
 ```
+
+## Demo recordings
+
+The `test:demo` command runs the tagged, deterministic mock journeys with
+video, trace, and screenshot recording enabled. It requires no backend,
+Keycloak instance, or credentials.
+
+To archive the recordings in GitHub Actions, manually dispatch the
+`Playwright demo recordings` workflow. It uploads the generated videos and
+Playwright reports as a 14-day artifact named with the workflow run ID.
+Artifacts are intentionally not committed to the repository.

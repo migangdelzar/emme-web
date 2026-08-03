@@ -27,7 +27,7 @@ export class DashboardPage {
     this.goalCard().locator('span').filter({ hasText: /%/ }).first();
   readonly emptyAgenda = () =>
     this.page.getByTestId(tid('dashboard.emptyAgenda')!).or(
-      this.page.getByText(t('dashboard.emptyAgenda')));
+      this.page.getByRole('heading', { name: 'Agenda despejada' }));
   readonly agendaHeading = () =>
     this.page.getByRole('heading', { name: t('appointments.header'), exact: true });
   readonly viewAllBtn = () => this.page.getByRole('button', { name: 'Ver todo' });

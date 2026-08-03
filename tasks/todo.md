@@ -33,3 +33,26 @@ Implementation and repository-wide verification complete for this web
 transport-boundary checkpoint. Further UI module decomposition remains a
 separate planned slice because the existing features are not yet represented by
 stable public module barrels.
+
+## Demo recordings and cleanup checkpoint
+
+- [x] Audit Playwright recording and artifact behavior against the Clara
+      full-stack challenge.
+- [x] Add deterministic mock-mode demo flows and a manual GitHub Actions
+      recording workflow with retained video/report artifacts.
+- [x] Prevent mock smoke tests from requiring a running backend.
+- [x] Fix E2E TypeScript errors in page objects and real-provider seed fixtures.
+- [x] Update stale E2E assertions to the current app UI contract.
+- [x] Remove unreachable/incomplete legacy E2E helpers, duplicate flow classes,
+      and an unreferenced onboarding debug image.
+- [ ] Remove or retain remaining legacy E2E scaffolding only after the full
+      suite is green and every candidate is confirmed unreachable.
+- [ ] Audit the sibling `emme-service` repository for duplicate metadata,
+      unused source candidates, and generated artifacts.
+
+### Working notes
+
+- Demo recordings intentionally use the deterministic `MockProvider`; they do
+  not require Keycloak, a backend, or credentials.
+- Videos and reports remain ignored locally and are uploaded only as short-lived
+  GitHub Actions artifacts.
