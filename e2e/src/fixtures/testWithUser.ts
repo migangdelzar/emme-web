@@ -85,16 +85,18 @@ export const test = base.extend<Fixtures>({
     releaseUser(user.userId);
   }, { scope: 'test' }],
 
-  provider: [async ({ page }, use) => {
+  provider: [async ({ authenticatedPage: _authenticatedPage }, use) => {
     if (MODE === 'mock') {
       // Use the shared MockProvider set up by authenticatedPage (depends on it running first)
-      await use(sharedMockProvider!);
-      await sharedMockProvider!.teardown();
+      if (!sharedMockProvider) throw new Error('Provider fixture was initialized before authenticatedPage.');
+      await use(sharedMockProvider);
+      await sharedMockProvider.teardown();
       sharedMockProvider = null;
     } else {
       // Use the shared RealProvider set up by authenticatedPage (depends on it running first)
-      await use(sharedRealProvider!);
-      await sharedRealProvider!.teardown();
+      if (!sharedRealProvider) throw new Error('Provider fixture was initialized before authenticatedPage.');
+      await use(sharedRealProvider);
+      await sharedRealProvider.teardown();
       sharedRealProvider = null;
     }
   }, { scope: 'test' }],
