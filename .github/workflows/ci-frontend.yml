@@ -50,7 +50,7 @@ jobs:
         run: bun run --filter '*' build
 
       - name: Install Chromium for mock E2E
-        run: bunx playwright install --with-deps chromium
+        run: cd e2e/src && bunx playwright install --with-deps chromium
 
       - name: Mock critical browser flows
         run: bun run test:e2e:mock

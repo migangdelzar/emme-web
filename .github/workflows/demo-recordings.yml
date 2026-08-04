@@ -31,7 +31,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Install Chromium
-        run: bunx playwright install --with-deps chromium
+        run: cd e2e/src && bunx playwright install --with-deps chromium
 
       - name: Record mock-mode flows
         run: bun run --filter @emme/e2e test:demo
