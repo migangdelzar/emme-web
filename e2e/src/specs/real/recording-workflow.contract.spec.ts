@@ -24,6 +24,13 @@ test('real recording workflow protects the full-stack evidence contract', async 
   expect(workflow).toContain('test:real:recordings');
   expect(workflow).toContain('always()');
   expect(workflow).toContain('actions/upload-artifact');
+
+  const diagnosticsPosition = workflow.indexOf('name: Collect Compose diagnostics');
+  const uploadPosition = workflow.indexOf('name: Upload videos and test reports');
+  expect(diagnosticsPosition).toBeGreaterThanOrEqual(0);
+  expect(uploadPosition).toBeGreaterThan(diagnosticsPosition);
+  expect(workflow.slice(uploadPosition)).toContain('${{ runner.temp }}/emme-compose.log');
+
   expect(workflow).not.toContain('java -jar');
   expect(workflow).not.toContain('emme-platform.pid');
   expect(workflow).not.toContain('provision-e2e-realm.sh');

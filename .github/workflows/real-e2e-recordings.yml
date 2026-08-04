@@ -217,6 +217,16 @@ jobs:
         working-directory: emme-web
         run: bun run --filter @emme/e2e test:real:recordings
 
+      - name: Collect Compose diagnostics
+        if: ${{ always() }}
+        working-directory: emme-service
+        run: |
+          docker compose \
+            -f deployment/compose/compose.yaml \
+            -f deployment/compose/compose.runtime-jvm.yaml \
+            -f deployment/compose/compose.environment-e2e.yaml \
+            logs --no-color > "${RUNNER_TEMP}/emme-compose.log" || true
+
       - name: Upload videos and test reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -229,16 +239,6 @@ jobs:
             emme-web/e2e/src/playwright-report
             emme-web/e2e/src/test-results.json
             ${{ runner.temp }}/emme-compose.log
-
-      - name: Collect Compose diagnostics
-        if: ${{ always() }}
-        working-directory: emme-service
-        run: |
-          docker compose \
-            -f deployment/compose/compose.yaml \
-            -f deployment/compose/compose.runtime-jvm.yaml \
-            -f deployment/compose/compose.environment-e2e.yaml \
-            logs --no-color > "${RUNNER_TEMP}/emme-compose.log" || true
 
       - name: Dump Compose logs on failure
         if: ${{ failure() }}
