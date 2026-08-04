@@ -32,7 +32,7 @@
 - Restores/saves ~/.bun/install/cache using bun.lock hashes.
 - Runs bun install --frozen-lockfile in the caller's working directory.
 
-- [ ] Step 1: Write the failing setup contract.
+- [x] Step 1: Write the failing setup contract.
 
 Create scripts/validate-ci-workflows.mjs with this assertion:
 
@@ -51,13 +51,13 @@ Create scripts/validate-ci-workflows.mjs with this assertion:
     }
     console.log('Bun setup contract passed.');
 
-- [ ] Step 2: Run the contract and verify it fails.
+- [x] Step 2: Run the contract and verify it fails.
 
     bun run scripts/validate-ci-workflows.mjs
 
 Expected: failure because the composite action does not exist.
 
-- [ ] Step 3: Implement the composite action.
+- [x] Step 3: Implement the composite action.
 
 Use this action shape:
 
@@ -87,14 +87,14 @@ Use this action shape:
           working-directory: \${{ inputs.working-directory }}
           run: bun install --frozen-lockfile
 
-- [ ] Step 4: Run the contract and local install.
+- [x] Step 4: Run the contract and local install.
 
     bun run scripts/validate-ci-workflows.mjs
     bun install --frozen-lockfile
 
 Expected: both commands pass.
 
-- [ ] Step 5: Commit.
+- [x] Step 5: Commit.
 
     git add .github/actions/setup-bun/action.yml scripts/validate-ci-workflows.mjs
     git commit -m "ci(web): centralize Bun workspace setup"
@@ -112,7 +112,7 @@ Expected: both commands pass.
 - Pull requests and main always run both steps.
 - Manual runs may skip either optional family without skipping core quality gates.
 
-- [ ] Step 1: Extend the workflow assertions.
+- [x] Step 1: Extend the workflow assertions.
 
 Require these fragments:
 
@@ -122,13 +122,13 @@ Require these fragments:
     github.event_name != 'workflow_dispatch' || inputs.run_mock_e2e == true
     github.event_name != 'workflow_dispatch' || inputs.run_security == true
 
-- [ ] Step 2: Run the validator and verify it fails.
+- [x] Step 2: Run the validator and verify it fails.
 
     bun run scripts/validate-ci-workflows.mjs
 
 Expected: failure because the workflow has no dispatch inputs and directly installs Bun.
 
-- [ ] Step 3: Implement the workflow changes.
+- [x] Step 3: Implement the workflow changes.
 
 Add:
 
@@ -158,14 +158,14 @@ Gate the audit with:
 
     if: github.event_name != 'workflow_dispatch' || inputs.run_security == true
 
-- [ ] Step 4: Run web quality and workflow validation.
+- [x] Step 4: Run web quality and workflow validation.
 
     bun run scripts/validate-ci-workflows.mjs
     bun run quality
 
 Expected: all commands pass.
 
-- [ ] Step 5: Commit.
+- [x] Step 5: Commit.
 
     git add .github/workflows/ci-frontend.yml scripts/validate-ci-workflows.mjs
     git commit -m "ci(web): make frontend optional checks selectable"
@@ -183,7 +183,7 @@ Expected: all commands pass.
 - Real E2E uses the local Bun setup action from emme-web and retains service Gradle setup only where the service build runs.
 - Playwright installation remains limited to recording workflows.
 
-- [ ] Step 1: Replace duplicated Bun setup.
+- [x] Step 1: Replace duplicated Bun setup.
 
 Replace the setup-bun plus install pair in both workflows with:
 
@@ -197,14 +197,14 @@ For real E2E, invoke the action with an input after both repositories are checke
       with:
         working-directory: emme-web
 
-- [ ] Step 2: Validate recording workflow contracts.
+- [x] Step 2: Validate recording workflow contracts.
 
     bun run scripts/validate-ci-workflows.mjs
     bun run docs:check
 
 Expected: all commands pass and both recording workflows still install Chromium only in recording jobs.
 
-- [ ] Step 3: Commit.
+- [x] Step 3: Commit.
 
     git add .github/workflows/demo-recordings.yml .github/workflows/real-e2e-recordings.yml
     git commit -m "ci(web): reuse workspace setup in recording workflows"
@@ -215,14 +215,14 @@ Expected: all commands pass and both recording workflows still install Chromium 
 
 - Modify: tasks/todo.md
 
-- [ ] Step 1: Run local gates.
+- [x] Step 1: Run local gates.
 
     bun run scripts/validate-ci-workflows.mjs
     bun run quality
 
 Expected: documentation, i18n, formatting, typecheck, lint, tests, coverage, build, and dependency audit pass.
 
-- [ ] Step 2: Inspect changed-file scope.
+- [x] Step 2: Inspect changed-file scope.
 
     git diff --check
     git status --short
