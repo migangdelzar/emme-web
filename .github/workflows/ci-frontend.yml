@@ -5,6 +5,18 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_mock_e2e:
+        description: Run mock browser flows
+        required: true
+        default: true
+        type: boolean
+      run_security:
+        description: Run the dependency vulnerability audit
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -22,12 +34,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: '1.3.14'
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - name: Set up web workspace
+        uses: ./.github/actions/setup-bun
 
       - name: Verify documentation
         run: bun run docs:check
@@ -54,10 +62,13 @@ jobs:
         run: bun run --filter '*' build
 
       - name: Install Chromium for mock E2E
+        if: github.event_name != 'workflow_dispatch' || inputs.run_mock_e2e == true
         run: cd e2e/src && bunx playwright install --with-deps chromium
 
       - name: Mock critical browser flows
+        if: github.event_name != 'workflow_dispatch' || inputs.run_mock_e2e == true
         run: bun run test:e2e:mock
 
       - name: Dependency vulnerability audit
+        if: github.event_name != 'workflow_dispatch' || inputs.run_security == true
         run: bun run security:check

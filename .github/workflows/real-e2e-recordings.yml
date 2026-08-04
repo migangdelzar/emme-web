@@ -83,14 +83,10 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Set up web workspace
+        uses: ./emme-web/.github/actions/setup-bun
         with:
-          bun-version: '1.3.14'
-
-      - name: Install web dependencies
-        working-directory: emme-web
-        run: bun install --frozen-lockfile
+          working-directory: emme-web
 
       - name: Install Chromium
         working-directory: emme-web/e2e/src
