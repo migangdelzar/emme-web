@@ -33,6 +33,7 @@ export interface ClientApi {
   create(data: CreateClient): Promise<Client>;
   getById(id: string): Promise<Client>;
   update(id: string, data: Partial<Client>): Promise<Client>;
+  retire(id: string): Promise<void>;
 }
 
 export function createClientApi(http: HttpClient): ClientApi {
@@ -68,5 +69,6 @@ export function createClientApi(http: HttpClient): ClientApi {
       const raw = await http.put<unknown>(`${API.CUSTOMERS}/${id}`, data);
       return mapClient(raw);
     },
+    retire: (id) => http.post<void>(`${API.CUSTOMERS}/${id}/retire`),
   };
 }

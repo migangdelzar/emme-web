@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
+import { createAppointmentApi, type Appointment as ContractAppointment } from '@emme/contracts';
 import {
   createMutationOptions,
   createQueryResource,
   createResourceKey,
 } from '@/api/queryFactory';
-import { mapAppointmentApiResponse, type AppointmentApiResponse } from './salonApiAdapters';
 
 export interface Appointment {
   id: string;
@@ -34,16 +34,22 @@ export interface CreateAppointmentInput {
   endTime: string;
 }
 
+const appointmentsContract = createAppointmentApi(api);
+
+function mapContractAppointment(raw: ContractAppointment): Appointment {
+  return {
+    ...raw,
+    customerName: raw.customerName ?? '',
+  };
+}
+
 const APPOINTMENTS_KEY = createResourceKey('appointments');
 
 const appointmentsResource = createQueryResource<AppointmentListParams, AppointmentListResponse, 'appointments'>({
   key: 'appointments',
   queryKey: (params) => [...APPOINTMENTS_KEY, 'list', params],
   queryFn: async (params) => ({
-      appointments: (await api.get<AppointmentApiResponse[]>(
-        '/api/appointments',
-        params.date ? { date: params.date } : undefined,
-      )).map(mapAppointmentApiResponse),
+      appointments: (await appointmentsContract.list(params)).map(mapContractAppointment),
     }),
 });
 
@@ -55,16 +61,19 @@ export function useCreateAppointmentRest() {
   const queryClient = useQueryClient();
   return useMutation(createMutationOptions({
     key: 'appointments',
-    mutationFn: (input: CreateAppointmentInput) => api.post<AppointmentApiResponse>(
-      '/api/appointments',
-      {
-        customerId: input.clientId,
-        serviceId: input.serviceId,
+    mutationFn: (input: CreateAppointmentInput) => {
+      const [date, startTimeWithSeconds] = input.startTime.split('T');
+      const [, endTimeWithSeconds] = input.endTime.split('T');
+      return appointmentsContract.create({
+        clientId: input.clientId ?? '',
+        serviceId: input.serviceId ?? '',
         artistId: input.artistId,
-        startsAt: input.startTime,
-        endsAt: input.endTime,
-      },
-    ),
+        date,
+        startTime: startTimeWithSeconds?.slice(0, 5) ?? input.startTime,
+        endTime: endTimeWithSeconds?.slice(0, 5) ?? input.endTime,
+        status: 'pending',
+      });
+    },
   }, queryClient));
 }
 
@@ -73,6 +82,6 @@ export function useCancelAppointmentRest() {
   return useMutation(createMutationOptions({
     key: 'appointments',
     mutationFn: (id: string) =>
-      api.post(`/api/appointments/${id}/cancel`),
+      appointmentsContract.cancel(id),
   }, queryClient));
 }

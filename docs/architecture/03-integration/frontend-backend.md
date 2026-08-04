@@ -12,7 +12,9 @@ for backend ownership and release policy.
 
 ```text
 React feature
-   ↓ typed API client
+   ↓ feature hook
+capability API contract
+   ↓ shared typed HTTP client
 HTTP /api
    ↓ auth + tenant context
 controller
@@ -23,12 +25,14 @@ domain + infrastructure
 ```mermaid
 sequenceDiagram
     participant UI as React feature
-    participant CLIENT as Typed API client
+    participant FEATURE_API as Capability API contract
+    participant CLIENT as Shared HTTP client
     participant API as Backend API
     participant APP as Application use case
     participant DB as Module data
 
-    UI->>CLIENT: Command / query
+    UI->>FEATURE_API: Command / query
+    FEATURE_API->>CLIENT: Typed request
     CLIENT->>API: Authenticated request
     API->>API: Validate tenant + authorization
     API->>APP: Execute use case
@@ -36,13 +40,14 @@ sequenceDiagram
     DB-->>APP: Result
     APP-->>API: Contract result/error
     API-->>CLIENT: Versioned response
-    CLIENT-->>UI: View state
+    CLIENT-->>FEATURE_API: Typed response/error
+    FEATURE_API-->>UI: View model/state
 ```
 
 ## Consumer rules
 
-- Consume versioned API routes through `@emme/api-client` and
-  `@emme/contracts`.
+- Consume versioned API routes through capability adapters in `@emme/contracts`
+  backed by `@emme/api-client`.
 - Keep `@emme/contracts` independent of `@emme/api-client`: contracts define
   transport types, routes, and minimal HTTP ports; the API client implements
   HTTP execution, authentication headers, tenant context, and Problem Details.
@@ -66,9 +71,9 @@ sequenceDiagram
 ### API consumption
 
 - Keep OpenAPI/schema definitions with the backend contract owner.
-- Preserve the dependency direction: feature adapter → contracts/API client →
-  browser transport. The contracts package must never import the concrete API
-  client package.
+- Preserve the dependency direction: feature hook → capability contract →
+  shared API client → browser transport. The contracts package must never import
+  the concrete API client package.
 - Adapt transport types to feature view models where their lifecycles differ.
 - Detect breaking schema changes in CI before deployment.
 - Define maximum request/response sizes, pagination, timeout, and rate-limit behavior.

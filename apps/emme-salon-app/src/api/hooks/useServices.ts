@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
+import { createServiceApi, type Service as ContractService } from '@emme/contracts';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
-import { mapServiceApiResponse, serviceCode, type ServiceApiResponse } from './salonApiAdapters';
 
 export interface NailService {
   id: string;
@@ -22,16 +22,27 @@ interface ServiceListParams {
   category?: string;
 }
 
+const servicesContract = createServiceApi(api);
+
+function mapContractService(raw: ContractService): NailService {
+  return {
+    id: raw.id,
+    name: raw.name,
+    category: raw.category,
+    durationMinutes: raw.duration,
+    description: raw.description ?? null,
+    priceRange: String(raw.price),
+    isActive: raw.isActive,
+  };
+}
+
 const SERVICES_KEY = createResourceKey('services');
 
 const servicesResource = createQueryResource<ServiceListParams, ServiceListResponse, 'services'>({
   key: 'services',
   queryKey: (params) => [...SERVICES_KEY, 'list', params],
   queryFn: async (params) => ({
-    services: (await api.get<ServiceApiResponse[]>(
-      '/api/services',
-      params.category ? { category: params.category } : undefined,
-    )).map(mapServiceApiResponse),
+    services: (await servicesContract.list(params)).map(mapContractService),
   }),
 });
 
@@ -55,17 +66,13 @@ export function useCreateService() {
   const queryClient = useQueryClient();
   return useMutation(createMutationOptions({
     key: 'services',
-    mutationFn: (input: CreateServiceInput) => api.post<ServiceApiResponse>(
-      '/api/services',
-      {
-        code: serviceCode(input.name),
-        name: input.name,
-        category: input.category,
-        description: input.description,
-        durationMinutes: input.durationMinutes,
-        basePrice: Number(input.priceRange ?? 0),
-      },
-    ),
+    mutationFn: (input: CreateServiceInput) => servicesContract.create({
+      name: input.name,
+      category: input.category,
+      description: input.description,
+      duration: input.durationMinutes,
+      price: Number(input.priceRange ?? 0),
+    }),
   }, queryClient));
 }
 
@@ -73,16 +80,13 @@ export function useUpdateService() {
   const queryClient = useQueryClient();
   return useMutation(createMutationOptions({
     key: 'services',
-    mutationFn: ({ id, ...data }: UpdateServiceInput) => api.put<ServiceApiResponse>(
-      `/api/services/${id}`,
-      {
-        name: data.name,
-        category: data.category,
-        description: data.description,
-        durationMinutes: data.durationMinutes,
-        basePrice: Number(data.priceRange ?? 0),
-      },
-    ),
+    mutationFn: ({ id, ...data }: UpdateServiceInput) => servicesContract.update(id, {
+      name: data.name,
+      category: data.category,
+      description: data.description,
+      duration: data.durationMinutes,
+      price: Number(data.priceRange ?? 0),
+    }),
   }, queryClient));
 }
 

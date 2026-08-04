@@ -40,3 +40,14 @@
 - Prevention rule: verify the installed library's runtime exports before using
   convenience helpers, and make generic tests invoke the exact input captured
   by each resource factory.
+
+## 2026-08-03 — Avoid overloaded domain names in frontend transport
+
+- Failure mode: the first name for a path-scoped HTTP wrapper was
+  `DomainClient`, which blurred the distinction between a DDD domain model and
+  an HTTP resource boundary.
+- Detection signal: the name did not communicate whether it represented a
+  business domain, an external provider, or a transport helper.
+- Prevention rule: keep `HttpClient` as the shared transport and use existing
+  capability API adapters rather than introducing another scoped-client layer;
+  reserve `Provider` for replaceable external adapters.

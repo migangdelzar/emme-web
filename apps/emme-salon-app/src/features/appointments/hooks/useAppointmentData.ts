@@ -5,7 +5,8 @@ import {
   useCancelAppointmentRest,
 } from '@/api/hooks/useAppointments';
 import { useNailServicesRest } from '@/api/hooks/useServices';
-import { mapAppointmentView, mapNailServiceView } from '@/api/hooks/salonApiAdapters';
+import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
+import { mapNailServiceView } from '@/features/services/mappers/serviceViewMapper';
 import type { Appointment, Service } from '@/context/AppContext';
 
 interface AppointmentData {

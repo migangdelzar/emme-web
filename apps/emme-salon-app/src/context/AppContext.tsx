@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '@/api/restClient';
 import { provider } from '@/providers/DataProvider';
 import { useAuth } from '../auth/useAuth';
 import type { Service, Client, Appointment, AppointmentStatus, CreateService, CreateClient, CreateAppointment } from '@emme/contracts';
@@ -193,34 +192,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addService = async (s: Omit<Service, 'id' | 'isActive'>) => {
     try {
-      const result = await api.post<any>('/api/services', {
-        name: s.name, code: 'SVC-' + Date.now(), basePrice: s.price,
-        durationMinutes: s.duration, category: s.category, description: s.description || '',
-      });
-      setServices([...services, { ...s, id: result.id, isActive: true }]);
-    } catch (e) { console.error('addService API failed:', e); setServices([...services, { ...s, id: crypto.randomUUID(), isActive: true }]); }
+      const result = await provider.addService(s);
+      setServices((current) => [...current, result]);
+    } catch (e) {
+      console.error('addService API failed:', e);
+      setServices((current) => [...current, { ...s, id: crypto.randomUUID(), isActive: true }]);
+    }
   };
 
   const addClient = async (c: Omit<Client, 'id'>) => {
     try {
-      const result = await api.post<any>('/api/customers', {
-        name: c.name, email: c.email || c.name.replace(/\s/g,'').toLowerCase() + '@emme.app', phone: c.phone || '000-0000',
-      });
-      setClients([...clients, { ...c, id: result.id }]);
-    } catch (e) { console.error('addClient API failed:', e); setClients([...clients, { ...c, id: crypto.randomUUID() }]); }
+      const result = await provider.addClient(c);
+      setClients((current) => [...current, result]);
+    } catch (e) {
+      console.error('addClient API failed:', e);
+      setClients((current) => [...current, { ...c, id: crypto.randomUUID() }]);
+    }
   };
 
   const addAppointment = async (a: Omit<Appointment, 'id'>) => {
     try {
-      const startsAt = a.date + 'T' + a.startTime + ':00Z';
-      const endsAt = a.date + 'T' + a.endTime + ':00Z';
-      let artistId = (a as any).artistId;
-      if (!artistId) {
-        const artists = await api.get<any[]>('/api/artists');
-        if (artists?.length) artistId = artists[0].id;
-      }
-      await api.post('/api/appointments', { customerId: a.clientId, serviceId: a.serviceId, artistId, startsAt, endsAt });
-      setAppointments((prev) => [...prev, { ...a, id: crypto.randomUUID() }]);
+      const result = await provider.addAppointment(a);
+      setAppointments((current) => [...current, result]);
     } catch (e) { console.error('addAppointment API failed:', e); throw e; }
   };
 

@@ -17,6 +17,7 @@ export type AppointmentStatus =
 export interface Appointment {
   id: string;
   clientId: string; // maps to backend customerId
+  customerName?: string;
   serviceId: string;
   date: string; // ISO date: "2026-07-10"
   startTime: string; // HH:mm
@@ -26,14 +27,16 @@ export interface Appointment {
 }
 
 /** Input shape for creating an appointment (no id). */
-export type CreateAppointment = Omit<Appointment, "id">;
+export type CreateAppointment = Omit<Appointment, "id"> & {
+  artistId?: string;
+};
 
 export const APPOINTMENT_ROUTES = {
   APPOINTMENTS: "/api/appointments",
 } as const;
 
 export interface AppointmentApi {
-  list(): Promise<Appointment[]>;
+  list(params?: { date?: string }): Promise<Appointment[]>;
   create(data: CreateAppointment): Promise<Appointment>;
   getById(id: string): Promise<Appointment>;
   cancel(id: string): Promise<Appointment>;
@@ -57,6 +60,8 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
       COMPLETED: 'completed',
     };
 
+    const customerName = optionalStringField(raw, "customerName");
+
     return {
       id: stringField(raw, "id", "appointment"),
       clientId: firstStringField(raw, ["customerId", "clientId"]),
@@ -64,20 +69,25 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
       date: date || firstStringField(raw, ["date"]),
       startTime,
       endTime,
-      status: statusMap[firstStringField(raw, ["status"])] || 'pending',
+      status: statusMap[firstStringField(raw, ["status"]).toUpperCase()] || 'pending',
       notes: optionalStringField(raw, "notes"),
+      ...(customerName ? { customerName } : {}),
     };
   };
 
   return {
-    list: async () => {
-      const arr = await http.get<unknown>(API.APPOINTMENTS);
+    list: async (params) => {
+      const arr = await http.get<unknown>(
+        API.APPOINTMENTS,
+        params?.date ? { date: params.date } : undefined,
+      );
       return asRecordArray(arr, "appointment").map((item) => mapAppointment(item));
     },
     create: async (data) => {
       const body = {
         customerId: data.clientId,
         serviceId: data.serviceId,
+        artistId: data.artistId,
         startsAt: `${data.date}T${data.startTime}:00`,
         endsAt: `${data.date}T${data.endTime}:00`,
       };

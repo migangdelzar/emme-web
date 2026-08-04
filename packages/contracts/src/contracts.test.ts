@@ -50,12 +50,37 @@ describe('contract API adapters', () => {
 
     await expect(api.list()).rejects.toThrow('Invalid customer response: id must be a string');
   });
+
+  it('passes appointment list filters to the capability endpoint', async () => {
+    const http = new RecordingHttpClient([]);
+    const api = createAppointmentApi(http);
+
+    await api.list({ date: '2026-07-31' });
+
+    expect(http.calls).toEqual([{
+      method: 'GET',
+      path: '/api/appointments',
+      params: { date: '2026-07-31' },
+    }]);
+  });
+
+  it('exposes customer retirement as a typed capability operation', async () => {
+    const http = new RecordingHttpClient(undefined);
+    const api = createClientApi(http);
+
+    await api.retire('customer-1');
+
+    expect(http.calls).toEqual([{
+      method: 'POST',
+      path: '/api/customers/customer-1/retire',
+    }]);
+  });
 });
 
 class FakeHttpClient {
   public constructor(private readonly response: unknown) {}
 
-  get<T>(_path: string): Promise<T> {
+  get<T>(_path: string, _params?: Record<string, string>): Promise<T> {
     return Promise.resolve(this.response as T);
   }
 
@@ -73,5 +98,19 @@ class FakeHttpClient {
 
   delete<T>(_path: string): Promise<T> {
     return Promise.resolve(undefined as T);
+  }
+}
+
+class RecordingHttpClient extends FakeHttpClient {
+  public readonly calls: Array<Record<string, unknown>> = [];
+
+  override get<T>(path: string, params?: Record<string, string>): Promise<T> {
+    this.calls.push({ method: 'GET', path, ...(params ? { params } : {}) });
+    return super.get(path, params);
+  }
+
+  override post<T>(path: string, body?: unknown): Promise<T> {
+    this.calls.push({ method: 'POST', path, ...(body === undefined ? {} : { body }) });
+    return super.post(path, body);
   }
 }

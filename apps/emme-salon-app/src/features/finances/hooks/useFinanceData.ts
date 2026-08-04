@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useAppointmentsRest } from '@/api/hooks/useAppointments';
 import { useNailServicesRest } from '@/api/hooks/useServices';
-import { mapAppointmentView, mapNailServiceView } from '@/api/hooks/salonApiAdapters';
+import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
+import { mapNailServiceView } from '@/features/services/mappers/serviceViewMapper';
 
 export function useFinanceData() {
   const { data: aptData, isLoading: aptLoading, error: aptError } = useAppointmentsRest();

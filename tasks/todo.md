@@ -119,3 +119,33 @@ small Zustand store. Component-local transient state remains local React state.
 - [x] No new `any` is introduced in the refactored path.
 - [x] Typecheck, unit tests, lint, build, docs, and mock E2E pass.
 - [ ] Changes are committed and pushed on `feat/api-version-contract`.
+
+## FSD feature and capability API boundaries
+
+### Goal
+
+Keep shared HTTP behavior in `@emme/api-client`, capability adapters in
+`@emme/contracts`, and UI behavior in FSD feature hooks and components.
+
+### Decisions
+
+- [x] Keep `HttpClient` as the shared transport port.
+- [x] Use capability factories such as `createAppointmentApi` and
+      `createServiceApi` for endpoint ownership.
+- [x] Do not add a duplicate `domainClient` or scoped client layer when the
+      capability adapter already exists.
+- [x] Keep provider naming for replaceable external adapters, not browser API
+      wrappers.
+- [x] Keep endpoint contracts in `@emme/contracts` and feature-specific view
+      mapping in FSD feature hooks/adapters.
+
+### Acceptance criteria
+
+- [x] Appointments, customers, and services have canonical capability adapters.
+- [x] Migrate appointments, customers, and services feature hooks from raw
+      paths to those adapters.
+- [x] Shared auth, tenant, API-version, parsing, and error behavior remains in
+      the transport client.
+- [x] No salon-specific endpoint methods are added to `@emme/api-client`.
+- [x] FSD/API dependency direction is documented.
+- [ ] Full verification and push are complete.

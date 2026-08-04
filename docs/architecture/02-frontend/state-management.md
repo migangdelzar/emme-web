@@ -38,20 +38,22 @@ Feature hooks retain their domain-specific request and response types while
 sharing the lifecycle wiring through `src/api/queryFactory.ts`.
 
 ```ts
+const appointmentsContract = createAppointmentApi(http);
+
 const appointmentsResource = createQueryResource<
-  AppointmentListParams,
-  AppointmentListResponse,
+  undefined,
+  Appointment[],
   'appointments'
 >({
   key: 'appointments',
-  queryKey: (params) => ['appointments', 'list', params],
-  queryFn: (params) => appointmentsApi.list(params),
+  queryKey: () => ['appointments', 'list'],
+  queryFn: () => appointmentsContract.list(),
 });
 
 const createAppointment = createMutationOptions(
   {
     key: 'appointments',
-    mutationFn: (input: CreateAppointmentInput) => appointmentsApi.create(input),
+    mutationFn: (input: CreateAppointment) => appointmentsContract.create(input),
   },
   queryClient,
 );
@@ -61,7 +63,7 @@ The template standardizes:
 
 - stable resource keys;
 - typed query parameters, responses, and mutation variables;
-- feature-owned endpoint mapping;
+- capability-contract and feature-owned view mapping;
 - invalidation of the affected resource after a successful mutation;
 - propagation of API errors to the consuming feature.
 

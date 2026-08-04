@@ -30,7 +30,7 @@ export const SERVICE_ROUTES = {
 } as const;
 
 export interface ServiceApi {
-  list(): Promise<Service[]>;
+  list(params?: { category?: string }): Promise<Service[]>;
   create(data: CreateService): Promise<Service>;
   getById(id: string): Promise<Service>;
   update(id: string, data: Partial<Service>): Promise<Service>;
@@ -52,8 +52,11 @@ export function createServiceApi(http: HttpClient): ServiceApi {
   };
 
   return {
-    list: async () => {
-      const arr = await http.get<unknown>(API.SERVICES);
+    list: async (params) => {
+      const arr = await http.get<unknown>(
+        API.SERVICES,
+        params?.category ? { category: params.category } : undefined,
+      );
       return asRecordArray(arr, "service").map((item) => mapService(item));
     },
     create: async (data) => {

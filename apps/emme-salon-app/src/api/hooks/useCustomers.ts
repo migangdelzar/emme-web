@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
+import { createClientApi, type Client as ContractClient } from '@emme/contracts';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
-import { mapCustomerApiResponse, type CustomerApiResponse } from './salonApiAdapters';
 
 export interface Customer {
   id: string;
@@ -20,14 +20,19 @@ interface CustomerListResponse {
   customers: Customer[];
 }
 
+const customersContract = createClientApi(api);
+
+function mapContractCustomer(raw: ContractClient): Customer {
+  return raw;
+}
+
 const CUSTOMERS_KEY = createResourceKey('customers');
 
 const customersResource = createQueryResource<undefined, CustomerListResponse, 'customers'>({
   key: 'customers',
   queryKey: () => [...CUSTOMERS_KEY, 'list'],
   queryFn: async () => ({
-    customers: (await api.get<CustomerApiResponse[]>('/api/customers'))
-      .map(mapCustomerApiResponse),
+    customers: (await customersContract.list()).map(mapContractCustomer),
   }),
 });
 
@@ -55,7 +60,7 @@ export function useCreateCustomer() {
   return useMutation(createMutationOptions({
     key: 'customers',
     mutationFn: (input: CreateCustomerInput) =>
-      api.post<Customer>('/api/customers', input),
+      customersContract.create({ ...input, phone: input.phone ?? '' }),
   }, queryClient));
 }
 
@@ -64,7 +69,7 @@ export function useUpdateCustomer() {
   return useMutation(createMutationOptions({
     key: 'customers',
     mutationFn: ({ id, ...data }: UpdateCustomerInput) =>
-      api.put<Customer>(`/api/customers/${id}`, data),
+      customersContract.update(id, data),
   }, queryClient));
 }
 
@@ -72,6 +77,6 @@ export function useDeleteCustomer() {
   const queryClient = useQueryClient();
   return useMutation(createMutationOptions({
     key: 'customers',
-    mutationFn: (id: string) => api.post(`/api/customers/${id}/retire`),
+    mutationFn: (id: string) => customersContract.retire(id),
   }, queryClient));
 }
