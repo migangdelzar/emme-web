@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { cacheService } from '@/services/cacheService';
 import { api } from '@/api/restClient';
 import { provider } from '@/providers/DataProvider';
 import { useAuth } from '../auth/useAuth';
@@ -71,8 +70,6 @@ interface AppContextType {
   clients: Client[];
   appointments: Appointment[];
   profile: BusinessProfile;
-  isFirstTime: boolean;
-  completeOnboarding: () => void;
   addService: (s: Omit<Service, 'id'>) => void;
   addClient: (c: Omit<Client, 'id'>) => void;
   addAppointment: (a: Omit<Appointment, 'id'>) => void;
@@ -187,24 +184,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return DEFAULT_PROFILE;
   });
 
-  const [isFirstTime, setIsFirstTime] = useState<boolean>(() => {
-    const cached = cacheService.get<boolean>('isFirstTime');
-    return cached === null ? true : cached;
-  });
-
-
-
   useEffect(() => {
     if (status !== 'ready') return;
     provider.loadServices().then(s => { if (s.length > 0) setServices(s); }).catch(() => {});
     provider.loadClients().then(c => { if (c.length > 0) setClients(c); }).catch(() => {});
     provider.loadAppointments().then(a => { if (a.length > 0) setAppointments(a); }).catch(() => {});
   }, [status]);
-
-  const completeOnboarding = () => {
-    setIsFirstTime(false);
-    cacheService.set('isFirstTime', false);
-  };
 
   const addService = async (s: Omit<Service, 'id' | 'isActive'>) => {
     try {
@@ -278,8 +263,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         clients,
         appointments,
         profile,
-        isFirstTime,
-        completeOnboarding,
         addService,
         addClient,
         addAppointment,

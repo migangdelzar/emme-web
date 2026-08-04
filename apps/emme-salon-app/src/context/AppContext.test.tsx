@@ -4,15 +4,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AppProvider, useApp } from './AppContext';
 import { AuthContext, type AuthContextValue } from '@/auth/useAuth';
 
-vi.mock('@/services/cacheService', () => ({
-  cacheService: {
-    get: vi.fn(() => null),
-    set: vi.fn(),
-    remove: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 const authContext: AuthContextValue = {
   status: 'signedOut',
   user: null,
@@ -44,7 +35,6 @@ describe('AppContext', () => {
 
     // Assuming tests run with mock, the initial setup should not crash
     expect(result.current.services).toHaveLength(0);
-    expect(result.current.isFirstTime).toBe(true);
   });
 
 });

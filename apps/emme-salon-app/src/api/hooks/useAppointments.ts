@@ -1,5 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
+import {
+  createMutationOptions,
+  createQueryResource,
+  createResourceKey,
+} from '@/api/queryFactory';
 import { mapAppointmentApiResponse, type AppointmentApiResponse } from './salonApiAdapters';
 
 export interface Appointment {
@@ -17,6 +22,10 @@ interface AppointmentListResponse {
   appointments: Appointment[];
 }
 
+interface AppointmentListParams {
+  date?: string;
+}
+
 export interface CreateAppointmentInput {
   clientId?: string;
   serviceId?: string;
@@ -25,21 +34,27 @@ export interface CreateAppointmentInput {
   endTime: string;
 }
 
-export function useAppointmentsRest(date?: string) {
-  return useQuery<AppointmentListResponse>({
-    queryKey: ['appointments', { date }],
-    queryFn: async () => ({
+const APPOINTMENTS_KEY = createResourceKey('appointments');
+
+const appointmentsResource = createQueryResource<AppointmentListParams, AppointmentListResponse, 'appointments'>({
+  key: 'appointments',
+  queryKey: (params) => [...APPOINTMENTS_KEY, 'list', params],
+  queryFn: async (params) => ({
       appointments: (await api.get<AppointmentApiResponse[]>(
         '/api/appointments',
-        date ? { date } : undefined,
+        params.date ? { date: params.date } : undefined,
       )).map(mapAppointmentApiResponse),
     }),
-  });
+});
+
+export function useAppointmentsRest(date?: string) {
+  return useQuery(appointmentsResource.listOptions({ date }));
 }
 
 export function useCreateAppointmentRest() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation(createMutationOptions({
+    key: 'appointments',
     mutationFn: (input: CreateAppointmentInput) => api.post<AppointmentApiResponse>(
       '/api/appointments',
       {
@@ -50,19 +65,14 @@ export function useCreateAppointmentRest() {
         endsAt: input.endTime,
       },
     ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-    },
-  });
+  }, queryClient));
 }
 
 export function useCancelAppointmentRest() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation(createMutationOptions({
+    key: 'appointments',
     mutationFn: (id: string) =>
       api.post(`/api/appointments/${id}/cancel`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-    },
-  });
+  }, queryClient));
 }

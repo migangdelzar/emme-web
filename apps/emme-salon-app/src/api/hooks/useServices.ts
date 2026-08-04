@@ -1,5 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
+import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
 import { mapServiceApiResponse, serviceCode, type ServiceApiResponse } from './salonApiAdapters';
 
 export interface NailService {
@@ -17,6 +18,23 @@ interface ServiceListResponse {
   services: NailService[];
 }
 
+interface ServiceListParams {
+  category?: string;
+}
+
+const SERVICES_KEY = createResourceKey('services');
+
+const servicesResource = createQueryResource<ServiceListParams, ServiceListResponse, 'services'>({
+  key: 'services',
+  queryKey: (params) => [...SERVICES_KEY, 'list', params],
+  queryFn: async (params) => ({
+    services: (await api.get<ServiceApiResponse[]>(
+      '/api/services',
+      params.category ? { category: params.category } : undefined,
+    )).map(mapServiceApiResponse),
+  }),
+});
+
 export interface CreateServiceInput {
   name: string;
   category: string;
@@ -30,20 +48,13 @@ export interface UpdateServiceInput extends CreateServiceInput {
 }
 
 export function useNailServicesRest(category?: string) {
-  return useQuery<ServiceListResponse>({
-    queryKey: ['services', { category }],
-    queryFn: async () => ({
-      services: (await api.get<ServiceApiResponse[]>(
-        '/api/services',
-        category ? { category } : undefined,
-      )).map(mapServiceApiResponse),
-    }),
-  });
+  return useQuery(servicesResource.listOptions({ category }));
 }
 
 export function useCreateService() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation(createMutationOptions({
+    key: 'services',
     mutationFn: (input: CreateServiceInput) => api.post<ServiceApiResponse>(
       '/api/services',
       {
@@ -55,15 +66,13 @@ export function useCreateService() {
         basePrice: Number(input.priceRange ?? 0),
       },
     ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-  });
+  }, queryClient));
 }
 
 export function useUpdateService() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation(createMutationOptions({
+    key: 'services',
     mutationFn: ({ id, ...data }: UpdateServiceInput) => api.put<ServiceApiResponse>(
       `/api/services/${id}`,
       {
@@ -74,18 +83,13 @@ export function useUpdateService() {
         basePrice: Number(data.priceRange ?? 0),
       },
     ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-  });
+  }, queryClient));
 }
 
 export function useDeleteService() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation(createMutationOptions({
+    key: 'services',
     mutationFn: (id: string) => api.post(`/api/services/${id}/retire`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-    },
-  });
+  }, queryClient));
 }

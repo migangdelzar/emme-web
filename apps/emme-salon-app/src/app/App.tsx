@@ -4,6 +4,7 @@ import { Sidebar, MobileNav } from '@/shared/layout/Navigation';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '@/context/AppContext';
+import { useUiStore } from '@/stores/uiStore';
 import { useAuth } from '@/auth/useAuth';
 import { Toaster } from '@/shared/ui/sonner';
 import { TooltipProvider } from '@/shared/ui/tooltip';
@@ -32,7 +33,8 @@ function PageLoader() {
 }
 
 function AppContent() {
-  const { isFirstTime, profile } = useApp();
+  const { profile } = useApp();
+  const isFirstTime = useUiStore((state) => state.isFirstTime);
   const { status, tenant } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname.split('/')[1] || 'dashboard';

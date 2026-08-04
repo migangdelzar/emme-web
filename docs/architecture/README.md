@@ -26,7 +26,7 @@ breaking contract requires a coordinated compatibility window and migration.
 | Area | Contents |
 |---|---|
 | [00 — Project](00-project/architecture-model.md) | Frontend lens, Bun workspace, and documentation ownership |
-| [02 — Frontend](02-frontend/app.md) | App shell, modules, features, React, Vite, testing |
+| [02 — Frontend](02-frontend/app.md) | App shell, modules, features, React, Vite, state, testing |
 | [03 — Integration](03-integration/frontend-backend.md) | Typed HTTP boundary, contract consumption, E2E topology, compatibility |
 | [04 — Delivery](04-delivery/container.md) | Web image, CI, and release promotion |
 | [05 — Operations](05-operations/production-readiness.md) | Browser reliability, telemetry, and approval evidence |

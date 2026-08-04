@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { useApp } from '@/context/AppContext';
+import { useUiStore } from '@/stores/uiStore';
 
 const steps = [
   {
@@ -58,9 +58,10 @@ const steps = [
 ];
 
 export function Onboarding() {
-  const { completeOnboarding } = useApp();
+  const dispatch = useUiStore((state) => state.dispatch);
   const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
+  const completeOnboarding = () => dispatch({ type: 'completeOnboarding' });
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {

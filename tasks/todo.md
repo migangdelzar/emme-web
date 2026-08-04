@@ -88,3 +88,34 @@ bun run docs:check
 bun run --filter @emme/e2e test
 rg -n '/api/v1' --glob '!node_modules/**' --glob '!dist/**' --glob '!test-results/**' .
 ```
+
+## Typed data and client-state architecture
+
+### Goal
+
+Reduce repeated frontend query/mutation wiring with typed generic factories,
+keep remote data in TanStack Query, and move cross-feature client/UI state to a
+small Zustand store. Component-local transient state remains local React state.
+
+### Decisions
+
+- [x] Use a generic `createQueryResource` template for query keys, list
+      queries, mutations, invalidation, and response mapping.
+- [x] Preserve feature-specific input/output types and endpoint mapping at the
+      feature boundary; generics must not erase domain meaning.
+- [x] Use Zustand for shared client state and reducer-style action methods.
+- [x] Do not add Redux: this application has no requirement for Redux middleware,
+      time-travel debugging, or a large cross-team event bus.
+- [x] Do not move server data into Zustand; TanStack Query remains the source of
+      truth for remote data, caching, retries, and invalidation.
+
+### Acceptance criteria
+
+- [x] Generic query/mutation infrastructure has unit tests for keys, mapping,
+      invalidation, and error propagation.
+- [x] Customers, services, and appointments use the generic infrastructure.
+- [x] Shared UI state has a typed Zustand store with reducer-like actions.
+- [x] Existing feature behavior and E2E flows remain unchanged.
+- [x] No new `any` is introduced in the refactored path.
+- [x] Typecheck, unit tests, lint, build, docs, and mock E2E pass.
+- [ ] Changes are committed and pushed on `feat/api-version-contract`.

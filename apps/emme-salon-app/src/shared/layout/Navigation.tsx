@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Calendar,
   Users,
@@ -18,6 +17,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { els } from '@emme/i18n';
+import { useUiStore } from '@/stores/uiStore';
 
 interface NavProps {
   activeTab: string;
@@ -125,7 +125,9 @@ export function Sidebar({ activeTab }: NavProps) {
 export function MobileNav({ activeTab }: NavProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const isOpen = useUiStore((state) => state.sidebarOpen);
+  const dispatch = useUiStore((state) => state.dispatch);
+  const setIsOpen = (open: boolean) => dispatch({ type: 'setSidebarOpen', open });
 
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard') },

@@ -33,13 +33,16 @@ flowchart TB
 
 ## State ownership
 
+See the detailed [Frontend State Management](state-management.md) decision for
+TanStack Query, router state, Zustand reducer slices, and local React state.
+
 | State | Owner |
 |---|---|
 | Route/query parameters | Router/app shell |
 | Auth/session | App shell/session module |
-| Server cache | Data-access layer |
+| Server cache and mutation lifecycle | TanStack Query |
 | Form draft | Feature/form component |
-| Cross-feature preference | Explicit shared store |
+| Cross-feature preference or client workflow | Zustand reducer-style slice |
 | Pure business calculation | Feature/domain function |
 
 ## Component and data guardrails

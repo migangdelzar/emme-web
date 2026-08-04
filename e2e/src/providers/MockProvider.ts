@@ -142,6 +142,7 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
         localStorage.setItem('access_token', 'test-token');
         localStorage.setItem('emmenails_profile', JSON.stringify(profile));
         localStorage.setItem('emmenails_cache_isFirstTime', JSON.stringify({ data: false, timestamp: Date.now(), version: '1.0.1' }));
+        localStorage.setItem('emme-ui-state', JSON.stringify({ state: { isFirstTime: false }, version: 0 }));
       }, { auth: true, userData: user });
     }
   }

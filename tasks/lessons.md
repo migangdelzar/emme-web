@@ -28,3 +28,15 @@
   page, and the failed request was a JavaScript module rather than an API call.
 - Prevention rule: constrain browser mock routes to URLs whose path begins at
   the host root (`/api/`), and keep a smoke test that proves the app boots.
+
+## 2026-08-03 — Verify library exports and generic test inputs
+
+- Failure mode: the first generic mutation implementation imported a
+  `mutationOptions` helper that is not exported by the installed TanStack Query
+  version, and the first query test invoked a parameterized query with unrelated
+  arguments.
+- Detection signal: the focused test failed at runtime before exercising the
+  mutation, followed by a query assertion that received the wrong parameters.
+- Prevention rule: verify the installed library's runtime exports before using
+  convenience helpers, and make generic tests invoke the exact input captured
+  by each resource factory.
