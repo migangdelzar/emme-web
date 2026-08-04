@@ -50,10 +50,12 @@ deployment targets with Compose as the default.
 
 - [ ] Add red contract coverage for mode selection, real-only recording, and
       deployment inputs.
-- [ ] Refactor provider fixture lifecycle to remove shared global state.
+- [x] Refactor provider fixture lifecycle to remove shared global state; every
+      MockProvider now owns an isolated in-memory database.
 - [x] Implement the unified frontend workflow and deployment target contract.
 - [x] Update CI and E2E architecture documentation.
 - [x] Run workflow contracts, YAML formatting, and focused workflow tests.
+- [x] Add and run a focused mock-provider isolation contract test.
 - [ ] Run the complete mock E2E, typecheck, lint, build, and docs matrix after
       the workflow consolidation.
 - [ ] Run service-side backend E2E against a provisioned runtime when available.

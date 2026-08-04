@@ -9,13 +9,24 @@ import { LoginPage } from '../pages/LoginPage';
 const MODE = process.env.E2E_MODE || 'mock';
 
 const DEFAULT_SEED: SeedData = {
-  services: [{
-    id: 'svc-default', name: 'Manicure Clásica', price: 350, duration: 45,
-    category: 'Manicura', isActive: true,
-  }],
-  customers: [{
-    id: 'cust-default', name: 'Cliente Demo', phone: '555-0000', email: 'demo@emme.app',
-  }],
+  services: [
+    {
+      id: 'svc-default',
+      name: 'Manicure Clásica',
+      price: 350,
+      duration: 45,
+      category: 'Manicura',
+      isActive: true,
+    },
+  ],
+  customers: [
+    {
+      id: 'cust-default',
+      name: 'Cliente Demo',
+      phone: '555-0000',
+      email: 'demo@emme.app',
+    },
+  ],
 };
 
 /**
@@ -42,7 +53,9 @@ interface Fixtures {
 function requiredRealEnvironment(name: string): string {
   const value = process.env[name]?.trim();
   if (!value) {
-    throw new Error(`Real E2E requires ${name} to be configured; refusing to use an implicit environment.`);
+    throw new Error(
+      `Real E2E requires ${name} to be configured; refusing to use an implicit environment.`
+    );
   }
   return value;
 }
@@ -54,7 +67,10 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   const password = requiredRealEnvironment('E2E_KEYCLOAK_PASSWORD');
 
   await page.addInitScript(() => {
-    localStorage.setItem('emme-ui-state', JSON.stringify({ state: { isFirstTime: false }, version: 0 }));
+    localStorage.setItem(
+      'emme-ui-state',
+      JSON.stringify({ state: { isFirstTime: false }, version: 0 })
+    );
   });
   await page.goto(baseUrl);
   const login = new LoginPage(page);
@@ -71,40 +87,56 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
 }
 
 export const test = base.extend<Fixtures>({
-  testUser: [async ({}, use) => {
-    const user = acquireUser();
-    await use(user);
-    releaseUser(user.userId);
-  }, { scope: 'test' }],
+  testUser: [
+    async ({}, use) => {
+      const user = acquireUser();
+      await use(user);
+      releaseUser(user.userId);
+    },
+    { scope: 'test' },
+  ],
 
-  provider: [async ({ page, testUser }, use) => {
-    let provider: ApiProvider;
+  provider: [
+    async ({ page, testUser }, use) => {
+      let provider: ApiProvider;
 
-    if (MODE === 'mock') {
-      const mockProvider = new MockProvider();
-      await mockProvider.setup(page, testUser);
-      await mockProvider.seed(DEFAULT_SEED);
-      provider = mockProvider;
-    } else {
-      provider = await realLogin(page, testUser);
-    }
+      if (MODE === 'mock') {
+        const mockProvider = new MockProvider();
+        await mockProvider.setup(page, testUser);
+        await mockProvider.seed(DEFAULT_SEED);
+        provider = mockProvider;
+      } else {
+        provider = await realLogin(page, testUser);
+      }
 
-    try {
-      await use(provider);
-    } finally {
-      await provider.teardown();
-    }
-  }, { scope: 'test' }],
+      try {
+        await use(provider);
+      } finally {
+        await provider.teardown();
+      }
+    },
+    { scope: 'test' },
+  ],
 
-  unauthenticatedPage: [async ({ page }, use) => {
-    const provider = new MockProvider();
-    await provider.setup(page, undefined);
-    await use(page);
-  }, { scope: 'test' }],
+  unauthenticatedPage: [
+    async ({ page }, use) => {
+      const provider = new MockProvider();
+      await provider.setup(page, undefined);
+      try {
+        await use(page);
+      } finally {
+        await provider.teardown();
+      }
+    },
+    { scope: 'test' },
+  ],
 
-  authenticatedPage: [async ({ page, provider: _provider }, use) => {
-    await use(page);
-  }, { scope: 'test' }],
+  authenticatedPage: [
+    async ({ page, provider: _provider }, use) => {
+      await use(page);
+    },
+    { scope: 'test' },
+  ],
 });
 
 export { expect } from '@playwright/test';
