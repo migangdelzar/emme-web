@@ -67,12 +67,20 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { Badge } from '@/shared/ui/badge';
 import { ClientForm } from '@/features/clients/components/ClientForm';
 import { cn, parseLocalDate } from '@/shared/lib/utils';
+import { useAppTranslation } from '@/app/translation';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export function Clients() {
-  const { loading: clientsLoading, clients, addClient, updateClient, deleteClient } = useClientData();
+  const {
+    loading: clientsLoading,
+    clients,
+    addClient,
+    updateClient,
+    deleteClient,
+  } = useClientData();
   const { appointments, services } = useApp();
+  const { t } = useAppTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -105,7 +113,7 @@ export function Clients() {
 
   const handleDeleteClient = (id: string) => {
     deleteClient(id);
-    toast.success('Registro de clienta eliminado');
+    toast.success(t('clients.deleted'));
     setDeleteConfirmId(null);
   };
 
@@ -205,17 +213,17 @@ export function Clients() {
 
     const handleUpdate = () => {
       if (!editName.trim()) {
-        toast.error('El nombre es obligatorio');
+        toast.error(t('clients.nameRequired'));
         return;
       }
       if (!editPhone.trim()) {
-        toast.error('El teléfono es obligatorio');
+        toast.error(t('clients.phoneRequired'));
         return;
       }
 
       const phoneDigits = editPhone.replace(/\D/g, '');
       if (phoneDigits.length < 10) {
-        toast.error('El teléfono debe tener al menos 10 dígitos');
+        toast.error(t('clients.phoneInvalid'));
         return;
       }
 
@@ -230,7 +238,7 @@ export function Clients() {
         preferences: editPreferences,
         isVip: editIsVip,
       });
-      toast.success('Perfil actualizado correctamente');
+      toast.success(t('clients.updated'));
       setIsEditing(false);
       setSelectedClient({
         ...client,
@@ -248,7 +256,7 @@ export function Clients() {
     return (
       <Dialog open={!!selectedClient} onOpenChange={(open) => !open && setSelectedClient(null)}>
         <DialogContent className="max-w-xl md:max-w-4xl lg:max-w-[1100px] h-[95vh] sm:h-[85vh] p-0 overflow-hidden bg-background border-none shadow-2xl rounded-[40px] flex flex-col focus:outline-none">
-          <DialogTitle className="sr-only">Detalles de Clienta</DialogTitle>
+          <DialogTitle className="sr-only">{t('clients.detailsTitle')}</DialogTitle>
           {/* Custom Header Navigation */}
           <div className="px-8 pt-8 pb-4 flex items-center justify-between shrink-0 z-10 transition-all">
             <Button
@@ -636,15 +644,15 @@ export function Clients() {
                       {stats.appointments.length > 0 ? (
                         stats.appointments.slice(0, historyLimit).map((apt: any) => {
                           const service = services.find((s) => s.id === apt.serviceId);
-  if (clientsLoading) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
-        <Loader2 className="size-8 animate-spin text-primary opacity-50" />
-      </div>
-    );
-  }
+                          if (clientsLoading) {
+                            return (
+                              <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
+                                <Loader2 className="size-8 animate-spin text-primary opacity-50" />
+                              </div>
+                            );
+                          }
 
-  return (
+                          return (
                             <div
                               key={apt.id}
                               className="bg-card p-8 rounded-[40px] border border-border flex items-center justify-between group transition-all duration-500 hover:shadow-2xl hover:shadow-black/5 hover:-translate-y-1"
@@ -725,8 +733,11 @@ export function Clients() {
       </div>
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent data-testid={els.clients.dialog.testId} className="max-w-xl md:max-w-2xl lg:max-w-3xl material-thick border-none shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] p-0 overflow-hidden outline-none rounded-[32px] h-[95vh] sm:h-[85vh] flex flex-col focus:outline-none">
-          <DialogTitle className="sr-only">Registrar Nueva Clienta</DialogTitle>
+        <DialogContent
+          data-testid={els.clients.dialog.testId}
+          className="max-w-xl md:max-w-2xl lg:max-w-3xl material-thick border-none shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] p-0 overflow-hidden outline-none rounded-[32px] h-[95vh] sm:h-[85vh] flex flex-col focus:outline-none"
+        >
+          <DialogTitle className="sr-only">{t('clients.newTitle')}</DialogTitle>
           <ClientForm onSuccess={() => setIsAddOpen(false)} onCancel={() => setIsAddOpen(false)} />
         </DialogContent>
       </Dialog>
@@ -737,7 +748,7 @@ export function Clients() {
           data-testid={els.clients.search.testId}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rastreo por nombre o móvil..."
+          placeholder={t('clients.searchPlaceholder')}
           className="h-14 pl-14 pr-10 bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-all text-base font-medium focus:ring-8 focus:ring-primary/5 focus:border-primary/10 placeholder:text-muted-foreground/30 !text-foreground"
         />
         {search && (
@@ -837,7 +848,10 @@ export function Clients() {
             ))}
           </div>
         ) : filteredClients.length === 0 ? (
-          <div data-testid={els.clients.empty.testId} className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4">
+          <div
+            data-testid={els.clients.empty.testId}
+            className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4"
+          >
             <div className="size-24 rounded-3xl mx-auto flex items-center justify-center mb-6 bg-card shadow-sm border border-border">
               <Search className="size-8 text-muted-foreground/20" />
             </div>

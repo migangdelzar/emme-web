@@ -8,12 +8,7 @@ type CacheKey =
   | 'isGoogleAutoSync'
   | 'isGoogleSheetsAutoExport';
 
-const BUSINESS_SOURCE_KEYS = new Set<CacheKey>([
-  'services',
-  'clients',
-  'appointments',
-  'profile',
-]);
+const BUSINESS_SOURCE_KEYS = new Set<CacheKey>(['services', 'clients', 'appointments', 'profile']);
 
 interface CacheData<T> {
   data: T;

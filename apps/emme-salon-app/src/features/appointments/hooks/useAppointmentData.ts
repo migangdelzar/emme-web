@@ -33,13 +33,10 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
 
   const appointments = useMemo(
     () => (aptData?.appointments || []).map(mapAppointmentView),
-    [aptData],
+    [aptData]
   );
 
-  const services = useMemo(
-    () => (svcData?.services || []).map(mapNailServiceView),
-    [svcData],
-  );
+  const services = useMemo(() => (svcData?.services || []).map(mapNailServiceView), [svcData]);
 
   const createAppointment = useCallback(
     async (input: {
@@ -60,14 +57,14 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
         endTime: endDateTime,
       });
     },
-    [createMutation],
+    [createMutation]
   );
 
   const cancelAppointment = useCallback(
     async (appointmentId: string) => {
       await cancelMutation.mutateAsync(appointmentId);
     },
-    [cancelMutation],
+    [cancelMutation]
   );
 
   const error = aptError?.message || svcError?.message || null;

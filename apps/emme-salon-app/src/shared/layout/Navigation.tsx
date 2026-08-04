@@ -14,10 +14,10 @@ import {
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import { useUiStore } from '@/stores/uiStore';
+import { useAppTranslation } from '@/app/translation';
 
 interface NavProps {
   activeTab: string;
@@ -25,18 +25,21 @@ interface NavProps {
 
 export function Sidebar({ activeTab }: NavProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const menuItems = [
-    { id: 'dashboard', label: t('dashboard'), icon: LayoutDashboard },
-    { id: 'agenda', label: t('appointments'), icon: Calendar },
-    { id: 'finances', label: t('finances'), icon: BarChart3 },
-    { id: 'clients', label: t('clients'), icon: Users },
-    { id: 'services', label: t('services'), icon: ClipboardList },
-    { id: 'settings', label: t('settings'), icon: Settings },
+    { id: 'dashboard', label: t('common.dashboard'), icon: LayoutDashboard },
+    { id: 'agenda', label: t('common.appointments'), icon: Calendar },
+    { id: 'finances', label: t('common.finances'), icon: BarChart3 },
+    { id: 'clients', label: t('common.clients'), icon: Users },
+    { id: 'services', label: t('common.services'), icon: ClipboardList },
+    { id: 'settings', label: t('common.settings'), icon: Settings },
   ];
 
   return (
-    <aside data-testid={els.sidebar.container.testId} className="w-[18rem] xl:w-80 h-screen border-r border-border flex flex-col sticky top-0 hidden lg:flex z-50 px-5 xl:px-10 py-8 xl:py-16 bg-background overflow-y-auto custom-scrollbar shrink-0">
+    <aside
+      data-testid={els.sidebar.container.testId}
+      className="w-[18rem] xl:w-80 h-screen border-r border-border flex flex-col sticky top-0 hidden lg:flex z-50 px-5 xl:px-10 py-8 xl:py-16 bg-background overflow-y-auto custom-scrollbar shrink-0"
+    >
       <div className="mb-10 xl:mb-16 flex items-center justify-between px-2">
         <button
           type="button"
@@ -105,14 +108,14 @@ export function Sidebar({ activeTab }: NavProps) {
             </div>
             <div className="space-y-1">
               <p className="text-[15px] font-semibold text-foreground tracking-tight">
-                Social Connect
+                {t('common.socialConnect')}
               </p>
               <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-none">
                 @emmenails.atelier
               </p>
             </div>
             <Button className="h-12 rounded-2xl bg-foreground text-background text-[13px] font-semibold tracking-tight w-full hover:bg-primary hover:text-primary-foreground transition-all shadow-sm active:scale-95">
-              Copiar Perfil
+              {t('common.copyProfile')}
             </Button>
           </div>
           <div className="absolute -bottom-10 -right-10 size-40 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
@@ -124,18 +127,18 @@ export function Sidebar({ activeTab }: NavProps) {
 
 export function MobileNav({ activeTab }: NavProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const isOpen = useUiStore((state) => state.sidebarOpen);
   const dispatch = useUiStore((state) => state.dispatch);
   const setIsOpen = (open: boolean) => dispatch({ type: 'setSidebarOpen', open });
 
   const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard') },
-    { id: 'agenda', icon: Calendar, label: t('appointments') },
-    { id: 'services', icon: ClipboardList, label: t('services') },
-    { id: 'finances', icon: BarChart3, label: t('finances') },
-    { id: 'clients', icon: Users, label: t('clients') },
-    { id: 'settings', icon: Settings, label: t('settings') },
+    { id: 'dashboard', icon: LayoutDashboard, label: t('common.dashboard') },
+    { id: 'agenda', icon: Calendar, label: t('common.appointments') },
+    { id: 'services', icon: ClipboardList, label: t('common.services') },
+    { id: 'finances', icon: BarChart3, label: t('common.finances') },
+    { id: 'clients', icon: Users, label: t('common.clients') },
+    { id: 'settings', icon: Settings, label: t('common.settings') },
   ];
 
   return (
@@ -179,21 +182,36 @@ export function MobileNav({ activeTab }: NavProps) {
             >
               <div className="px-5 py-4 mb-1">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/30">
-                  Acciones Directas
+                  {t('common.directActions')}
                 </p>
               </div>
               {[
-                { label: 'Nueva Cita', icon: Calendar, color: 'bg-primary' },
-                { label: 'Añadir Cliente', icon: UserPlus, color: 'bg-foreground' },
-                { label: 'Registrar Servicio', icon: ClipboardList, color: 'bg-foreground' },
+                {
+                  id: 'appointment',
+                  label: t('common.newAppointment'),
+                  icon: Calendar,
+                  color: 'bg-primary',
+                },
+                {
+                  id: 'client',
+                  label: t('common.addClient'),
+                  icon: UserPlus,
+                  color: 'bg-foreground',
+                },
+                {
+                  id: 'service',
+                  label: t('common.registerService'),
+                  icon: ClipboardList,
+                  color: 'bg-foreground',
+                },
               ].map((action, i) => (
                 <button
                   key={i}
                   onClick={() => {
                     setIsOpen(false);
-                    if (action.label === 'Nueva Cita') navigate('/agenda?add=true');
-                    else if (action.label === 'Añadir Cliente') navigate('/clients?add=true');
-                    else if (action.label === 'Registrar Servicio') navigate('/services?add=true');
+                    if (action.id === 'appointment') navigate('/agenda?add=true');
+                    else if (action.id === 'client') navigate('/clients?add=true');
+                    else if (action.id === 'service') navigate('/services?add=true');
                   }}
                   className="w-full h-14 px-4 rounded-[1.25rem] hover:bg-black/5 dark:hover:bg-white/5 active:bg-black/10 flex items-center gap-4 transition-all group"
                 >

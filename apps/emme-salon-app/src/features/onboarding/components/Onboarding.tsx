@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { els } from '@emme/i18n';
-import { useTranslation } from 'react-i18next';
+import type { TranslationKey } from '@emme/i18n';
 import {
   Sparkles,
   Calendar,
@@ -13,44 +13,47 @@ import {
 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { useUiStore } from '@/stores/uiStore';
+import { useAppTranslation } from '@/app/translation';
 
-const steps = [
+type OnboardingStep = {
+  titleKey: TranslationKey;
+  descriptionKey: TranslationKey;
+  icon: React.ReactNode;
+  image: string;
+};
+
+const steps: readonly OnboardingStep[] = [
   {
-    title: '¡Bienvenida a EmmeNails!',
-    description:
-      'Tu nuevo centro de control para llevar tu estudio de manicura al siguiente nivel. Diseñado para ser elegante, intuitivo y extremadamente potente.',
+    titleKey: 'onboarding.title',
+    descriptionKey: 'onboarding.description',
     icon: <Sparkles className="size-12 text-primary" />,
     image:
       'https://images.unsplash.com/photo-1632345033839-247ab267d0d5?q=80&w=2070&auto=format&fit=crop',
   },
   {
-    title: 'Agenda Inteligente',
-    description:
-      'Gestiona tus citas con facilidad. Visualiza tu día, semana o mes y mantén un control total sobre tu tiempo y el de tus clientas.',
+    titleKey: 'onboarding.step1Title',
+    descriptionKey: 'onboarding.step1Description',
     icon: <Calendar className="size-12 text-primary" />,
     image:
       'https://images.unsplash.com/photo-1506784919141-93c6f932e920?q=80&w=2070&auto=format&fit=crop',
   },
   {
-    title: 'Tus Clientas, Prioridad #1',
-    description:
-      'Guarda perfiles detallados, preferencias, alergias y el historial completo de cada clienta para ofrecer un servicio 100% personalizado.',
+    titleKey: 'onboarding.step2Title',
+    descriptionKey: 'onboarding.step2Description',
     icon: <Users className="size-12 text-primary" />,
     image:
       'https://images.unsplash.com/photo-1600880212319-7524ebd75d2b?q=80&w=2050&auto=format&fit=crop',
   },
   {
-    title: 'Finanzas Bajo Control',
-    description:
-      'Sigue tus ingresos, gastos y metas mensuales. EmmeNails te ayuda a entender la rentabilidad de tu negocio de un vistazo.',
+    titleKey: 'onboarding.step3Title',
+    descriptionKey: 'onboarding.step3Description',
     icon: <BarChart3 className="size-12 text-primary" />,
     image:
       'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
   },
   {
-    title: 'Personalización Total',
-    description:
-      'Configura tus servicios, precios, horarios y hasta un bot de WhatsApp para automatizar la atención a tus clientas.',
+    titleKey: 'onboarding.step4Title',
+    descriptionKey: 'onboarding.step4Description',
     icon: <Settings className="size-12 text-primary" />,
     image:
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2070&auto=format&fit=crop',
@@ -59,7 +62,7 @@ const steps = [
 
 export function Onboarding() {
   const dispatch = useUiStore((state) => state.dispatch);
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const completeOnboarding = () => dispatch({ type: 'completeOnboarding' });
 
@@ -72,7 +75,10 @@ export function Onboarding() {
   };
 
   return (
-    <div data-testid={els.onboarding.dialog.testId} className="fixed inset-0 z-[250] bg-card flex items-center justify-center overflow-hidden">
+    <div
+      data-testid={els.onboarding.dialog.testId}
+      className="fixed inset-0 z-[250] bg-card flex items-center justify-center overflow-hidden"
+    >
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <img
           src={steps[currentStep].image}
@@ -113,7 +119,7 @@ export function Onboarding() {
                 onClick={completeOnboarding}
                 className="text-xs font-black uppercase tracking-[0.2em] text-black/30 hover:text-black transition-colors"
               >
-                {t('onboarding:skip', 'Omitir')}
+                {t('onboarding.skip')}
               </button>
             </div>
 
@@ -129,10 +135,10 @@ export function Onboarding() {
                   {steps[currentStep].icon}
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-display font-black tracking-[-0.05em] leading-tight text-[#1d1d1f]">
-                  {currentStep === 0 ? t('onboarding:title', steps[currentStep].title) : steps[currentStep].title}
+                  {t(steps[currentStep].titleKey)}
                 </h1>
                 <p className="text-[#86868b] text-lg font-medium leading-relaxed max-w-sm">
-                  {currentStep === 0 ? t('onboarding:description', steps[currentStep].description) : steps[currentStep].description}
+                  {t(steps[currentStep].descriptionKey)}
                 </p>
               </motion.div>
             </AnimatePresence>
@@ -141,7 +147,8 @@ export function Onboarding() {
           <div className="flex items-center justify-between pt-8 border-t border-border">
             <div className="hidden lg:block">
               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">
-                Instructivo {t('onboarding:step', 'Paso')} {currentStep + 1} de {steps.length}
+                {t('onboarding.instructive')} {t('onboarding.step')} {currentStep + 1} /{' '}
+                {steps.length}
               </p>
             </div>
 
@@ -152,12 +159,12 @@ export function Onboarding() {
             >
               {currentStep === steps.length - 1 ? (
                 <>
-                  Comenzar
+                  {t('onboarding.start')}
                   <CheckCircle2 className="ml-3 size-5" />
                 </>
               ) : (
                 <>
-                  {t('onboarding:next', 'Siguiente')}
+                  {t('onboarding.next')}
                   <ArrowRight className="ml-3 size-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}

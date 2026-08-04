@@ -8,11 +8,10 @@ let lastGetTenantSlug: unknown = undefined;
 
 export function getApiClient(
   getAccessToken?: () => Promise<string | null> | string | null,
-  getTenantSlug?: () => string | null,
+  getTenantSlug?: () => string | null
 ): ApiClient {
   const functionsChanged =
-    getAccessToken !== lastGetAccessToken ||
-    getTenantSlug !== lastGetTenantSlug;
+    getAccessToken !== lastGetAccessToken || getTenantSlug !== lastGetTenantSlug;
 
   if (!clientInstance || (functionsChanged && (getAccessToken || getTenantSlug))) {
     clientInstance = createPlatformClient({

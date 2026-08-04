@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { useTranslation } from 'react-i18next';
 import { els } from '@emme/i18n';
 import { useApp, type BusinessProfile } from '@/context/AppContext';
 import { useSettingsData } from '@/features/settings/hooks/useSettingsData';
@@ -75,6 +74,7 @@ import { CalendarSyncToggle } from '@/features/google-workspace/components/Calen
 import { SheetsExportSection } from '@/features/google-workspace/components/SheetsExportSection';
 import { SpreadsheetList } from '@/features/google-workspace/components/SpreadsheetList';
 import { useGoogleOAuth } from '@/features/google-workspace/hooks/useGoogleOAuth';
+import { useAppTranslation } from '@/app/translation';
 
 type SettingsWhatsappBot = NonNullable<BusinessProfile['whatsappBot']> & {
   responseMode?: string;
@@ -206,12 +206,7 @@ function WorkspaceContent() {
 
 export function Settings() {
   const { loading: settingsLoading, services } = useSettingsData();
-  const {
-    profile,
-    updateProfile,
-    clients,
-    appointments,
-  } = useApp();
+  const { profile, updateProfile, clients, appointments } = useApp();
   const { logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [formData, setFormData] = useState<SettingsBusinessProfile>(profile);
@@ -244,7 +239,7 @@ export function Settings() {
 
   const confirmAddSpecialDate = () => {
     if (!newExceptionData.note.trim()) {
-      toast.error('Por favor, ingresa el motivo o nombre de la excepción');
+      toast.error(t('settings.exceptionRequired'));
       return;
     }
 
@@ -270,7 +265,7 @@ export function Settings() {
     });
 
     setShowAddExceptionForm(false);
-    toast.success('Nueva excepción agregada correctamente');
+    toast.success(t('settings.exceptionAdded'));
   };
 
   const handleTabClick = (id: string) => {
@@ -278,11 +273,11 @@ export function Settings() {
     setIsDetailOpen(true);
   };
 
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   const handleSave = () => {
     updateProfile(formData);
-    toast.success(t('save') + ' successfully' || 'Configuración guardada correctamente');
+    toast.success(t('common.save'));
   };
 
   const handleClearCache = () => {
@@ -290,7 +285,7 @@ export function Settings() {
     setTimeout(() => {
       cacheService.clear();
       setIsClearing(false);
-      toast.success('Caché del sistema liberada');
+      toast.success(t('settings.cacheCleared'));
       setTimeout(() => window.location.reload(), 1000);
     }, 800);
   };
@@ -316,7 +311,7 @@ export function Settings() {
       document.body.removeChild(link);
 
       setIsExporting(false);
-      toast.success('Copia de seguridad generada');
+      toast.success(t('settings.backupCreated'));
     }, 1200);
   };
 
@@ -406,7 +401,7 @@ export function Settings() {
 
   const confirmAddPromotion = () => {
     if (!newPromoData.title || !newPromoData.serviceId) {
-      toast.error('Por favor completa los campos principales');
+      toast.error(t('settings.requiredFields'));
       return;
     }
 
@@ -422,7 +417,7 @@ export function Settings() {
     });
 
     setIsAddingPromotion(false);
-    toast.success('Promoción creada con éxito');
+    toast.success(t('settings.promotionCreated'));
   };
 
   const removePromotion = (id: string) => {
@@ -446,7 +441,7 @@ export function Settings() {
   const tabItems = [
     {
       id: 'perfil',
-      label: t('settings:profile', 'Perfil'),
+      label: t('settings.profile'),
       icon: User,
       description: 'Información comercial',
       category: 'Negocio',
@@ -477,42 +472,42 @@ export function Settings() {
       label: 'Notificaciones',
       icon: Bell,
       description: 'Preferencias de avisos',
-      category: t('settings:preferences', 'Preferencias'),
+      category: t('settings.preferences'),
     },
     {
       id: 'workspace',
       label: 'Google Workspace',
       icon: RefreshCw,
       description: 'Sincronización de datos',
-      category: t('settings:preferences', 'Preferencias'),
+      category: t('settings.preferences'),
     },
     {
       id: 'apariencia',
       label: 'Apariencia',
       icon: Layout,
-      description: t('theme', 'Tema visual y estilo'),
-      category: t('settings:preferences', 'Preferencias'),
+      description: t('settings.theme'),
+      category: t('settings.preferences'),
     },
     {
       id: 'idioma',
-      label: t('language', 'Idioma'),
+      label: t('settings.language'),
       icon: Globe,
-      description: t('language_selection', 'Lenguaje de interfaz'),
-      category: t('settings:preferences', 'Preferencias'),
+      description: t('settings.languageSelection'),
+      category: t('settings.preferences'),
     },
     {
       id: 'datos',
       label: 'Datos',
       icon: Database,
       description: 'Respaldos y limpieza',
-      category: t('settings:advanced', 'Avanzado'),
+      category: t('settings.advanced'),
     },
     {
       id: 'cuenta',
-      label: t('settings:security', 'Seguridad'),
+      label: t('settings.security'),
       icon: ShieldCheck,
       description: 'Privacidad y acceso',
-      category: t('settings:advanced', 'Avanzado'),
+      category: t('settings.advanced'),
     },
   ];
 
@@ -615,7 +610,10 @@ export function Settings() {
               <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground opacity-40 px-4">
                 {category}
               </h3>
-              <div data-testid={els.settings.tabs.testId} className="bg-card border border-border rounded-[32px] p-2 flex flex-col gap-1 shadow-sm">
+              <div
+                data-testid={els.settings.tabs.testId}
+                className="bg-card border border-border rounded-[32px] p-2 flex flex-col gap-1 shadow-sm"
+              >
                 {tabItems
                   .filter((item) => item.category === category)
                   .map((item) => {
@@ -1800,15 +1798,15 @@ export function Settings() {
                               const hrs = Math.floor(startTotalMins / 60);
                               const mins = startTotalMins % 60;
                               const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-  if (settingsLoading) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
-        <Loader2 className="size-8 animate-spin text-primary opacity-50" />
-      </div>
-    );
-  }
+                              if (settingsLoading) {
+                                return (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
+                                    <Loader2 className="size-8 animate-spin text-primary opacity-50" />
+                                  </div>
+                                );
+                              }
 
-  return (
+                              return (
                                 <span
                                   key={idx}
                                   className="text-[11px] font-mono font-bold bg-card/10 text-white/95 px-2.5 py-1 rounded-lg border border-white/10"
@@ -2472,7 +2470,7 @@ export function Settings() {
                     </p>
                     <Button
                       variant="ghost"
-                      onClick={() => toast.info('Enviando notificación de prueba...')}
+                      onClick={() => toast.info(t('settings.testNotification'))}
                       className="text-primary font-semibold text-[13px] hover:bg-primary/5 rounded-xl px-6"
                     >
                       Probar notificación

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { els } from '@emme/i18n';
 import { useApp } from '@/context/AppContext';
 import { useDashboardData } from '../hooks/useDashboardData';
@@ -68,6 +67,7 @@ import { useNavigate } from 'react-router-dom';
 import { Appointment, Client, Service, AppointmentStatus } from '@/context/AppContext';
 import { AppointmentForm } from '@/features/appointments/components/AppointmentForm';
 import { ClientForm } from '@/features/clients/components/ClientForm';
+import { useAppTranslation } from '@/app/translation';
 
 // HELPER: Shadows
 const getAppointmentShadow = (id: string) => {
@@ -112,7 +112,7 @@ const item = {
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
   const { clients, profile, addClient, updateProfile } = useApp();
   const {
     loading,
@@ -139,7 +139,7 @@ export function Dashboard() {
   const handleUpdateGoal = () => {
     updateProfile({ ...profile, monthlyGoal: tempGoal });
     setIsGoalDialogOpen(false);
-    toast.success('Meta mensual actualizada');
+    toast.success(t('dashboard.monthlyGoalUpdated'));
   };
 
   const [selectedApt, setSelectedApt] = React.useState<{
@@ -163,14 +163,14 @@ export function Dashboard() {
 
   const getGreeting = () => {
     const hours = today.getHours();
-    if (hours < 12) return 'Buenos días';
-    if (hours < 19) return 'Buenas tardes';
-    return 'Buenas noches';
+    if (hours < 12) return t('dashboard.greetingMorning');
+    if (hours < 19) return t('dashboard.greetingAfternoon');
+    return t('dashboard.greetingEvening');
   };
 
   const stats = [
     {
-      label: t('income_today', 'Ingresos hoy'),
+      label: t('dashboard.incomeToday'),
       value: `$${incomeToday}`,
       icon: TrendingUp,
       color: 'text-[#34C759]',
@@ -178,7 +178,7 @@ export function Dashboard() {
       testId: els.dashboard.incomeToday.testId,
     },
     {
-      label: t('confirmed_today', 'Confirmadas'),
+      label: t('dashboard.confirmedToday'),
       value: confirmedToday,
       icon: CheckCheck,
       color: 'text-[#007AFF]',
@@ -186,7 +186,7 @@ export function Dashboard() {
       testId: els.dashboard.confirmedToday.testId,
     },
     {
-      label: t('occupancy', 'Ocupación'),
+      label: t('dashboard.occupancy'),
       value: `${occupancyPercentage}%`,
       icon: Gauge,
       color: 'text-[#FF9500]',
@@ -194,7 +194,7 @@ export function Dashboard() {
       testId: els.dashboard.occupancy.testId,
     },
     {
-      label: t('new_clients', 'Nuevas clientas'),
+      label: t('dashboard.newClients'),
       value: newClientsThisMonth,
       icon: UserPlus,
       color: 'text-[#AF52DE]',
@@ -212,7 +212,7 @@ export function Dashboard() {
       text: 'text-amber-600',
       border: 'border-amber-500/10',
       dot: 'bg-amber-500',
-      label: 'Pendiente',
+      label: t('dashboard.statuses.pending'),
       glow: 'shadow-[0_0_15px_rgba(245,158,11,0.15)]',
     },
     confirmed: {
@@ -220,7 +220,7 @@ export function Dashboard() {
       text: 'text-blue-600',
       border: 'border-blue-500/10',
       dot: 'bg-blue-500',
-      label: 'Confirmada',
+      label: t('dashboard.statuses.confirmed'),
       glow: 'shadow-[0_0_15px_rgba(59,130,246,0.15)]',
     },
     completed: {
@@ -228,7 +228,7 @@ export function Dashboard() {
       text: 'text-emerald-600',
       border: 'border-emerald-500/10',
       dot: 'bg-emerald-500',
-      label: 'Finalizada',
+      label: t('dashboard.statuses.completed'),
       glow: 'shadow-[0_0_15px_rgba(16,185,129,0.15)]',
     },
     cancelled: {
@@ -236,16 +236,16 @@ export function Dashboard() {
       text: 'text-rose-600',
       border: 'border-rose-500/10',
       dot: 'bg-rose-500',
-      label: 'Cancelada',
+      label: t('dashboard.statuses.cancelled'),
       glow: 'shadow-[0_0_15px_rgba(244,63,94,0.15)]',
     },
   };
 
-  const handleStatusChange = (aptId: string, newStatus: any) => {
+  const handleStatusChange = (aptId: string, newStatus: AppointmentStatus) => {
     void aptId;
     void newStatus;
-    toast.error('Cambio de estado no disponible', {
-      description: 'Esta acción requiere una mutación de backend.',
+    toast.error(t('dashboard.changeStatusUnavailable'), {
+      description: t('dashboard.changeStatusRequiresBackend'),
     });
   };
 
@@ -260,19 +260,19 @@ export function Dashboard() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between px-0 gap-8 pt-6">
             <div className="space-y-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#0051A3]">
-                {t('dashboard:studioLevel', 'Atelier Professional')}
+                {t('dashboard.studioLevel')}
               </p>
               <div className="space-y-1">
                 <h2
                   data-testid={els.dashboard.greeting.testId}
                   className="text-[44px] lg:text-[72px] font-display font-semibold tracking-[-0.05em] text-foreground leading-none"
                 >
-                  Hola, {(profile.ownerName || 'Studio').split(' ')[0]}.
+                  {getGreeting()}, {(profile.ownerName || 'Studio').split(' ')[0]}.
                 </h2>
                 <div className="flex items-center gap-3">
                   <div className="size-2 rounded-full bg-[#34C759] shadow-[0_0_12px_rgba(52,199,89,0.4)]" />
                   <span className="text-[13px] font-semibold text-[#4F4F52]">
-                    {confirmedToday} {t('dashboard:sessionsConfirmed', 'sesiones confirmadas para hoy')}
+                    {confirmedToday} {t('dashboard.sessionsConfirmed')}
                   </span>
                 </div>
               </div>
@@ -311,16 +311,19 @@ export function Dashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pt-4">
             {/* Main Section: Agenda List */}
-            <section data-testid={els.dashboard.agendaSection.testId} className="lg:col-span-8 space-y-6">
+            <section
+              data-testid={els.dashboard.agendaSection.testId}
+              className="lg:col-span-8 space-y-6"
+            >
               <div className="flex items-center justify-between px-0">
                 <h2 className="text-[28px] lg:text-[34px] font-display font-semibold tracking-tight text-foreground">
-                  {t('agenda', 'Agenda.')}
+                  {t('dashboard.agenda')}
                 </h2>
                 <button
                   onClick={() => navigate('/agenda')}
                   className="text-[13px] font-semibold text-primary hover:opacity-100 transition-opacity flex items-center gap-1 group"
                 >
-                  {t('dashboard:viewAll', 'Ver todo')}{' '}
+                  {t('dashboard.viewAll')}{' '}
                   <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </div>
@@ -406,9 +409,11 @@ export function Dashboard() {
                     <div className="size-20 rounded-[24px] bg-secondary flex items-center justify-center mb-6">
                       <Calendar className="size-8 text-muted-foreground/40" />
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground">Agenda despejada</h3>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      {t('dashboard.emptyAgendaTitle')}
+                    </h3>
                     <p className="text-[#4F4F52] mt-2 text-sm max-w-[240px]">
-                      No hay sesiones registradas hoy.
+                      {t('dashboard.emptyAgendaDescription')}
                     </p>
                   </div>
                 )}
@@ -431,19 +436,18 @@ export function Dashboard() {
                       <Sparkles className="size-7 text-primary" />
                     </div>
                     <Badge className="bg-card/10 text-white border-none py-1.5 px-4 font-semibold text-[10px] uppercase tracking-widest rounded-full backdrop-blur-md">
-                      {t('dashboard:mission', 'Misión')}
+                      {t('dashboard.mission')}
                     </Badge>
                   </div>
 
                   <div className="space-y-6">
                     <h4 className="text-[28px] font-display font-semibold leading-tight text-white tracking-tight">
-                      "Tu arte es <span className="text-primary">único</span>. Tu gestión debe estar
-                      a la altura."
+                      {t('dashboard.missionQuote')}
                     </h4>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-px bg-card/20" />
                       <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-                        {t('dashboard:atelierPhilosophy', 'Atelier Philosophy')}
+                        {t('dashboard.atelierPhilosophy')}
                       </p>
                     </div>
                   </div>
@@ -464,13 +468,13 @@ export function Dashboard() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#515154]">
-                        {t('dashboard:goalSubtitle', 'Hito del Mes')}
+                        {t('dashboard.goalSubtitle')}
                       </p>
                       <h3
                         data-testid={els.dashboard.goalTitle.testId}
                         className="text-2xl font-display font-semibold tracking-tight text-foreground"
                       >
-                        {t('dashboard:goalTitle', 'Objetivo.')}
+                        {t('dashboard.goalTitle')}
                       </h3>
                     </div>
                     <div className="size-10 rounded-xl bg-secondary flex items-center justify-center text-[#515154] group-hover:text-primary transition-colors">
@@ -485,7 +489,7 @@ export function Dashboard() {
                           ${monthlyIncome.toLocaleString()}
                         </p>
                         <p className="text-[11px] font-semibold text-[#4F4F52]">
-                          {t('dashboard:of', 'de')} ${goal.toLocaleString()}
+                          {t('dashboard.of')} ${goal.toLocaleString()}
                         </p>
                       </div>
                       <span className="text-[14px] font-bold text-primary">
@@ -530,10 +534,10 @@ export function Dashboard() {
 
             <div className="space-y-3">
               <h2 className="text-3xl font-display font-semibold tracking-tight text-foreground">
-                Define tu <span className="text-primary">Meta.</span>
+                {t('dashboard.goalDialogTitle')}
               </h2>
               <p className="text-[15px] font-medium text-muted-foreground leading-relaxed">
-                Establece el objetivo de facturación mensual para tu atelier.
+                {t('dashboard.goalDialogDescription')}
               </p>
             </div>
 
@@ -576,7 +580,7 @@ export function Dashboard() {
                 onClick={handleUpdateGoal}
                 className="apple-button h-16 rounded-2xl bg-primary text-white font-semibold text-[15px] shadow-xl shadow-[#0071E3]/20 w-full"
               >
-                Guardar Objetivo
+                {t('dashboard.saveGoal')}
               </Button>
             </div>
           </div>
@@ -636,7 +640,7 @@ export function Dashboard() {
                     <Clock className="size-6 text-primary" />
                     <div>
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
-                        Hora
+                        {t('dashboard.time')}
                       </p>
                       <p className="text-2xl font-semibold text-foreground">
                         {selectedApt.apt.startTime}
@@ -647,7 +651,7 @@ export function Dashboard() {
                     <Wallet className="size-6 text-[#34C759]" />
                     <div>
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
-                        Inversión
+                        {t('dashboard.investment')}
                       </p>
                       <p className="text-2xl font-semibold text-foreground">
                         ${selectedApt.service?.price}
@@ -664,7 +668,7 @@ export function Dashboard() {
                     </div>
                     <div>
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
-                        Sesión de
+                        {t('dashboard.sessionOf')}
                       </p>
                       <p className="text-lg font-semibold text-foreground">
                         {selectedApt.service?.name}
@@ -679,10 +683,12 @@ export function Dashboard() {
                 {/* Status Selector */}
                 <div className="space-y-4">
                   <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-2">
-                    Estado de Gestión
+                    {t('dashboard.managementStatus')}
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {['pending', 'confirmed', 'completed', 'cancelled'].map((status) => (
+                    {(
+                      ['pending', 'confirmed', 'completed', 'cancelled'] as AppointmentStatus[]
+                    ).map((status) => (
                       <button
                         key={status}
                         onClick={() => handleStatusChange(selectedApt.apt.id, status)}
@@ -714,14 +720,14 @@ export function Dashboard() {
                     }}
                   >
                     <MessageSquare className="size-5" />
-                    Enviar Recordatorio
+                    {t('dashboard.sendReminder')}
                   </Button>
                   <Button
                     variant="ghost"
                     onClick={() => setSelectedApt(null)}
                     className="h-14 rounded-2xl text-muted-foreground font-semibold"
                   >
-                    Cerrar Detalle
+                    {t('dashboard.closeDetail')}
                   </Button>
                 </div>
               </div>

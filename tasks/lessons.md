@@ -51,3 +51,14 @@
 - Prevention rule: keep `HttpClient` as the shared transport and use existing
   capability API adapters rather than introducing another scoped-client layer;
   reserve `Provider` for replaceable external adapters.
+
+## 2026-08-03 — Keep browser locale and test locale aligned
+
+- Failure mode: changing the application default locale to English made legacy
+  E2E page-object assertions look for Spanish labels, causing unrelated auth,
+  navigation, and form failures.
+- Detection signal: the UI rendered valid translated content, but selectors
+  built from the shared E2E catalog did not match it.
+- Prevention rule: define one documented default locale for the application and
+  derive browser assertions from the same typed catalog; when changing it,
+  update the E2E runtime contract in the same slice.

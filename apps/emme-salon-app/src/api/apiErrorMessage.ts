@@ -10,7 +10,7 @@ const API_ERROR_TRANSLATIONS: Record<string, TranslationKey> = {
 export function apiErrorMessage(
   error: unknown,
   translate: (key: string) => string,
-  fallback: TranslationKey,
+  fallback: TranslationKey
 ): string {
   if (error instanceof ApiHttpError && error.code) {
     const translationKey = API_ERROR_TRANSLATIONS[error.code];

@@ -54,10 +54,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { toast } from 'sonner';
+import { useAppTranslation } from '@/app/translation';
 
 export function Finances() {
-  const { loading: financeLoading, appointments, services, totalRevenue, revenueToday, averageTicket, completedCount } = useFinanceData();
+  const {
+    loading: financeLoading,
+    appointments,
+    services,
+    totalRevenue,
+    revenueToday,
+    averageTicket,
+    completedCount,
+  } = useFinanceData();
   const { clients, profile, updateProfile } = useApp();
+  const { t } = useAppTranslation();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false);
@@ -74,7 +84,7 @@ export function Finances() {
   const handleUpdateGoal = () => {
     updateProfile({ ...profile, monthlyGoal: tempGoal });
     setIsGoalDialogOpen(false);
-    toast.success('Meta mensual actualizada');
+    toast.success(t('finances.goalUpdated'));
   };
 
   // Helper to get service price
@@ -321,7 +331,7 @@ export function Finances() {
 
   return (
     <div className="space-y-12 lg:space-y-16 animate-in fade-in duration-1000 pb-52 lg:pb-16 px-4 sm:px-6 lg:px-0 max-w-full mx-auto min-h-screen">
-      {(isLoading || financeLoading) ? (
+      {isLoading || financeLoading ? (
         <div className="space-y-12 py-10">
           <div className="flex flex-col sm:flex-row justify-between gap-10">
             <div className="space-y-4">
@@ -343,19 +353,19 @@ export function Finances() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 pt-4">
             <div className="space-y-2">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary opacity-60">
-                Analítica de Maestría
+                {t('finances.header')}
               </p>
               <div className="space-y-0">
                 <h2
                   data-testid={els.finances.header.testId}
                   className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-none"
                 >
-                  Balance.
+                  {t('finances.heading')}.
                 </h2>
                 <div className="flex items-center gap-3 mt-4">
                   <div className="size-2 rounded-full bg-primary animate-pulse" />
                   <p className="text-muted-foreground text-base lg:text-lg font-medium">
-                    Inteligencia financiera avanzada por Emme Studio
+                    {t('finances.subtitle')}
                   </p>
                 </div>
               </div>
@@ -410,11 +420,11 @@ export function Finances() {
                 <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="size-2.5 rounded-full bg-primary" />
-                    <span className="opacity-80">Actual</span>
+                    <span className="opacity-80">{t('finances.current')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="size-2.5 rounded-full bg-secondary" />
-                    <span className="opacity-40">Anterior</span>
+                    <span className="opacity-40">{t('finances.previous')}</span>
                   </div>
                 </div>
               </div>
@@ -456,7 +466,7 @@ export function Finances() {
                                 <div className="space-y-3">
                                   <div className="flex items-center justify-between gap-10">
                                     <span className="text-sm font-medium text-muted-foreground">
-                                      Esta Semana
+                                      {t('finances.thisWeek')}
                                     </span>
                                     <span className="text-lg font-display font-semibold text-primary">
                                       ${payload[1].value.toLocaleString()}
@@ -464,7 +474,7 @@ export function Finances() {
                                   </div>
                                   <div className="flex items-center justify-between gap-10">
                                     <span className="text-sm font-medium text-muted-foreground opacity-60">
-                                      Anterior
+                                      {t('finances.previous')}
                                     </span>
                                     <span className="text-lg font-display font-semibold text-foreground opacity-40">
                                       ${payload[0].value.toLocaleString()}

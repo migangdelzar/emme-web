@@ -33,13 +33,16 @@ export function useServiceData() {
   const updateMutation = useUpdateService();
   const deleteMutation = useDeleteService();
 
-  const services: Service[] = useMemo(
-    () => (data?.services || []).map(mapNailServiceView),
-    [data],
-  );
+  const services: Service[] = useMemo(() => (data?.services || []).map(mapNailServiceView), [data]);
 
   const addService = useCallback(
-    async (service: { name: string; category: string; duration: number; description: string; price: number }) => {
+    async (service: {
+      name: string;
+      category: string;
+      duration: number;
+      description: string;
+      price: number;
+    }) => {
       await createMutation.mutateAsync({
         name: service.name,
         category: service.category,
@@ -48,11 +51,20 @@ export function useServiceData() {
         priceRange: String(service.price),
       });
     },
-    [createMutation],
+    [createMutation]
   );
 
   const updateService = useCallback(
-    async (id: string, service: { name: string; category: string; duration: number; description: string; price: number }) => {
+    async (
+      id: string,
+      service: {
+        name: string;
+        category: string;
+        duration: number;
+        description: string;
+        price: number;
+      }
+    ) => {
       await updateMutation.mutateAsync({
         id,
         name: service.name,
@@ -62,14 +74,14 @@ export function useServiceData() {
         priceRange: String(service.price),
       });
     },
-    [updateMutation],
+    [updateMutation]
   );
 
   const deleteService = useCallback(
     async (id: string) => {
       await deleteMutation.mutateAsync(id);
     },
-    [deleteMutation],
+    [deleteMutation]
   );
 
   return {

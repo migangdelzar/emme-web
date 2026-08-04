@@ -8,21 +8,45 @@ import { useUiStore } from '@/stores/uiStore';
 import { useAuth } from '@/auth/useAuth';
 import { Toaster } from '@/shared/ui/sonner';
 import { TooltipProvider } from '@/shared/ui/tooltip';
-import { useTranslation } from 'react-i18next';
 import { els } from '@emme/i18n';
 import { ThemeProvider } from 'next-themes';
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
+import { useAppTranslation } from './translation';
 
 // Lazy load feature components
-const Dashboard = React.lazy(() => import('@/features/dashboard/components/Dashboard').then(module => ({ default: module.Dashboard })));
-const Appointments = React.lazy(() => import('@/features/appointments/components/Appointments').then(module => ({ default: module.Appointments })));
-const Clients = React.lazy(() => import('@/features/clients/components/Clients').then(module => ({ default: module.Clients })));
-const Services = React.lazy(() => import('@/features/services/components/Services').then(module => ({ default: module.Services })));
-const Finances = React.lazy(() => import('@/features/finances/components/Finances').then(module => ({ default: module.Finances })));
-const Settings = React.lazy(() => import('@/features/settings/components/Settings').then(module => ({ default: module.Settings })));
-const Login = React.lazy(() => import('@/features/auth/components/Login').then(module => ({ default: module.Login })));
-const Onboarding = React.lazy(() => import('@/features/onboarding/components/Onboarding').then(module => ({ default: module.Onboarding })));
-const TenantSelector = React.lazy(() => import('@/auth/TenantSelector').then(m => ({ default: m.TenantSelector })));
+const Dashboard = React.lazy(() =>
+  import('@/features/dashboard/components/Dashboard').then((module) => ({
+    default: module.Dashboard,
+  }))
+);
+const Appointments = React.lazy(() =>
+  import('@/features/appointments/components/Appointments').then((module) => ({
+    default: module.Appointments,
+  }))
+);
+const Clients = React.lazy(() =>
+  import('@/features/clients/components/Clients').then((module) => ({ default: module.Clients }))
+);
+const Services = React.lazy(() =>
+  import('@/features/services/components/Services').then((module) => ({ default: module.Services }))
+);
+const Finances = React.lazy(() =>
+  import('@/features/finances/components/Finances').then((module) => ({ default: module.Finances }))
+);
+const Settings = React.lazy(() =>
+  import('@/features/settings/components/Settings').then((module) => ({ default: module.Settings }))
+);
+const Login = React.lazy(() =>
+  import('@/features/auth/components/Login').then((module) => ({ default: module.Login }))
+);
+const Onboarding = React.lazy(() =>
+  import('@/features/onboarding/components/Onboarding').then((module) => ({
+    default: module.Onboarding,
+  }))
+);
+const TenantSelector = React.lazy(() =>
+  import('@/auth/TenantSelector').then((m) => ({ default: m.TenantSelector }))
+);
 
 function PageLoader() {
   return (
@@ -35,10 +59,10 @@ function PageLoader() {
 function AppContent() {
   const { profile } = useApp();
   const isFirstTime = useUiStore((state) => state.isFirstTime);
-  const { status, tenant } = useAuth();
+  const { status } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname.split('/')[1] || 'dashboard';
-  const { i18n } = useTranslation();
+  const { i18n, t } = useAppTranslation();
 
   useEffect(() => {
     if (profile?.language) {
@@ -70,13 +94,14 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex relative overflow-hidden font-sans selection:bg-primary/5">
-      <Suspense fallback={null}>
-        {isFirstTime && <Onboarding />}
-      </Suspense>
-      
+      <Suspense fallback={null}>{isFirstTime && <Onboarding />}</Suspense>
+
       <Sidebar activeTab={currentPath} />
 
-      <main data-testid={els.layout.main.testId} className="flex-1 pb-32 lg:pb-0 h-screen overflow-y-auto custom-scrollbar relative">
+      <main
+        data-testid={els.layout.main.testId}
+        className="flex-1 pb-32 lg:pb-0 h-screen overflow-y-auto custom-scrollbar relative"
+      >
         <div className="max-w-[1800px] mx-auto px-4 sm:px-10 lg:px-16 py-8 lg:py-12">
           {/* Mobile Header - Ultra Minimalist */}
           <div className="lg:hidden flex items-center justify-between mb-10 sticky top-0 z-[60] bg-background/5 backdrop-blur-xl -mx-6 px-8 py-5 border-b border-black/[0.02]">
@@ -86,7 +111,7 @@ function AppContent() {
                 <span className="text-foreground/60">nails</span>
               </h1>
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-foreground/20">
-                Studio Manager
+                {t('common.studioManager')}
               </p>
             </div>
             <div className="size-10 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-black/[0.04] select-none scale-90">

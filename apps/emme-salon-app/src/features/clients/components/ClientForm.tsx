@@ -23,6 +23,7 @@ import { PhoneInput } from '@/shared/ui/PhoneInput';
 import { cn } from '@/shared/lib/utils';
 import { useClientData } from '@/features/clients/hooks/useClientData';
 import { toast } from 'sonner';
+import { useAppTranslation } from '@/app/translation';
 
 interface ClientFormProps {
   onSuccess: () => void;
@@ -31,6 +32,7 @@ interface ClientFormProps {
 
 export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
   const { addClient } = useClientData();
+  const { t } = useAppTranslation();
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
@@ -50,7 +52,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
 
   const handleFinish = () => {
     if (!formData.name || !formData.phone) {
-      toast.error('Nombre y teléfono son obligatorios');
+      toast.error(`${t('clients.nameRequired')} / ${t('clients.phoneRequired')}`);
       return;
     }
 
@@ -65,13 +67,13 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
       isVip: formData.isVip,
     });
 
-    toast.success('Clienta registrada con éxito');
+    toast.success(t('clients.created'));
     onSuccess();
   };
 
   const steps = [
-    { id: 1, title: 'Perfil' },
-    { id: 2, title: 'Detalles' },
+    { id: 1, title: t('clients.formProfile') },
+    { id: 2, title: t('clients.formDetails') },
   ];
 
   return (
@@ -127,7 +129,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
                     Nombre Completo
                   </Label>
                   <Input
-                    placeholder="Ej. Sofia Villarreal"
+                    placeholder={t('clients.namePlaceholder')}
                     className="premium-input bg-secondary/50 border-transparent focus:bg-card"
                     value={formData.name}
                     onChange={(e) => handleChange('name', e.target.value)}
@@ -151,7 +153,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
                     Email
                   </Label>
                   <Input
-                    placeholder="correo@ejemplo.com"
+                    placeholder={t('clients.emailPlaceholder')}
                     className="premium-input bg-secondary/50 border-transparent focus:bg-card"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
@@ -171,7 +173,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
                       <Star className={cn('size-6', formData.isVip && 'fill-current')} />
                     </div>
                     <div className="space-y-0.5">
-                      <p className="font-semibold text-lg text-foreground">Clienta VIP</p>
+                      <p className="font-semibold text-lg text-foreground">{t('clients.vip')}</p>
                       <p className="text-[11px] font-medium text-muted-foreground">
                         Atención Preferencial
                       </p>
@@ -223,7 +225,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
                     Alergias o Sensibilidad
                   </Label>
                   <Textarea
-                    placeholder="Ej. Sensibilidad al acrílico, alérgica a pegamentos cítricos..."
+                    placeholder={t('clients.allergiesPlaceholder')}
                     className="min-h-[120px] rounded-[32px] bg-secondary/50 border-transparent focus:bg-card p-6 text-base font-medium resize-none transition-all placeholder:opacity-30"
                     value={formData.allergies}
                     onChange={(e) => handleChange('allergies', e.target.value)}
@@ -235,7 +237,7 @@ export function ClientForm({ onSuccess, onCancel }: ClientFormProps) {
                     Notas de Estilo
                   </Label>
                   <Textarea
-                    placeholder="Preferencias de color, diseño favorito, temas de interés..."
+                    placeholder={t('clients.preferencesPlaceholder')}
                     className="min-h-[120px] rounded-[32px] bg-secondary/50 border-transparent focus:bg-card p-6 text-base font-medium resize-none transition-all placeholder:opacity-30"
                     value={formData.notes}
                     onChange={(e) => handleChange('notes', e.target.value)}

@@ -57,26 +57,40 @@ export function useCustomers() {
 
 export function useCreateCustomer() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'customers',
-    mutationFn: (input: CreateCustomerInput) =>
-      customersContract.create({ ...input, phone: input.phone ?? '' }),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'customers',
+        mutationFn: (input: CreateCustomerInput) =>
+          customersContract.create({ ...input, phone: input.phone ?? '' }),
+      },
+      queryClient
+    )
+  );
 }
 
 export function useUpdateCustomer() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'customers',
-    mutationFn: ({ id, ...data }: UpdateCustomerInput) =>
-      customersContract.update(id, data),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'customers',
+        mutationFn: ({ id, ...data }: UpdateCustomerInput) => customersContract.update(id, data),
+      },
+      queryClient
+    )
+  );
 }
 
 export function useDeleteCustomer() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'customers',
-    mutationFn: (id: string) => customersContract.retire(id),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'customers',
+        mutationFn: (id: string) => customersContract.retire(id),
+      },
+      queryClient
+    )
+  );
 }

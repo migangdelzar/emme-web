@@ -36,13 +36,12 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="h-16 w-16 bg-destructive/10 rounded-full flex items-center justify-center mb-6">
               <AlertCircle className="size-8 text-destructive" />
             </div>
-            <h1 className="text-2xl font-display font-bold tracking-tight mb-2">
-              Algo salió mal
-            </h1>
+            <h1 className="text-2xl font-display font-bold tracking-tight mb-2">Algo salió mal</h1>
             <p className="text-muted-foreground text-sm mb-8">
-              Ocurrió un error inesperado. Hemos registrado el problema para solucionarlo lo antes posible.
+              Ocurrió un error inesperado. Hemos registrado el problema para solucionarlo lo antes
+              posible.
             </p>
-            
+
             <button
               onClick={this.handleReload}
               className="apple-button w-full bg-primary text-primary-foreground"
@@ -50,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <RefreshCw className="size-4" />
               Recargar aplicación
             </button>
-            
+
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div className="mt-8 p-4 bg-muted rounded-xl w-full text-left overflow-auto text-xs font-mono text-muted-foreground">
                 {this.state.error.toString()}

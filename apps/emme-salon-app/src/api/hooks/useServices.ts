@@ -64,36 +64,53 @@ export function useNailServicesRest(category?: string) {
 
 export function useCreateService() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'services',
-    mutationFn: (input: CreateServiceInput) => servicesContract.create({
-      name: input.name,
-      category: input.category,
-      description: input.description,
-      duration: input.durationMinutes,
-      price: Number(input.priceRange ?? 0),
-    }),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'services',
+        mutationFn: (input: CreateServiceInput) =>
+          servicesContract.create({
+            name: input.name,
+            category: input.category,
+            description: input.description,
+            duration: input.durationMinutes,
+            price: Number(input.priceRange ?? 0),
+          }),
+      },
+      queryClient
+    )
+  );
 }
 
 export function useUpdateService() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'services',
-    mutationFn: ({ id, ...data }: UpdateServiceInput) => servicesContract.update(id, {
-      name: data.name,
-      category: data.category,
-      description: data.description,
-      duration: data.durationMinutes,
-      price: Number(data.priceRange ?? 0),
-    }),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'services',
+        mutationFn: ({ id, ...data }: UpdateServiceInput) =>
+          servicesContract.update(id, {
+            name: data.name,
+            category: data.category,
+            description: data.description,
+            duration: data.durationMinutes,
+            price: Number(data.priceRange ?? 0),
+          }),
+      },
+      queryClient
+    )
+  );
 }
 
 export function useDeleteService() {
   const queryClient = useQueryClient();
-  return useMutation(createMutationOptions({
-    key: 'services',
-    mutationFn: (id: string) => api.post(`/api/services/${id}/retire`),
-  }, queryClient));
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'services',
+        mutationFn: (id: string) => api.post(`/api/services/${id}/retire`),
+      },
+      queryClient
+    )
+  );
 }

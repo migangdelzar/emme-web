@@ -60,6 +60,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { Badge } from '@/shared/ui/badge';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAppTranslation } from '@/app/translation';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -92,8 +93,15 @@ const itemVariants = {
 };
 
 export function Services() {
-  const { loading: servicesLoading, services, addService, updateService, deleteService } = useServiceData();
+  const {
+    loading: servicesLoading,
+    services,
+    addService,
+    updateService,
+    deleteService,
+  } = useServiceData();
   const { toggleServiceStatus } = useApp();
+  const { t } = useAppTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -174,17 +182,17 @@ export function Services() {
     const { name, price, duration, description, category } = formData;
 
     if (!name.trim()) {
-      toast.error('El nombre del servicio es obligatorio');
+      toast.error(t('services.nameRequired'));
       return;
     }
 
     if (!price || Number(price) <= 0) {
-      toast.error('El precio debe ser un número mayor a 0');
+      toast.error(t('services.priceInvalid'));
       return;
     }
 
     if (!duration || Number(duration) <= 0) {
-      toast.error('La duración debe ser un número mayor a 0');
+      toast.error(t('services.durationInvalid'));
       return;
     }
 
@@ -198,10 +206,10 @@ export function Services() {
 
     if (editingService) {
       updateService(editingService.id, payload);
-      toast.success('Servicio actualizado');
+      toast.success(t('services.updated'));
     } else {
       addService(payload);
-      toast.success('Servicio añadido');
+      toast.success(t('services.added'));
     }
 
     setIsAddOpen(false);
@@ -231,7 +239,7 @@ export function Services() {
 
   const handleDeleteService = (id: string) => {
     deleteService(id);
-    toast.success('Servicio eliminado exitosamente');
+    toast.success(t('services.deleted'));
     setDeleteConfirmId(null);
   };
 
@@ -242,19 +250,19 @@ export function Services() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pt-6">
         <div className="space-y-3">
           <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-primary opacity-60">
-            Menú de Exclusividad
+            {t('services.header')}
           </span>
           <div className="space-y-1">
             <h2
               data-testid={els.services.header.testId}
               className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-[0.9]"
             >
-              Catálogo.
+              {t('services.header')}.
             </h2>
             <div className="flex items-center gap-3 mt-4">
               <div className="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(0,113,227,0.5)]" />
               <p className="text-muted-foreground text-base font-medium">
-                {activeCount} experiencias premium activas
+                {activeCount} {t('services.subtitle')}
               </p>
             </div>
           </div>
@@ -262,7 +270,10 @@ export function Services() {
       </div>
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent data-testid={els.services.dialog.testId} className="max-w-xl md:max-w-4xl lg:max-w-[1200px] xl:max-w-[1300px] material-thick border-none shadow-[0_80px_200px_-30px_rgba(0,0,0,0.4)] p-0 overflow-hidden outline-none sm:rounded-[32px] rounded-t-[32px] sm:!top-1/2 sm:!translate-y-[-50%] w-full h-[90vh] lg:h-[85vh] flex flex-col focus:outline-none">
+        <DialogContent
+          data-testid={els.services.dialog.testId}
+          className="max-w-xl md:max-w-4xl lg:max-w-[1200px] xl:max-w-[1300px] material-thick border-none shadow-[0_80px_200px_-30px_rgba(0,0,0,0.4)] p-0 overflow-hidden outline-none sm:rounded-[32px] rounded-t-[32px] sm:!top-1/2 sm:!translate-y-[-50%] w-full h-[90vh] lg:h-[85vh] flex flex-col focus:outline-none"
+        >
           <DialogTitle className="sr-only">
             {editingService ? 'Editar Servicio' : 'Nuevo Servicio'}
           </DialogTitle>
@@ -359,15 +370,15 @@ export function Services() {
                     {Object.keys(iconMap).map((cat) => {
                       const CatIcon = iconMap[cat];
                       const isSelected = formData.category === cat;
-  if (servicesLoading) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
-        <Loader2 className="size-8 animate-spin text-primary opacity-50" />
-      </div>
-    );
-  }
+                      if (servicesLoading) {
+                        return (
+                          <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
+                            <Loader2 className="size-8 animate-spin text-primary opacity-50" />
+                          </div>
+                        );
+                      }
 
-  return (
+                      return (
                         <button
                           key={cat}
                           type="button"
@@ -411,7 +422,7 @@ export function Services() {
                     </div>
                     <Input
                       ref={inputRef}
-                      placeholder="Ej. Soft Gel Premium"
+                      placeholder={t('services.namePlaceholder')}
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="h-12 sm:h-16 lg:h-20 px-4 sm:px-8 text-base sm:text-2xl font-display font-semibold bg-secondary border-transparent rounded-xl sm:rounded-[24px] focus:bg-card focus:ring-8 focus:ring-primary/5 focus:border-primary/10 placeholder:text-muted-foreground/10 !text-foreground"
@@ -482,7 +493,7 @@ export function Services() {
                     </span>
                   </div>
                   <Textarea
-                    placeholder="Describe el alma de este servicio..."
+                    placeholder={t('services.descriptionPlaceholder')}
                     value={formData.description}
                     maxLength={250}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -685,7 +696,10 @@ export function Services() {
       )}
 
       {filteredServices.length === 0 && (
-        <div data-testid={els.services.empty.testId} className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4 mx-4">
+        <div
+          data-testid={els.services.empty.testId}
+          className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4 mx-4"
+        >
           <div className="size-24 rounded-3xl mx-auto flex items-center justify-center mb-6 bg-card shadow-sm border border-border">
             <Briefcase className="size-10 text-muted-foreground/20" />
           </div>

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Loader2, RefreshCw } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Switch } from "@/shared/ui/switch";
-import { Label } from "@/shared/ui/label";
-import { Card, CardContent } from "@/shared/ui/card";
-import { useCalendarSync } from "@/features/google-workspace/hooks/useCalendarSync";
+import { useState } from 'react';
+import { Loader2, RefreshCw } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { Switch } from '@/shared/ui/switch';
+import { Label } from '@/shared/ui/label';
+import { Card, CardContent } from '@/shared/ui/card';
+import { useCalendarSync } from '@/features/google-workspace/hooks/useCalendarSync';
 
 export function CalendarSyncToggle() {
   const [autoSync, setAutoSync] = useState(false);
@@ -20,10 +20,7 @@ export function CalendarSyncToggle() {
               Sincroniza automáticamente las citas con tu calendario de Google
             </p>
           </div>
-          <Switch
-            checked={autoSync}
-            onCheckedChange={setAutoSync}
-          />
+          <Switch checked={autoSync} onCheckedChange={setAutoSync} />
         </div>
         <div className="border-t border-border pt-3">
           <Button
@@ -38,7 +35,7 @@ export function CalendarSyncToggle() {
             ) : (
               <RefreshCw className="size-4" />
             )}
-            {isSyncing ? "Sincronizando..." : "Sync Now"}
+            {isSyncing ? 'Sincronizando...' : 'Sync Now'}
           </Button>
         </div>
       </CardContent>

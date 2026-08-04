@@ -1,7 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { provider } from '@/providers/DataProvider';
 import { useAuth } from '../auth/useAuth';
-import type { Service, Client, Appointment, AppointmentStatus, CreateService, CreateClient, CreateAppointment } from '@emme/contracts';
+import type {
+  Service,
+  Client,
+  Appointment,
+  AppointmentStatus,
+  CreateService,
+  CreateClient,
+  CreateAppointment,
+} from '@emme/contracts';
 
 // Re-export for convenience
 export type { Service, Client, Appointment, AppointmentStatus };
@@ -83,7 +91,6 @@ interface AppContextType {
 }
 
 const DEFAULT_SERVICES: Service[] = [];
-
 
 const DEFAULT_CLIENTS: Client[] = [];
 
@@ -185,9 +192,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (status !== 'ready') return;
-    provider.loadServices().then(s => { if (s.length > 0) setServices(s); }).catch(() => {});
-    provider.loadClients().then(c => { if (c.length > 0) setClients(c); }).catch(() => {});
-    provider.loadAppointments().then(a => { if (a.length > 0) setAppointments(a); }).catch(() => {});
+    provider
+      .loadServices()
+      .then((s) => {
+        if (s.length > 0) setServices(s);
+      })
+      .catch(() => {});
+    provider
+      .loadClients()
+      .then((c) => {
+        if (c.length > 0) setClients(c);
+      })
+      .catch(() => {});
+    provider
+      .loadAppointments()
+      .then((a) => {
+        if (a.length > 0) setAppointments(a);
+      })
+      .catch(() => {});
   }, [status]);
 
   const addService = async (s: Omit<Service, 'id' | 'isActive'>) => {
@@ -214,7 +236,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const result = await provider.addAppointment(a);
       setAppointments((current) => [...current, result]);
-    } catch (e) { console.error('addAppointment API failed:', e); throw e; }
+    } catch (e) {
+      console.error('addAppointment API failed:', e);
+      throw e;
+    }
   };
 
   const updateAppointment = (id: string, updatedFields: Partial<Appointment>) => {

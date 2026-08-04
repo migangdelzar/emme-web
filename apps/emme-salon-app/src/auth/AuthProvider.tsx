@@ -26,7 +26,7 @@ export function AuthProvider({ children }: Props) {
         const token = localStorage.getItem('access_token');
         // No token → user is not authenticated; skip /api/me call
         if (!token) {
-          if (!cancelled) setState(s => ({ ...s, status: 'signedOut' }));
+          if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
           return;
         }
         const headers: Record<string, string> = {
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: Props) {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
           }
-          if (!cancelled) setState(s => ({ ...s, status: 'signedOut' }));
+          if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
           return;
         }
         const user: CurrentUser = await res.json();
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: Props) {
           if (firstMembership) {
             localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
           }
-          setState(s => ({
+          setState((s) => ({
             ...s,
             status: 'ready',
             user,
@@ -58,16 +58,18 @@ export function AuthProvider({ children }: Props) {
           }));
         }
       } catch {
-        if (!cancelled) setState(s => ({ ...s, status: 'signedOut' }));
+        if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
       }
     }
 
     loadSession();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    setState(s => ({ ...s, error: null }));
+    setState((s) => ({ ...s, error: null }));
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -76,13 +78,13 @@ export function AuthProvider({ children }: Props) {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'Credenciales inválidas' }));
-        setState(s => ({ ...s, status: 'signedOut', error: err.error }));
+        setState((s) => ({ ...s, status: 'signedOut', error: err.error }));
         return;
       }
       const data = await res.json();
       const token = data.accessToken;
       const user: CurrentUser = data.user; // login response already has full user data
-      
+
       // Store token and tenant for subsequent API calls
       localStorage.setItem('access_token', token);
       if (data.refreshToken) {
@@ -93,7 +95,7 @@ export function AuthProvider({ children }: Props) {
         localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
       }
 
-      setState(s => ({
+      setState((s) => ({
         ...s,
         status: 'ready',
         user,
@@ -101,14 +103,14 @@ export function AuthProvider({ children }: Props) {
         tenant: user.memberships?.[0] ?? null,
         error: null,
       }));
-    } catch (e) {
-      setState(s => ({ ...s, status: 'signedOut', error: 'Error de conexión' }));
+    } catch {
+      setState((s) => ({ ...s, status: 'signedOut', error: 'Error de conexión' }));
     }
   }, []);
 
   const selectTenant = useCallback((slug: string) => {
-    setState(s => {
-      const tenant = s.allTenants.find(t => t.tenantSlug === slug) ?? null;
+    setState((s) => {
+      const tenant = s.allTenants.find((t) => t.tenantSlug === slug) ?? null;
       if (tenant) {
         localStorage.setItem('tenant_slug', slug);
       }
@@ -120,16 +122,19 @@ export function AuthProvider({ children }: Props) {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('tenant_slug');
-    setState(s => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
+    setState((s) => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
     window.location.href = '/';
   }, []);
 
-  const value = useMemo<AuthContextValue>(() => ({
-    ...state,
-    login,
-    selectTenant,
-    logout,
-  }), [state, login, selectTenant, logout]);
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      ...state,
+      login,
+      selectTenant,
+      logout,
+    }),
+    [state, login, selectTenant, logout]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

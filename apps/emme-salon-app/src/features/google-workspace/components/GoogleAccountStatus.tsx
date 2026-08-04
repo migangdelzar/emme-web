@@ -1,7 +1,7 @@
-import { Loader2, CheckCircle2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Card, CardContent } from "@/shared/ui/card";
-import { useGoogleOAuth } from "@/features/google-workspace/hooks/useGoogleOAuth";
+import { Loader2, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent } from '@/shared/ui/card';
+import { useGoogleOAuth } from '@/features/google-workspace/hooks/useGoogleOAuth';
 
 export function GoogleAccountStatus() {
   const { status, disconnect } = useGoogleOAuth();
@@ -40,9 +40,7 @@ export function GoogleAccountStatus() {
           disabled={disconnect.isPending}
           className="rounded-xl"
         >
-          {disconnect.isPending ? (
-            <Loader2 className="size-4 animate-spin mr-1" />
-          ) : null}
+          {disconnect.isPending ? <Loader2 className="size-4 animate-spin mr-1" /> : null}
           Desconectar
         </Button>
       </CardContent>

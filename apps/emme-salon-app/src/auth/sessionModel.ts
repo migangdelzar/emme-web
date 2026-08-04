@@ -17,7 +17,9 @@ export function createSessionModel(input: SessionModelInput): AppSession {
     return { status: 'signedOut' };
   }
 
-  const activeMemberships = input.memberships.filter((membership) => membership.status === 'ACTIVE');
+  const activeMemberships = input.memberships.filter(
+    (membership) => membership.status === 'ACTIVE'
+  );
   const selectedTenant = input.selectedTenantSlug
     ? activeMemberships.find((membership) => membership.tenantSlug === input.selectedTenantSlug)
     : null;

@@ -1,9 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import {
-  createMutationOptions,
-  createQueryResource,
-  createResourceKey,
-} from './queryFactory';
+import { createMutationOptions, createQueryResource, createResourceKey } from './queryFactory';
 
 describe('queryFactory', () => {
   it('creates stable resource keys and parameterized list options', async () => {
@@ -12,11 +8,8 @@ describe('queryFactory', () => {
     }));
     const resource = createQueryResource({
       key: 'services',
-      queryKey: (params: { category?: string }) => [
-        ...createResourceKey('services'),
-        'list',
-        params,
-      ] as const,
+      queryKey: (params: { category?: string }) =>
+        [...createResourceKey('services'), 'list', params] as const,
       queryFn: list,
     });
 
@@ -35,7 +28,7 @@ describe('queryFactory', () => {
         key: 'customers',
         mutationFn: async (input: { name: string }) => ({ id: 'customer-1', ...input }),
       },
-      { invalidateQueries },
+      { invalidateQueries }
     );
 
     await expect(mutation.mutationFn({ name: 'Ada' })).resolves.toEqual({

@@ -1,6 +1,6 @@
-import { Loader2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { useGoogleOAuth } from "@/features/google-workspace/hooks/useGoogleOAuth";
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { useGoogleOAuth } from '@/features/google-workspace/hooks/useGoogleOAuth';
 
 export function ConnectGoogleButton() {
   const { connect, status } = useGoogleOAuth();

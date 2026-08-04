@@ -24,7 +24,6 @@ function AppContextTestProviders({ children }: { children: ReactNode }) {
   );
 }
 
-
 describe('AppContext', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -36,5 +35,4 @@ describe('AppContext', () => {
     // Assuming tests run with mock, the initial setup should not crash
     expect(result.current.services).toHaveLength(0);
   });
-
 });

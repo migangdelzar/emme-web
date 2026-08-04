@@ -9,7 +9,7 @@ export class DashboardPage {
   readonly greeting = () => this.page.getByTestId(tid('dashboard.greeting')!);
   readonly sidebar = () => this.page.getByTestId(tid('sidebar.container')!);
   readonly navItem = (key: string) =>
-    this.page.getByTestId(tid(`nav.${key}` as ElementKey) || findTestId(key) || key).first();
+    this.page.getByTestId(findTestId(key) ?? tid(`nav.${key}` as ElementKey) ?? key).first();
 
   readonly incomeCard = () => this.page.getByTestId(tid('dashboard.incomeToday')!);
   readonly confirmedCard = () => this.page.getByTestId(tid('dashboard.confirmedToday')!);
@@ -20,19 +20,18 @@ export class DashboardPage {
   readonly agendaSection = () => this.page.getByTestId(tid('dashboard.agendaSection')!);
 
   // Fallback: text-based (i18n coverage)
-  readonly greetingByText = () =>
-    this.page.getByRole('heading', { name: t('dashboard.greeting') });
+  readonly greetingByText = () => this.page.getByRole('heading', { name: t('dashboard.greeting') });
   readonly goalLabel = () => this.page.getByTestId(tid('dashboard.goalTitle')!);
   readonly goalProgressPercent = () =>
     this.goalCard().locator('span').filter({ hasText: /%/ }).first();
   readonly emptyAgenda = () =>
-    this.page.getByTestId(tid('dashboard.emptyAgenda')!).or(
-      this.page.getByRole('heading', { name: 'Agenda despejada' }));
+    this.page
+      .getByTestId(tid('dashboard.emptyAgenda')!)
+      .or(this.page.getByRole('heading', { name: 'Agenda despejada' }));
   readonly agendaHeading = () =>
     this.page.getByRole('heading', { name: t('appointments.header'), exact: true });
   readonly viewAllBtn = () => this.page.getByRole('button', { name: 'Ver todo' });
-  readonly appointmentRow = (clientName: string) =>
-    this.agendaSection().getByText(clientName);
+  readonly appointmentRow = (clientName: string) => this.agendaSection().getByText(clientName);
   readonly tenantSelector = () => this.page.getByText('Selecciona tu estudio');
 
   async goto() {

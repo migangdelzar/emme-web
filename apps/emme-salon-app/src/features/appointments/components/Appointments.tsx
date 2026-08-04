@@ -79,6 +79,7 @@ import {
 import { AppointmentForm } from '@/features/appointments/components/AppointmentForm';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { useAppTranslation } from '@/app/translation';
 import {
   DndContext,
   DragOverlay,
@@ -423,6 +424,7 @@ const DroppableColumn = ({
 export function Appointments() {
   const { clients, profile } = useApp();
   const { loading, error, appointments, services, cancelAppointment } = useAppointmentData();
+  const { t } = useAppTranslation();
   const [detailAppointmentId, setDetailAppointmentId] = useState<string | null>(null);
   const [activeAptId, setActiveAptId] = useState<string | null>(null);
 
@@ -463,12 +465,12 @@ export function Appointments() {
       });
 
       if (!isAvailable) {
-        toast.error('El horario seleccionado no está disponible');
+        toast.error(t('appointments.slotUnavailable'));
         return;
       }
 
-      toast.error('Reprogramación no disponible', {
-        description: 'Esta acción requiere la mutación de backend de reagendado.',
+      toast.error(t('appointments.rescheduleUnavailable'), {
+        description: t('appointments.rescheduleRequiresBackend'),
       });
     }
   };
@@ -553,7 +555,7 @@ export function Appointments() {
       text: 'text-amber-600',
       border: 'border-amber-500/10',
       dot: 'bg-amber-500',
-      label: 'Pendiente',
+      label: t('appointments.statuses.pending'),
       glow: 'shadow-[0_0_15px_rgba(245,158,11,0.15)]',
     },
     confirmed: {
@@ -561,7 +563,7 @@ export function Appointments() {
       text: 'text-blue-600',
       border: 'border-blue-500/10',
       dot: 'bg-blue-500',
-      label: 'Confirmada',
+      label: t('appointments.statuses.confirmed'),
       glow: 'shadow-[0_0_15px_rgba(59,130,246,0.15)]',
     },
     completed: {
@@ -569,7 +571,7 @@ export function Appointments() {
       text: 'text-emerald-600',
       border: 'border-emerald-500/10',
       dot: 'bg-emerald-500',
-      label: 'Finalizada',
+      label: t('appointments.statuses.completed'),
       glow: 'shadow-[0_0_15px_rgba(16,185,129,0.15)]',
     },
     cancelled: {
@@ -577,7 +579,7 @@ export function Appointments() {
       text: 'text-rose-600',
       border: 'border-rose-500/10',
       dot: 'bg-rose-500',
-      label: 'Cancelada',
+      label: t('appointments.statuses.cancelled'),
       glow: 'shadow-[0_0_15px_rgba(244,63,94,0.15)]',
     },
   };
@@ -592,14 +594,14 @@ export function Appointments() {
       setConfirmCancelId(aptId);
     } else if (newStatus === 'completed') {
       setAnimatingCompletedId(aptId);
-      toast.error('Cambio de estado no disponible', {
-        description: 'Esta acción requiere una mutación de backend.',
+      toast.error(t('appointments.statusChangeUnavailable'), {
+        description: t('appointments.statusChangeRequiresBackend'),
         icon: <CheckCircle2 className="size-5 text-[#34C759]" />,
       });
       setTimeout(() => setAnimatingCompletedId(null), 2500);
     } else {
-      toast.error('Cambio de estado no disponible', {
-        description: 'Esta acción requiere una mutación de backend.',
+      toast.error(t('appointments.statusChangeUnavailable'), {
+        description: t('appointments.statusChangeRequiresBackend'),
       });
     }
   };
@@ -1185,13 +1187,13 @@ export function Appointments() {
                     try {
                       await cancelAppointment(confirmCancelId);
                       setConfirmCancelId(null);
-                      toast.success('Cita cancelada', {
-                        description: 'El espacio ha sido liberado.',
+                      toast.success(t('appointments.cancelled'), {
+                        description: t('appointments.cancelled'),
                       });
                     } catch (err) {
                       console.error('Cancel mutation failed:', err);
-                      toast.error('No se pudo cancelar la cita', {
-                        description: 'Intenta de nuevo cuando el servicio esté disponible.',
+                      toast.error(t('appointments.cancelFailed'), {
+                        description: t('common.errors.calendar_sync_failed'),
                       });
                     }
                   }
@@ -1448,7 +1450,9 @@ export function Appointments() {
                 ) : (
                   <div className="bg-neutral-50/50 py-32 rounded-[3rem] border-2 border-dashed border-border flex flex-col items-center text-center p-8">
                     <CalendarIcon className="size-16 text-muted-foreground/5 mb-6" />
-                    <h3 className="text-2xl font-bold tracking-tight">Sin citas hoy</h3>
+                    <h3 className="text-2xl font-bold tracking-tight">
+                      {t('appointments.emptyToday')}
+                    </h3>
                     <p className="text-muted-foreground mt-2 font-medium">
                       Disfruta el descanso o agenda una nueva visita.
                     </p>

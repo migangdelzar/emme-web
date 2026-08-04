@@ -28,6 +28,7 @@ import { Label } from '@/shared/ui/label';
 import { cn } from '@/shared/lib/utils';
 import { useApp, type Service, type Client } from '@/context/AppContext';
 import { toast } from 'sonner';
+import { useAppTranslation } from '@/app/translation';
 
 interface AppointmentFormProps {
   onSuccess: () => void;
@@ -43,6 +44,7 @@ export function AppointmentForm({
   initialStartTime,
 }: AppointmentFormProps) {
   const { clients, services, addAppointment, appointments, profile } = useApp();
+  const { t } = useAppTranslation();
 
   const [step, setStep] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,7 +60,11 @@ export function AppointmentForm({
     if (!selectedService) return '#';
     const startDate = new Date(`${date}T${startTime}`);
     const endDate = new Date(startDate.getTime() + selectedService.duration * 60000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const fmt = (d: Date) =>
+      d
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .replace(/\.\d{3}/, '');
     const text = encodeURIComponent(`${selectedService.name} at Emme Nails`);
     const dates = `${fmt(startDate)}/${fmt(endDate)}`;
     const details = encodeURIComponent('Your appointment at Emme Nails');
@@ -166,7 +172,7 @@ export function AppointmentForm({
 
   const handleFinish = () => {
     if (!selectedClient || !selectedService || !startTime) {
-      toast.error('Por favor completa todos los campos');
+      toast.error(t('appointments.formIncomplete'));
       return;
     }
     const [h, m] = startTime.split(':').map(Number);
@@ -182,14 +188,14 @@ export function AppointmentForm({
       status: 'pending',
       notes,
     });
-    toast.success('Cita agendada con éxito');
+    toast.success(t('appointments.created'));
     setBookingConfirmed(true);
   };
 
   const steps = [
-    { id: 1, title: 'Cliente', icon: Users },
-    { id: 2, title: 'Servicio', icon: Sparkle },
-    { id: 3, title: 'Agenda', icon: Clock },
+    { id: 1, title: t('common.clients'), icon: Users },
+    { id: 2, title: t('common.services'), icon: Sparkle },
+    { id: 3, title: t('common.appointments'), icon: Clock },
   ];
 
   return (
@@ -235,14 +241,14 @@ export function AppointmentForm({
                   Paso 01
                 </span>
                 <h3 className="text-[34px] font-display font-semibold tracking-tight leading-tight text-foreground">
-                  ¿Qué <span className="text-primary">Clienta</span> nos visita?
+                  {t('appointments.customerQuestion')}
                 </h3>
               </div>
 
               <div className="relative group">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
-                  placeholder="Buscar por nombre o móvil..."
+                  placeholder={t('appointments.searchCustomer')}
                   className="premium-input bg-secondary/50 border-transparent focus:bg-card pl-16"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -324,7 +330,7 @@ export function AppointmentForm({
                   Paso 02
                 </span>
                 <h3 className="text-[34px] font-display font-semibold tracking-tight leading-tight text-foreground">
-                  Selección de <span className="text-primary">Servicio</span>.
+                  {t('appointments.serviceSelection')}
                 </h3>
               </div>
 
@@ -332,7 +338,7 @@ export function AppointmentForm({
                 <div className="relative group">
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
-                    placeholder="Filtrar tratamiento..."
+                    placeholder={t('appointments.filterService')}
                     className="premium-input bg-secondary/50 border-transparent focus:bg-card pl-16"
                     value={serviceSearchTerm}
                     onChange={(e) => setServiceSearchTerm(e.target.value)}
@@ -426,14 +432,14 @@ export function AppointmentForm({
                   Paso 03
                 </span>
                 <h3 className="text-[34px] font-display font-semibold tracking-tight leading-tight text-foreground">
-                  Agendar <span className="text-[#34C759]">Cita</span>.
+                  {t('appointments.scheduleTitle')}
                 </h3>
               </div>
 
               <div className="space-y-10">
                 <div className="space-y-3">
                   <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground opacity-60 ml-1">
-                    Fecha
+                    {t('appointments.date')}
                   </Label>
                   <Input
                     type="date"
@@ -446,13 +452,13 @@ export function AppointmentForm({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between ml-1">
                     <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">
-                      Horarios Disponibles
+                      {t('appointments.availableTimes')}
                     </Label>
                     <Badge
                       variant="outline"
                       className="text-[9px] font-bold border-[#34C759]/20 text-[#34C759] bg-[#34C759]/5"
                     >
-                      Confirmados
+                      {t('appointments.confirmed')}
                     </Badge>
                   </div>
                   {availableSlots.length > 0 ? (
@@ -472,14 +478,14 @@ export function AppointmentForm({
                         </button>
                       ))}
                     </div>
-            ) : bookingConfirmed ? (
-              <Button
-                onClick={onSuccess}
-                className="flex-1 h-16 rounded-[24px] bg-[#34C759] text-white font-semibold text-lg shadow-2xl shadow-[#34C759]/20 active:scale-95 transition-all"
-              >
-                Cerrar
-              </Button>
-            ) : (
+                  ) : bookingConfirmed ? (
+                    <Button
+                      onClick={onSuccess}
+                      className="flex-1 h-16 rounded-[24px] bg-[#34C759] text-white font-semibold text-lg shadow-2xl shadow-[#34C759]/20 active:scale-95 transition-all"
+                    >
+                      Cerrar
+                    </Button>
+                  ) : (
                     <div className="py-12 rounded-[32px] bg-secondary border border-border flex flex-col items-center justify-center text-center px-10">
                       <p className="text-sm font-medium text-muted-foreground leading-relaxed">
                         No hay horarios disponibles para la fecha seleccionada.
@@ -490,10 +496,10 @@ export function AppointmentForm({
 
                 <div className="space-y-3">
                   <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground opacity-60 ml-1">
-                    Notas de la Cita
+                    {t('appointments.notes')}
                   </Label>
                   <Textarea
-                    placeholder="Algún detalle importante para esta sesión..."
+                    placeholder={t('appointments.notesPlaceholder')}
                     className="min-h-[120px] rounded-[32px] bg-secondary/50 border-transparent focus:bg-card p-6 text-base font-medium resize-none transition-all placeholder:opacity-30"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
@@ -516,7 +522,7 @@ export function AppointmentForm({
                   Confirmado
                 </span>
                 <h3 className="text-[34px] font-display font-semibold tracking-tight leading-tight text-foreground">
-                  ¡Cita <span className="text-[#34C759]">Agendada</span>!
+                  {t('appointments.scheduledTitle')}
                 </h3>
               </div>
 
@@ -538,7 +544,7 @@ export function AppointmentForm({
                 </div>
 
                 <div className="p-4 border rounded-lg bg-muted/50">
-                  <h3 className="font-medium mb-2">Add to your calendar</h3>
+                  <h3 className="font-medium mb-2">{t('appointments.addToCalendar')}</h3>
                   <a
                     href={buildGoogleCalendarLink()}
                     target="_blank"
@@ -546,12 +552,12 @@ export function AppointmentForm({
                     className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
                   >
                     <CalendarIcon className="h-4 w-4" />
-                    Add to Google Calendar
+                    {t('appointments.connectGoogleCalendar')}
                   </a>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Want automatic sync?{' '}
+                    {t('appointments.automaticSync')}{' '}
                     <a href="/#/settings" className="underline">
-                      Connect Google Calendar
+                      {t('appointments.connectGoogleInSettings')}
                     </a>{' '}
                     in Settings.
                   </p>

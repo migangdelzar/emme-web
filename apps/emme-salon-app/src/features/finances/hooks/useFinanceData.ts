@@ -10,13 +10,10 @@ export function useFinanceData() {
 
   const appointments = useMemo(
     () => (aptData?.appointments || []).map(mapAppointmentView),
-    [aptData],
+    [aptData]
   );
 
-  const services = useMemo(
-    () => (svcData?.services || []).map(mapNailServiceView),
-    [svcData],
-  );
+  const services = useMemo(() => (svcData?.services || []).map(mapNailServiceView), [svcData]);
 
   const servicePriceMap = useMemo(() => {
     const m = new Map<string, number>();
@@ -29,31 +26,32 @@ export function useFinanceData() {
   const completedAppointments = useMemo(
     () =>
       appointments.filter(
-        (a: { status: string }) => a.status === 'completed' || a.status === 'confirmed',
+        (a: { status: string }) => a.status === 'completed' || a.status === 'confirmed'
       ),
-    [appointments],
+    [appointments]
   );
 
   const totalRevenue = useMemo(
     () =>
       completedAppointments.reduce(
         (sum: number, a: { serviceId: string }) => sum + (servicePriceMap.get(a.serviceId) || 0),
-        0,
+        0
       ),
-    [completedAppointments, servicePriceMap],
+    [completedAppointments, servicePriceMap]
   );
 
   const revenueToday = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
     return completedAppointments
       .filter((a: { date: string }) => a.date === today)
-      .reduce((sum: number, a: { serviceId: string }) => sum + (servicePriceMap.get(a.serviceId) || 0), 0);
+      .reduce(
+        (sum: number, a: { serviceId: string }) => sum + (servicePriceMap.get(a.serviceId) || 0),
+        0
+      );
   }, [completedAppointments, servicePriceMap]);
 
   const averageTicket =
-    completedAppointments.length > 0
-      ? Math.round(totalRevenue / completedAppointments.length)
-      : 0;
+    completedAppointments.length > 0 ? Math.round(totalRevenue / completedAppointments.length) : 0;
 
   return {
     loading: aptLoading || svcLoading,

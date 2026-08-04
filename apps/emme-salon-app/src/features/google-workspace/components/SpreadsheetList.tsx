@@ -1,23 +1,23 @@
-import { ExternalLink, FileSpreadsheet, Loader2 } from "lucide-react";
-import { Card, CardContent } from "@/shared/ui/card";
-import { useSheetsExport } from "@/features/google-workspace/hooks/useSheetsExport";
-import { cn } from "@/shared/lib/utils";
+import { ExternalLink, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Card, CardContent } from '@/shared/ui/card';
+import { useSheetsExport } from '@/features/google-workspace/hooks/useSheetsExport';
+import { cn } from '@/shared/lib/utils';
 
 const typeLabels: Record<string, string> = {
-  APPOINTMENTS: "Citas",
-  CLIENTS: "Clientes",
-  FULL: "Completo",
+  APPOINTMENTS: 'Citas',
+  CLIENTS: 'Clientes',
+  FULL: 'Completo',
 };
 
 function formatDate(iso?: string): string {
-  if (!iso) return "";
+  if (!iso) return '';
   try {
-    return new Date(iso).toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(iso).toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   } catch {
     return iso;
@@ -38,9 +38,7 @@ export function SpreadsheetList() {
 
   if (!sheets.data?.length) {
     return (
-      <p className="py-4 text-sm text-muted-foreground">
-        No hay hojas de cálculo exportadas aún.
-      </p>
+      <p className="py-4 text-sm text-muted-foreground">No hay hojas de cálculo exportadas aún.</p>
     );
   }
 
@@ -58,8 +56,8 @@ export function SpreadsheetList() {
           >
             <Card
               className={cn(
-                "hover:bg-secondary/50 transition-colors cursor-pointer",
-                "border-border"
+                'hover:bg-secondary/50 transition-colors cursor-pointer',
+                'border-border'
               )}
             >
               <CardContent className="flex items-center justify-between py-3 px-4">

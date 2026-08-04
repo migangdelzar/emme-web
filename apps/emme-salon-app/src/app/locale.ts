@@ -44,7 +44,7 @@ function browserStorage(): LocaleStorage | undefined {
 
 export function getInitialLocale(
   storage: Pick<LocaleStorage, 'getItem'> | undefined = browserStorage(),
-  languages?: readonly string[],
+  languages?: readonly string[]
 ): Locale {
   const savedLocale = storage?.getItem(LOCALE_PREFERENCE_STORAGE_KEY);
   if (savedLocale && isSupportedPreference(savedLocale)) return normalizeLocale(savedLocale);
@@ -53,7 +53,7 @@ export function getInitialLocale(
 
 export function persistLocale(
   locale: Locale,
-  storage: Pick<LocaleStorage, 'setItem'> | undefined = browserStorage(),
+  storage: Pick<LocaleStorage, 'setItem'> | undefined = browserStorage()
 ): void {
   storage?.setItem(LOCALE_PREFERENCE_STORAGE_KEY, locale);
 }

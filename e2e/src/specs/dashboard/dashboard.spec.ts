@@ -12,7 +12,15 @@ test.describe('Dashboard Page', { tag: [Tag.DASHBOARD, Tag.REGRESSION] }, () => 
 
   test('shows greeting with user name', async ({ authenticatedPage }) => {
     const dashboard = new DashboardPage(authenticatedPage);
-    await expect(dashboard.greeting()).toContainText(t('dashboard.greeting'));
+    await expect(dashboard.greeting()).toContainText(
+      new RegExp(
+        [
+          t('dashboard.greetingMorning'),
+          t('dashboard.greetingAfternoon'),
+          t('dashboard.greetingEvening'),
+        ].join('|')
+      )
+    );
   });
 
   test('shows KPI stat cards', async ({ authenticatedPage }) => {

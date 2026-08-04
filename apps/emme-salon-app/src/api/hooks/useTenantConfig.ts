@@ -27,7 +27,7 @@ export function useBusinessProfile() {
   return useQuery<BusinessProfile>({
     queryKey: ['businessProfile'],
     queryFn: () => api.get<BusinessProfile>('/api/business-config/profile'),
-    retry: false,   // 404 expected for new tenants — don't spam retries
+    retry: false, // 404 expected for new tenants — don't spam retries
   });
 }
 

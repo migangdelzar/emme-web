@@ -39,6 +39,6 @@ export const useUiStore = create<UiStore>()(
     {
       name: 'emme-ui-state',
       partialize: ({ isFirstTime }) => ({ isFirstTime }),
-    },
-  ),
+    }
+  )
 );

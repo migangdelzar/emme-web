@@ -17,6 +17,8 @@ modules, validated i18n resources, and reproducible quality gates.
 - [x] Unit tests cover the new HTTP adapter and transport mapping boundaries.
 - [x] Architecture documentation states the ownership and dependency rules.
 - [x] Documentation, typecheck, lint, tests, build, and security checks pass.
+- [x] Typed locale resources, i18n usage enforcement, Prettier, and mock
+      accessibility/browser-flow gates pass.
 - [x] Every change is committed and pushed on the feature branch.
 
 ## Working notes
@@ -45,7 +47,7 @@ stable public module barrels.
 - [x] Update stale E2E assertions to the current app UI contract.
 - [x] Remove unreachable/incomplete legacy E2E helpers, duplicate flow classes,
       and an unreferenced onboarding debug image.
-- [ ] Remove or retain remaining legacy E2E scaffolding only after the full
+- [x] Remove or retain remaining legacy E2E scaffolding only after the full
       suite is green and every candidate is confirmed unreachable.
 - [ ] Audit the sibling `emme-service` repository for duplicate metadata,
       unused source candidates, and generated artifacts.
@@ -60,8 +62,35 @@ stable public module barrels.
       refs, explicit service URL, credential secrets, and artifact retention.
 - [ ] Provision a deterministic Keycloak/service environment and run the real
       workflow; this is an environment prerequisite, not a hidden mock fallback.
-- [ ] Add shell/accessibility/transport guards and run the complete quality
-      matrix.
+- [x] Add shell/accessibility/transport guards and run the complete local
+      quality matrix.
+- [ ] Run the real recording lane after a provisioned Keycloak/service
+      environment is supplied; the workflow deliberately fails closed without
+      those external prerequisites.
+
+## i18n and legacy cleanup checkpoint — 2026-08-03
+
+- [x] Consolidate locale ownership under `packages/i18n`.
+- [x] Remove unused duplicated app-local locale JSON.
+- [x] Add typed `useAppTranslation` boundary and locale parity validation.
+- [x] Reject direct feature imports of `react-i18next` and `namespace:key`
+      translation syntax.
+- [x] Migrate application shell, authentication, tenant selection, dashboard,
+      appointments, clients, services, settings, finances, onboarding, and
+      Google Workspace hooks to the shared boundary.
+- [x] Document the i18n architecture and CI contract with Mermaid diagrams.
+
+## CI and dependency security checkpoint — 2026-08-03
+
+- [x] Add i18n, formatting, typecheck, lint, unit, build, mock E2E, and audit
+      gates to frontend CI.
+- [x] Upgrade audited transitive dependencies for `fast-uri`, `ip-address`,
+      and `undici`; `bun audit --audit-level=high` is clean.
+- [x] Run the complete `bun run quality` pipeline successfully.
+- [x] Run the complete mock browser suite: 70 discovered, 44 executed and
+      passing, with 26 explicitly real-only skips.
+- [ ] Reduce the existing non-blocking ESLint warning baseline; warnings do not
+      currently fail CI, but each should become an owned cleanup slice.
 
 ### Working notes
 

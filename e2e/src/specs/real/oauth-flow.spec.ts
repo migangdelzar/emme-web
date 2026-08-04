@@ -15,7 +15,6 @@ test.describe('OAuth2 Login Flow', { tag: [Tag.AUTH, Tag.CRITICAL, Tag.HAPPY_PAT
   test('login redirects to Keycloak', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: /ingresar|Iniciar/i }).click();
-    await page.waitForTimeout(1000);
     // App uses BFF login form (its own "Bienvenida." form)
     await expect(page.getByPlaceholder(/email|usuario/i)).toBeVisible({ timeout: 5000 });
     await expect(page.getByRole('button', { name: /Iniciar|Ingresar/i })).toBeVisible();

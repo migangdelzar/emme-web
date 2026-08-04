@@ -2,12 +2,25 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { HashRouter } from 'react-router-dom';
 import { Sidebar } from './Navigation';
-import { useTranslation } from 'react-i18next';
 
-// Mock translation
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string) =>
+      ({
+        'common.dashboard': 'dashboard',
+        'common.appointments': 'appointments',
+        'common.finances': 'finances',
+        'common.clients': 'clients',
+        'common.services': 'services',
+        'common.settings': 'settings',
+        'common.socialConnect': 'Social Connect',
+        'common.copyProfile': 'Copy profile',
+        'common.directActions': 'Quick actions',
+        'common.newAppointment': 'New appointment',
+        'common.addClient': 'Add client',
+        'common.registerService': 'Register service',
+      })[key] ?? key,
+    i18n: { resolvedLanguage: 'en-US' },
   }),
 }));
 

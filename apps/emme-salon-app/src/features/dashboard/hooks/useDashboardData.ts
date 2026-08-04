@@ -63,7 +63,9 @@ export function useDashboardData(): DashboardData {
       try {
         const data = JSON.parse(e.data);
         setNotifications((prev) => [...prev.slice(-9), data.message || 'New notification']);
-      } catch { /* ignore malformed payloads */ }
+      } catch {
+        /* ignore malformed payloads */
+      }
     });
 
     source.onerror = () => {
@@ -78,18 +80,15 @@ export function useDashboardData(): DashboardData {
 
   const appointments = useMemo(
     () => (aptData?.appointments || []).map(mapAppointmentView),
-    [aptData],
+    [aptData]
   );
 
   const allAppointments = useMemo(
     () => (allAptData?.appointments || []).map(mapAppointmentView),
-    [allAptData],
+    [allAptData]
   );
 
-  const services = useMemo(
-    () => (svcData?.services || []).map(mapNailServiceView),
-    [svcData],
-  );
+  const services = useMemo(() => (svcData?.services || []).map(mapNailServiceView), [svcData]);
 
   const serviceMap = useMemo(() => {
     const map = new Map<string, Service>();
@@ -102,18 +101,18 @@ export function useDashboardData(): DashboardData {
       appointments
         .filter((a) => a.status === 'confirmed' || a.status === 'completed')
         .reduce((sum, a) => sum + (serviceMap.get(a.serviceId)?.price || 0), 0),
-    [appointments, serviceMap],
+    [appointments, serviceMap]
   );
 
   const confirmedToday = useMemo(
     () => appointments.filter((a) => a.status === 'confirmed').length,
-    [appointments],
+    [appointments]
   );
 
   const occupancy = useMemo(() => {
     const totalMinutes = appointments.reduce(
       (sum, a) => sum + (serviceMap.get(a.serviceId)?.duration || 0),
-      0,
+      0
     );
     return Math.min(100, Math.round((totalMinutes / 480) * 100));
   }, [appointments, serviceMap]);
@@ -128,17 +127,15 @@ export function useDashboardData(): DashboardData {
     () =>
       allAppointments
         .filter(
-          (a) =>
-            isCurrentMonth(a.date) &&
-            (a.status === 'confirmed' || a.status === 'completed'),
+          (a) => isCurrentMonth(a.date) && (a.status === 'confirmed' || a.status === 'completed')
         )
         .reduce((sum, a) => sum + (serviceMap.get(a.serviceId)?.price || 0), 0),
-    [allAppointments, serviceMap],
+    [allAppointments, serviceMap]
   );
 
   const monthlyAppointments = useMemo(
     () => allAppointments.filter((a) => isCurrentMonth(a.date)),
-    [allAppointments],
+    [allAppointments]
   );
 
   const error = aptError?.message || svcError?.message || null;

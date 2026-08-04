@@ -9,10 +9,7 @@ export interface RuntimeConfig {
   sentryDsn: string | null;
 }
 
-const REQUIRED_PUBLIC_KEYS = [
-  'VITE_API_BASE_URL',
-  'VITE_WEB_BASE_DOMAIN',
-] as const;
+const REQUIRED_PUBLIC_KEYS = ['VITE_API_BASE_URL', 'VITE_WEB_BASE_DOMAIN'] as const;
 
 const SECRET_KEY_PATTERNS = [
   /SECRET/i,
@@ -27,12 +24,7 @@ const SECRET_KEY_PATTERNS = [
   /GATEWAY_AUTOMATION_TOKEN/i,
 ];
 
-const ENVIRONMENTS = new Set<AppEnvironment>([
-  'local',
-  'development',
-  'staging',
-  'production',
-]);
+const ENVIRONMENTS = new Set<AppEnvironment>(['local', 'development', 'staging', 'production']);
 
 export function parseRuntimeConfig(input: RuntimeConfigInput): RuntimeConfig {
   rejectSecretLikeKeys(input);
@@ -79,8 +71,6 @@ function rejectSecretLikeKeys(input: RuntimeConfigInput): void {
     SECRET_KEY_PATTERNS.some((pattern) => pattern.test(key))
   );
   if (secretKey) {
-    throw new Error(
-      `Secret-like config key is not allowed in the client bundle: ${secretKey}`
-    );
+    throw new Error(`Secret-like config key is not allowed in the client bundle: ${secretKey}`);
   }
 }

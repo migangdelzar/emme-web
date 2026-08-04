@@ -28,10 +28,7 @@ export function useClientData() {
   const updateMutation = useUpdateCustomer();
   const deleteMutation = useDeleteCustomer();
 
-  const clients: Client[] = useMemo(
-    () => (data?.customers || []).map(mapClientView),
-    [data],
-  );
+  const clients: Client[] = useMemo(() => (data?.customers || []).map(mapClientView), [data]);
 
   const addClient = useCallback(
     async (client: Omit<Client, 'id'>) => {
@@ -46,7 +43,7 @@ export function useClientData() {
         birthday: client.birthday || null,
       });
     },
-    [createMutation],
+    [createMutation]
   );
 
   const updateClient = useCallback(
@@ -63,14 +60,14 @@ export function useClientData() {
         birthday: client.birthday || null,
       });
     },
-    [updateMutation],
+    [updateMutation]
   );
 
   const deleteClient = useCallback(
     async (clientId: string) => {
       await deleteMutation.mutateAsync(clientId);
     },
-    [deleteMutation],
+    [deleteMutation]
   );
 
   return {
