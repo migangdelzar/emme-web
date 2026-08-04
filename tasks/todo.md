@@ -68,6 +68,29 @@ stable public module barrels.
       environment is supplied; the workflow deliberately fails closed without
       those external prerequisites.
 
+## Clara-style ephemeral full-stack recordings — 2026-08-04
+
+- [x] Define the cross-repository workflow contract with explicit web/service
+      refs, artifact retention, and always-run cleanup.
+- [x] Keep the initial refs on `feat/api-version-contract` and
+      `feat/enterprise-module-template-conformance`; switch them to `main` only
+      after both branches merge.
+- [x] Start the service-owned PostgreSQL, Redis, Keycloak, and migration stack
+      from the workflow contract.
+- [x] Start the immutable service image through service-owned Compose and the
+      selected web ref through Playwright's dev server.
+- [x] Invoke the service-owned typed `:tools:e2e-provisioner` for the
+      tenant-owner identity and tenant membership baseline.
+- [ ] Run all real tenant-owner recording journeys with credentials from
+      GitHub Actions secrets.
+- [x] Upload recordings, Playwright reports, traces, screenshots, and service
+      logs, then verify teardown removes volumes and orphan containers in the
+      workflow contract.
+- [x] Add a service-owned E2E fixture contract covering all applicable module
+      entities and scenario coverage.
+- [ ] Add repository-specific CodeRabbit guidance and reduce review noise from
+      generated artifacts.
+
 ## i18n and legacy cleanup checkpoint — 2026-08-03
 
 - [x] Consolidate locale ownership under `packages/i18n`.

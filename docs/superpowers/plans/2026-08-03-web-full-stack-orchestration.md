@@ -13,6 +13,7 @@
 - The workflow is real-only: no mock fallback is permitted when recording.
 - Both repository refs are explicit workflow inputs and default to the current feature branches until merge.
 - The service image is built once and started through service-owned Compose.
+- Disposable identity and tenant provisioning is executed by the service repository's typed `:tools:e2e-provisioner` Gradle application.
 - The web development server is started from the checked-out web ref.
 - Credentials are GitHub Actions secrets and are never written to artifacts.
 - Videos, traces, HTML reports, JSON reports, service logs, Compose logs, and failed screenshots are retained as artifacts.
@@ -24,19 +25,21 @@
 ### Task 1: Normalize the full-stack workflow contract
 
 **Files:**
+
 - Modify: `.github/workflows/real-e2e-recordings.yml`
 - Modify: `e2e/src/specs/real/recording-workflow.contract.spec.ts`
 - Modify: `e2e/README.md`
 - Modify: `tasks/todo.md`
 
 **Interfaces:**
+
 - Inputs: `service_ref`, `web_ref`, and `e2e_owner_username`.
 - Environment: `EMME_SERVICE_IMAGE`, `E2E_BASE_URL`, `E2E_API_URL`, `E2E_KEYCLOAK_USERNAME`, and `E2E_KEYCLOAK_PASSWORD`.
 - Artifacts: `emme-real-full-stack-recordings-${{ github.run_id }}` and `emme-real-full-stack-diagnostics-${{ github.run_id }}`.
 
 - [ ] **Step 1: Extend the workflow contract test.**
 
-Assert that the workflow checks out both refs, invokes `containerBuild`, validates Compose with runtime and E2E overlays, starts `emme-platform` through Compose, runs `test:real:recordings`, uploads the recording directory, and tears down with `--volumes --remove-orphans`. Assert that it contains no host `java -jar` or PID-management path.
+Assert that the workflow checks out both refs, builds the selected service image with `bootBuildImage`, validates Compose with runtime and E2E overlays, starts `emme-platform` through Compose, invokes `:tools:e2e-provisioner`, runs `test:real:recordings`, uploads the recording directory, and tears down with `--volumes --remove-orphans`. Assert that it contains no host `java -jar`, PID-management path, or dynamic provisioning shell script.
 
 - [ ] **Step 2: Run the contract test before implementation.**
 
@@ -48,12 +51,14 @@ Expected: FAIL because the current workflow starts a boot JAR on the runner.
 
 - [ ] **Step 3: Update the workflow.**
 
-The service step must:
+The service steps must:
 
 ```bash
-./gradlew :applications:emme-platform:bootJar containerBuild \
-  -Pemme.container.imageName="emme-service:e2e-sha-${GITHUB_SHA}" \
-  -Pemme.container.imageTags="e2e-sha-${GITHUB_SHA}" \
+./gradlew :applications:emme-platform:bootBuildImage \
+  --imageName="${EMME_SERVICE_IMAGE}" \
+  --no-daemon --no-configuration-cache --stacktrace
+
+./gradlew :tools:e2e-provisioner:run \
   --no-daemon --no-configuration-cache --stacktrace
 ```
 
@@ -85,12 +90,14 @@ git commit -m "ci(e2e): orchestrate service image full-stack recordings"
 ### Task 2: Start the selected web ref and expose the real API contract
 
 **Files:**
+
 - Modify: `e2e/src/playwright.config.ts`
 - Modify: `e2e/src/fixtures/testWithUser.ts`
 - Modify: `apps/emme-salon-app/package.json`
 - Test: `e2e/src/specs/real/session.spec.ts`
 
 **Interfaces:**
+
 - The browser uses `E2E_BASE_URL` for navigation.
 - Real fixtures use `E2E_API_URL` and `E2E_KEYCLOAK_USERNAME`/`E2E_KEYCLOAK_PASSWORD`.
 - Playwright starts the selected web app with the workflow-provided `VITE_API_BASE_URL`.
@@ -130,11 +137,13 @@ git commit -m "test(e2e): enforce explicit real runtime configuration"
 ### Task 3: Archive complete evidence and guarantee teardown
 
 **Files:**
+
 - Modify: `.github/workflows/real-e2e-recordings.yml`
 - Modify: `e2e/README.md`
 - Test: `e2e/src/specs/real/recording-workflow.contract.spec.ts`
 
 **Interfaces:**
+
 - Recording artifacts include `e2e/src/test-results/real-recordings` and `e2e/src/playwright-report`.
 - Diagnostics include service logs, Compose logs, Keycloak logs, and a rendered Compose configuration.
 
@@ -163,12 +172,14 @@ git commit -m "ci(e2e): archive full-stack diagnostics safely"
 ### Task 4: Add container smoke verification for the web image
 
 **Files:**
+
 - Create: `.github/workflows/container-smoke.yml`
 - Modify: `apps/emme-salon-app/Dockerfile`
 - Create: `apps/emme-salon-app/compose.web-smoke.yaml`
 - Test: `e2e/src/specs/real/container-smoke-workflow.contract.spec.ts`
 
 **Interfaces:**
+
 - Full-stack recordings use the web development server for source-level diagnostics.
 - Container smoke uses the built web image and the service image without recording videos.
 
@@ -197,6 +208,7 @@ git commit -m "ci(container): smoke test the web image with service runtime"
 ### Task 5: Run full web verification and publish the branch
 
 **Files:**
+
 - Modify: `docs/superpowers/plans/2026-08-03-web-full-stack-orchestration.md`
 - Modify: `tasks/todo.md`
 
@@ -229,4 +241,3 @@ Verify the run uploads videos, traces, HTML report, JSON report, service logs, a
 - [ ] **Step 4: Record evidence and push.**
 
 Update this plan and `tasks/todo.md`, commit logical slices, push `feat/api-version-contract`, and verify the remote head.
-
