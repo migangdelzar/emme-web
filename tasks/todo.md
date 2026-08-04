@@ -191,3 +191,35 @@ Keep shared HTTP behavior in `@emme/api-client`, capability adapters in
 - [x] No salon-specific endpoint methods are added to `@emme/api-client`.
 - [x] FSD/API dependency direction is documented.
 - [x] Full verification and push are complete.
+
+## Developer workflow and coverage gates — 2026-08-03
+
+### Goal
+
+Keep local hooks, Mise tasks, and GitHub Actions aligned without making every
+commit run the slowest browser or full-stack suites.
+
+### Decisions
+
+- [x] Use Husky only for repository-local JavaScript/TypeScript staged-file
+      formatting and linting.
+- [x] Use a fast pre-push quality subset; CI remains authoritative for build,
+      audit, mock E2E, and real full-stack recording.
+- [x] Use Vitest V8 coverage for the web application; JaCoCo belongs to the
+      Java service repository.
+- [x] Keep `spotlessApply` and Prettier write commands explicit; validation
+      hooks use `spotlessCheck`, Prettier check, and ESLint.
+- [x] Expose the same intent through stable Mise task names.
+- [x] Add dependency update and secret scanning automation without printing
+      credentials or password values.
+
+### Implementation and verification
+
+- [x] Add Husky pre-commit and pre-push hooks.
+- [x] Add a web coverage command with an honest ratchet threshold.
+- [x] Normalize Mise aliases for install, format, quality, coverage, and E2E.
+- [x] Improve CI job and step names while retaining required check semantics.
+- [x] Add Dependabot and repository security metadata.
+- [x] Run local formatting, typecheck, lint, unit, coverage, build, audit, and
+      mock E2E checks.
+- [ ] Push and verify the GitHub Actions workflow.

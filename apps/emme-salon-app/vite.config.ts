@@ -88,6 +88,16 @@ export default defineConfig(({ mode }) => {
       environment: 'happy-dom',
       setupFiles: './src/setupTests.ts',
       include: ['src/**/*.test.{ts,tsx}'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json-summary', 'html'],
+        thresholds: {
+          statements: 55,
+          branches: 50,
+          functions: 40,
+          lines: 60,
+        },
+      },
     },
   };
 });

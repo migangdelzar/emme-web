@@ -12,13 +12,15 @@
     "build": "bun run --filter '*' build",
     "lint": "bun run --filter '*' lint",
     "test": "bun run --filter @emme/i18n test && bun run --filter @emme/contracts test && bun run --filter @emme/emme-salon-app test && bun run --filter @emme/api-client test",
+    "test:coverage": "bun run --filter @emme/emme-salon-app test:coverage",
     "test:e2e": "bun run --filter @emme/e2e test",
     "test:e2e:mock": "bun run --filter @emme/e2e test",
     "docs:check": "node scripts/validate-markdown.mjs",
     "i18n:check": "node scripts/validate-i18n-usage.mjs && bun run --filter @emme/i18n validate",
     "format:check": "bun run --filter @emme/emme-salon-app format:check",
     "security:check": "bun audit --audit-level=high --ignore GHSA-qwww-vcr4-c8h2 --ignore GHSA-mh99-v99m-4gvg",
-    "quality": "bun run docs:check && bun run i18n:check && bun run format:check && bun run typecheck && bun run lint && bun run test && bun run build && bun run security:check"
+    "quality": "bun run docs:check && bun run i18n:check && bun run format:check && bun run typecheck && bun run lint && bun run test && bun run test:coverage && bun run build && bun run security:check",
+    "prepare": "husky"
   },
   "engines": {
     "bun": ">=1.2"
@@ -31,6 +33,7 @@
     "undici": "7.29.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "husky": "^9.1.7"
   }
 }
