@@ -12,6 +12,20 @@ export const translations: Record<Locale, TranslationCatalog> = {
 
 export const els = elements;
 
+type ElementReference = { testId: string; i18nKey?: string };
+type JoinPath<Prefix extends string, Key extends string> = Prefix extends ''
+  ? Key
+  : `${Prefix}.${Key}`;
+type ElementPaths<T, Prefix extends string = ''> = {
+  [Key in keyof T & string]: T[Key] extends string | ElementReference
+    ? JoinPath<Prefix, Key>
+    : T[Key] extends Record<string, unknown>
+      ? ElementPaths<T[Key], JoinPath<Prefix, Key>>
+      : never;
+}[keyof T & string];
+
+export type ElementKey = ElementPaths<typeof els>;
+
 type LeafPaths<T, Prefix extends string = ''> = {
   [Key in keyof T & string]: T[Key] extends string
     ? `${Prefix}${Key}`
@@ -22,16 +36,15 @@ type LeafPaths<T, Prefix extends string = ''> = {
 
 export type TranslationKey = LeafPaths<TranslationCatalog>;
 
-export type TranslationResources = Record<
-  Locale,
-  Record<keyof TranslationCatalog, TranslationCatalog[keyof TranslationCatalog]>
->;
+export type TranslationResources = Record<Locale, { translation: TranslationCatalog }>;
+
+const resources: TranslationResources = {
+  'en-US': { translation: enUS },
+  'es-MX': { translation: esMX },
+};
 
 export function getResources(): TranslationResources {
-  return {
-    'en-US': enUS,
-    'es-MX': esMX,
-  };
+  return resources;
 }
 
 export function t(key: TranslationKey, locale: Locale = 'es-MX'): string {
@@ -39,11 +52,13 @@ export function t(key: TranslationKey, locale: Locale = 'es-MX'): string {
   return typeof value === 'string' ? value : key;
 }
 
-export function tid(key: string): string | undefined {
+export function tid(key: ElementKey): string {
   const value = readPath(els, key);
-  return typeof value === 'object' && value !== null && 'testId' in value
-    ? (value as { testId?: string }).testId
-    : undefined;
+  return typeof value === 'string'
+    ? value
+    : typeof value === 'object' && value !== null && 'testId' in value
+    ? (value as { testId?: string }).testId ?? key
+    : key;
 }
 
 function readPath(root: unknown, path: string): unknown {

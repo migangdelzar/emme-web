@@ -27,7 +27,11 @@ describe('i18n catalog', () => {
   });
 
   it('exposes resources for the application i18n adapter', () => {
-    expect(getResources()['en-US'].common).toBe(enUS.common);
-    expect(getResources()['es-MX'].common).toBe(esMX.common);
+    expect(getResources()['en-US'].translation).toBe(enUS);
+    expect(getResources()['es-MX'].translation).toBe(esMX);
+  });
+
+  it('resolves element ids from the typed element catalog', () => {
+    expect(tid('dashboard.agendaSection')).toBe('dashboard-agenda');
   });
 });

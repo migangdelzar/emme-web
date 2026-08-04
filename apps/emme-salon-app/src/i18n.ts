@@ -1,25 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { translations, type Locale } from '@emme/i18n';
+import { getResources, type Locale } from '@emme/i18n';
 import { getInitialLocale, persistLocale } from './app/locale';
 
 export const NAMESPACES = ['common', 'dashboard', 'appointments', 'clients', 'services', 'finances', 'settings', 'auth'] as const;
 
 const DEFAULT_LOCALE: Locale = 'en-US';
-
-const i18nBackend = {
-  type: 'backend' as const,
-  init() {},
-  read(locale: string, namespace: string, callback: Function) {
-    try {
-      const all = translations[locale as Locale] || translations[DEFAULT_LOCALE];
-      // Return namespace-specific portion (e.g., namespace "nav" → all.nav)
-      callback(null, all[namespace] || all);
-    } catch {
-      callback(null, null);
-    }
-  },
-};
 
 function synchronizeDocumentLanguage(locale: string): void {
   if (typeof document !== 'undefined') document.documentElement.lang = locale;
@@ -29,10 +15,9 @@ const initialLocale = getInitialLocale();
 synchronizeDocumentLanguage(initialLocale);
 i18n.on('languageChanged', synchronizeDocumentLanguage);
 
-i18n
-  .use(i18nBackend)
-  .use(initReactI18next)
+i18n.use(initReactI18next)
   .init({
+    resources: getResources(),
     lng: initialLocale,
     fallbackLng: DEFAULT_LOCALE,
     ns: NAMESPACES as unknown as string[],
