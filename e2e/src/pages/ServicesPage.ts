@@ -85,4 +85,9 @@ export class ServicesPage {
   async goto() {
     await this.page.goto(PAGE.SERVICES);
   }
+
+  async editService(name: string): Promise<void> {
+    await this.serviceCard(name).getByRole('button', { name: `Editar ${name}` }).click();
+    await this.addDialogByRole().waitFor({ state: 'visible' });
+  }
 }

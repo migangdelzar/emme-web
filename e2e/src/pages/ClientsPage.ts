@@ -11,6 +11,10 @@ export class ClientsPage {
   readonly emptyState = () => this.page.getByTestId(tid('clients.empty')!);
   readonly addButton = () => this.page.getByTestId(tid('clients.addButton')!);
   readonly dialog = () => this.page.getByTestId(tid('clients.dialog')!);
+  readonly customerNameInput = () => this.dialog().getByPlaceholder('Ej. Sofia Villarreal');
+  readonly customerPhoneInput = () => this.dialog().getByPlaceholder('55 1234 5678');
+  readonly continueButton = () => this.dialog().getByRole('button', { name: 'Continuar' });
+  readonly finishButton = () => this.dialog().getByRole('button', { name: 'Finalizar' });
 
   // Fallback: text-based (i18n coverage)
   readonly clientRow = (name: string) => this.page.locator(`text=${name}`).first();
@@ -18,5 +22,14 @@ export class ClientsPage {
 
   async goto() {
     await this.page.goto(PAGE.CLIENTS);
+  }
+
+  async createCustomer(name: string, phone: string): Promise<void> {
+    await this.page.goto(`${PAGE.CLIENTS}?add=true`);
+    await this.dialog().waitFor({ state: 'visible' });
+    await this.customerNameInput().fill(name);
+    await this.customerPhoneInput().fill(phone);
+    await this.continueButton().click();
+    await this.finishButton().click();
   }
 }

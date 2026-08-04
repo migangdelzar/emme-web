@@ -81,10 +81,35 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
             if (method === 'GET') return fulfill(route, json(table.all()));
             if (method === 'POST') {
               const body = route.request().postDataJSON() || {};
-              return fulfill(route, json(table.insert({ id: crypto.randomUUID(), ...body }), 201));
+              const id = crypto.randomUUID();
+              const item = apiPath === API.SERVICES
+                ? { id, ...body, price: body.basePrice ?? body.price ?? 0, duration: body.durationMinutes ?? body.duration ?? 0, isActive: true }
+                : apiPath === API.APPOINTMENTS
+                  ? { id, ...body, clientId: body.customerId ?? body.clientId, date: body.startsAt?.split('T')[0], startTime: body.startsAt?.split('T')[1]?.slice(0, 5), endTime: body.endsAt?.split('T')[1]?.slice(0, 5), status: 'pending' }
+                  : { id, ...body };
+              return fulfill(route, json(table.insert(item), 201));
             }
-            if (method === 'PUT') return fulfill(route, json(route.request().postDataJSON() || {}));
+            if (method === 'PUT') {
+              const body = route.request().postDataJSON() || {};
+              const id = pathname.split('/').pop()!;
+              const current = table.find(id);
+              const patch = apiPath === API.SERVICES
+                ? { ...body, price: body.basePrice ?? body.price ?? current?.price, duration: body.durationMinutes ?? body.duration ?? current?.duration }
+                : body;
+              const updated = table.update(id, patch);
+              return fulfill(route, json(updated ?? { ...body, id }));
+            }
             return fulfill(route, json([]));
+          }
+          if (pathname.startsWith(`${apiPath}/`) && method === 'PUT') {
+            const body = route.request().postDataJSON() || {};
+            const id = pathname.split('/').pop()!;
+            const current = table.find(id);
+            const patch = apiPath === API.SERVICES
+              ? { ...body, price: body.basePrice ?? body.price ?? current?.price, duration: body.durationMinutes ?? body.duration ?? current?.duration }
+              : body;
+            const updated = table.update(id, patch);
+            return fulfill(route, json(updated ?? { ...body, id }));
           }
         }
 
@@ -102,9 +127,17 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
       }),
 
       // Appointment cancel
-      page.route(`**${API.APPOINTMENTS}/*/cancel`, async (route) => fulfill(route, json({}))),
+      page.route(`**${API.APPOINTMENTS}/*/cancel`, async (route) => {
+        const id = new URL(route.request().url()).pathname.split('/').at(-2)!;
+        const updated = db.appointments.update(id, { status: 'cancelled' });
+        return fulfill(route, json(updated ?? { id, status: 'cancelled' }));
+      }),
       // Services retire
-      page.route(`**${API.SERVICES}/*/retire`, async (route) => fulfill(route, json({}))),
+      page.route(`**${API.SERVICES}/*/retire`, async (route) => {
+        const id = new URL(route.request().url()).pathname.split('/').at(-2)!;
+        db.services.remove(id);
+        return fulfill(route, json({}));
+      }),
       // Keycloak OIDC mock
       page.route('**/realms/**/.well-known/**', async (route) => fulfill(route, json({
         issuer: 'http://localhost:8180/realms/emme',

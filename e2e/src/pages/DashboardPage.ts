@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { PAGE } from '@routes/routes';
-import { t, tid, findTestId } from '@emme/i18n';
+import { t, tid, findTestId, type ElementKey } from '@emme/i18n';
 
 export class DashboardPage {
   constructor(readonly page: Page) {}
@@ -9,7 +9,7 @@ export class DashboardPage {
   readonly greeting = () => this.page.getByTestId(tid('dashboard.greeting')!);
   readonly sidebar = () => this.page.getByTestId(tid('sidebar.container')!);
   readonly navItem = (key: string) =>
-    this.page.getByTestId(tid(`nav.${key}`) ?? findTestId(key) ?? key).first();
+    this.page.getByTestId(tid(`nav.${key}` as ElementKey) || findTestId(key) || key).first();
 
   readonly incomeCard = () => this.page.getByTestId(tid('dashboard.incomeToday')!);
   readonly confirmedCard = () => this.page.getByTestId(tid('dashboard.confirmedToday')!);
