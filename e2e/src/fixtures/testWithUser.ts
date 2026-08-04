@@ -63,6 +63,9 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   const username = requiredRealEnvironment('E2E_KEYCLOAK_USERNAME');
   const password = requiredRealEnvironment('E2E_KEYCLOAK_PASSWORD');
 
+  await page.addInitScript(() => {
+    localStorage.setItem('emme-ui-state', JSON.stringify({ state: { isFirstTime: false }, version: 0 }));
+  });
   await page.goto(baseUrl);
   const login = new LoginPage(page);
   await login.login(username, password);

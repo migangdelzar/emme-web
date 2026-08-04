@@ -156,7 +156,7 @@ jobs:
           )
           for attempt in $(seq 1 60); do
             if curl --fail --silent \
-              http://127.0.0.1:18080/health/ready >/dev/null; then
+              http://127.0.0.1:18080/realms/master >/dev/null; then
               exit 0
             fi
             sleep 2

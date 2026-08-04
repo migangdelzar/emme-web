@@ -14,6 +14,11 @@ test.describe('real recording contract', () => {
 
     expect(packageJson.scripts?.['test:real:recordings']).toContain('--project=real');
     expect(packageJson.scripts?.['test:real:recordings']).toContain('RECORD_DEMO=true');
+    expect(packageJson.scripts?.['test:real:recordings']).toContain(
+      'specs/demo/real-demo-recordings.spec.ts',
+    );
+    expect(packageJson.scripts?.['test:real:recordings']).toContain('--workers=1');
+    expect(packageJson.scripts?.['test:real:recordings']).not.toContain('--grep @demo');
     expect(specSource).toContain('Tag.DEMO');
     expect(specSource).toContain('01-owner-dashboard');
   });

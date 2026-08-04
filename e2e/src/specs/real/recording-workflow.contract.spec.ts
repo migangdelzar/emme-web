@@ -22,6 +22,8 @@ test('real recording workflow protects the full-stack evidence contract', async 
   expect(workflow).toContain('compose.environment-e2e.yaml');
   expect(workflow).toContain('up -d emme-platform');
   expect(workflow).toContain('test:real:recordings');
+  expect(workflow).toContain('http://127.0.0.1:18080/realms/master');
+  expect(workflow).not.toContain('http://127.0.0.1:18080/health/ready');
   expect(workflow).toContain('always()');
   expect(workflow).toContain('actions/upload-artifact');
 
