@@ -1,7 +1,11 @@
 ---
-name: Frontend CI
+name: Frontend and full-stack CI
 
-on:  # yamllint disable-line rule:truthy
+run-name: >-
+  Frontend + full-stack CI · target=${{ inputs.deployment_target || 'compose' }} ·
+  runtime=${{ inputs.runtime || 'jvm' }}
+
+on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
@@ -17,6 +21,69 @@ on:  # yamllint disable-line rule:truthy
         required: true
         default: true
         type: boolean
+      run_real_e2e:
+        description: Run real provider full-stack regression or recordings
+        required: true
+        default: true
+        type: boolean
+      e2e_suite:
+        description: Real full-stack suite
+        required: true
+        default: regression
+        type: choice
+        options:
+          - regression
+          - recordings
+      deployment_target:
+        description: Full-stack deployment target
+        required: true
+        default: compose
+        type: choice
+        options:
+          - compose
+          - k3d
+          - k3s
+      runtime:
+        description: Service runtime for full-stack execution
+        required: true
+        default: jvm
+        type: choice
+        options:
+          - jvm
+          - native
+      service_ref:
+        description: Service branch, tag, or commit for full-stack execution
+        required: true
+        default: feat/enterprise-module-template-conformance
+        type: string
+      web_ref:
+        description: Web branch, tag, or commit for full-stack execution
+        required: false
+        default: ''
+        type: string
+      service_base_url:
+        description: Existing service URL for k3d/k3s
+        required: false
+        default: ''
+        type: string
+      web_base_url:
+        description: Existing web URL for k3d/k3s
+        required: false
+        default: ''
+        type: string
+      e2e_owner_username:
+        description: Disposable tenant-owner username/email
+        required: true
+        default: e2e-owner@emme.app
+        type: string
+      k3s_environment:
+        description: Protected environment for a k3s target
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 permissions:
   contents: read
@@ -78,3 +145,21 @@ jobs:
           github.event_name != 'workflow_dispatch' ||
           inputs.run_security == true
         run: bun run security:check
+
+  real-e2e:
+    name: Real full-stack E2E
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run_real_e2e == true)
+    uses: ./.github/workflows/real-e2e-recordings.yml
+    with:
+      service_ref: ${{ inputs.service_ref || 'feat/enterprise-module-template-conformance' }}
+      web_ref: ${{ inputs.web_ref || github.sha }}
+      e2e_owner_username: ${{ inputs.e2e_owner_username || 'e2e-owner@emme.app' }}
+      suite: ${{ inputs.e2e_suite || 'regression' }}
+      deployment_target: ${{ inputs.deployment_target || 'compose' }}
+      runtime: ${{ inputs.runtime || 'jvm' }}
+      service_base_url: ${{ inputs.service_base_url || '' }}
+      web_base_url: ${{ inputs.web_base_url || '' }}
+      k3s_environment: ${{ inputs.k3s_environment || 'staging' }}
+    secrets: inherit

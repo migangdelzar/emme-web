@@ -7,69 +7,6 @@ run-name: >-
   web=${{ inputs.web_ref }} · service=${{ inputs.service_ref }}
 
 'on':
-  workflow_dispatch:
-    inputs:
-      service_ref:
-        description: Emme service branch, tag, or commit to run
-        required: true
-        default: feat/enterprise-module-template-conformance
-        type: string
-      web_ref:
-        description: Emme web branch, tag, or commit to run
-        required: true
-        default: feat/api-version-contract
-        type: string
-      e2e_owner_username:
-        description: Disposable Keycloak tenant-owner username/email
-        required: true
-        default: e2e-owner@emme.app
-        type: string
-      suite:
-        description: Full-stack suite to run
-        required: true
-        default: recordings
-        type: choice
-        options:
-          - recordings
-          - regression
-      deployment_target:
-        description: Provisioned runtime target; Compose is the default
-        required: true
-        default: compose
-        type: choice
-        options:
-          - compose
-          - k3d
-          - k3s
-      runtime:
-        description: Service runtime for the selected target
-        required: true
-        default: jvm
-        type: choice
-        options:
-          - jvm
-          - native
-      service_base_url:
-        description: >-
-          Existing service URL for k3d/k3s; Compose uses its local URL
-        required: false
-        default: ''
-        type: string
-      web_base_url:
-        description: >-
-          Existing web URL for k3d/k3s; Compose starts the selected web ref
-        required: false
-        default: ''
-        type: string
-      k3s_environment:
-        description: Protected GitHub Environment for a k3s target
-        required: true
-        default: staging
-        type: choice
-        options:
-          - staging
-          - production
-
   workflow_call:
     inputs:
       service_ref:

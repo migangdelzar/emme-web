@@ -12,7 +12,8 @@
 
 - Keep bun install --frozen-lockfile as the only dependency installation command.
 - Do not run Chromium installation unless a browser test is selected.
-- Keep real full-stack E2E manual-only and ref-pinned.
+- Keep real full-stack E2E conditional, ref-pinned, and skipped on pull
+  requests unless explicitly selected from workflow dispatch.
 - Keep mock E2E available in the default quality path.
 - Do not weaken typecheck, lint, unit, coverage, build, i18n, or formatting gates.
 - Cache only immutable Bun package data keyed by all workspace lockfiles.
@@ -174,18 +175,22 @@ Expected: all commands pass.
 
 **Files:**
 
-- Modify: .github/workflows/demo-recordings.yml
+- Modify: .github/workflows/ci-frontend.yml
 - Modify: .github/workflows/real-e2e-recordings.yml
 
 **Interfaces:**
 
-- Demo recordings use the local Bun setup action.
+- Mock E2E and real recordings are selected from the single frontend workflow.
 - Real E2E uses the local Bun setup action from emme-web and retains service Gradle setup only where the service build runs.
 - Playwright installation remains limited to recording workflows.
 
-- [x] Step 1: Replace duplicated Bun setup.
+- [x] Step 1: Replace duplicated Bun setup and consolidate workflow entry points.
 
-Replace the setup-bun plus install pair in both workflows with:
+The frontend workflow owns the mock and real E2E selections. The reusable real
+workflow is called only through `ci-frontend.yml`; separate regression/demo
+workflow triggers are removed.
+
+Use the local setup action in the real workflow:
 
     - name: Set up web workspace
       uses: ./.github/actions/setup-bun
@@ -202,12 +207,13 @@ For real E2E, invoke the action with an input after both repositories are checke
     bun run scripts/validate-ci-workflows.mjs
     bun run docs:check
 
-Expected: all commands pass and both recording workflows still install Chromium only in recording jobs.
+Expected: all commands pass and the root workflow installs Chromium only when
+mock or real E2E is selected.
 
 - [x] Step 3: Commit.
 
-    git add .github/workflows/demo-recordings.yml .github/workflows/real-e2e-recordings.yml
-    git commit -m "ci(web): reuse workspace setup in recording workflows"
+    git add .github/workflows/ci-frontend.yml .github/workflows/real-e2e-recordings.yml
+    git commit -m "ci(web): unify frontend and full-stack workflow"
 
 ## Task 4: Verify web CI locally and remotely
 
@@ -229,12 +235,13 @@ Expected: documentation, i18n, formatting, typecheck, lint, tests, coverage, bui
 
 Expected: no whitespace errors and only planned files changed.
 
-- [ ] Step 3: Push and verify Frontend CI.
+- [ ] Step 3: Push and verify the unified Frontend and full-stack CI run.
 
     git push origin feat/api-version-contract
     gh run list -R migangdel/emme-web --branch feat/api-version-contract --limit 3
 
-Verify the default event path executes the optional steps successfully.
+Verify the default event path executes the frontend gates, mock E2E, and the
+conditional real lane without creating a second regression workflow run.
 
 - [ ] Step 4: Commit verification evidence.
 

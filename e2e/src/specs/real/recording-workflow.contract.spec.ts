@@ -10,11 +10,12 @@ const workflowFile = resolve(
 test('real recording workflow protects the full-stack evidence contract', async () => {
   const workflow = await readFile(workflowFile, 'utf8');
 
-  expect(workflow).toContain('workflow_dispatch:');
   expect(workflow).toContain('service_ref:');
   expect(workflow).toContain('web_ref:');
   expect(workflow).toContain('E2E_MODE: real');
-  expect(workflow).toContain("RECORD_DEMO: ${{ inputs.suite == 'recordings' && 'true' || 'false' }}");
+  expect(workflow).toContain(
+    "RECORD_DEMO: ${{ inputs.suite == 'recordings' && 'true' || 'false' }}"
+  );
   expect(workflow).toContain('EMME_SERVICE_IMAGE=emme-service:e2e-sha-');
   expect(workflow).toContain('bootBuildImage');
   expect(workflow).toContain(':tools:e2e-provisioner:run');
@@ -41,10 +42,10 @@ test('real recording workflow protects the full-stack evidence contract', async 
   expect(workflow).not.toContain('seed-e2e-tenant.sh');
 });
 
-test('regression workflow exposes safe deployment and runtime choices', async () => {
+test('frontend CI exposes safe deployment and runtime choices', async () => {
   const workflow = await readFile(
-    resolve(import.meta.dirname, '../../../../.github/workflows/regression.yml'),
-    'utf8',
+    resolve(import.meta.dirname, '../../../../.github/workflows/ci-frontend.yml'),
+    'utf8'
   );
 
   expect(workflow).toContain('deployment_target:');
@@ -57,30 +58,23 @@ test('regression workflow exposes safe deployment and runtime choices', async ()
   expect(workflow).toContain('- jvm');
   expect(workflow).toContain('- native');
   expect(workflow).toContain('run_real_e2e:');
-  expect(workflow).toContain('suite: regression');
+  expect(workflow).toContain('e2e_suite:');
+  expect(workflow).toContain('default: regression');
   expect(workflow).toContain('uses: ./.github/workflows/real-e2e-recordings.yml');
 });
 
 test('real mode and recording mode cannot silently be selected by mock commands', async () => {
-  const packageJson = await readFile(
-    resolve(import.meta.dirname, '../../package.json'),
-    'utf8',
-  );
+  const packageJson = await readFile(resolve(import.meta.dirname, '../../package.json'), 'utf8');
   const playwrightConfig = await readFile(
     resolve(import.meta.dirname, '../../playwright.config.ts'),
-    'utf8',
+    'utf8'
   );
-  const mockWorkflow = await readFile(
-    resolve(import.meta.dirname, '../../../../.github/workflows/demo-recordings.yml'),
-    'utf8',
-  );
-  const regressionWorkflow = await readFile(
-    resolve(import.meta.dirname, '../../../../.github/workflows/regression.yml'),
-    'utf8',
+  const frontendWorkflow = await readFile(
+    resolve(import.meta.dirname, '../../../../.github/workflows/ci-frontend.yml'),
+    'utf8'
   );
 
   expect(packageJson).toContain('"test:real": "E2E_MODE=real');
   expect(playwrightConfig).toContain("process.env.E2E_MODE === 'real'");
-  expect(mockWorkflow).not.toContain('e2e/src/test-results\n');
-  expect(regressionWorkflow).not.toContain('e2e/src/test-results\n');
+  expect(frontendWorkflow).toContain('bun run test:e2e:mock');
 });

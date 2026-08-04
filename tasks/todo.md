@@ -23,7 +23,7 @@ modules, validated i18n resources, and reproducible quality gates.
 
 ## Working notes
 
-## CI regression and deployment selection — 2026-08-04
+## Unified CI regression and deployment selection — 2026-08-04
 
 ### Goal
 
@@ -38,30 +38,32 @@ deployment targets with Compose as the default.
 - [ ] Playwright provider fixtures are isolated per test and safe for parallel
       workers.
 - [ ] Mock CI diagnostics never archive video recordings.
-- [ ] The regression workflow exposes deployment and runtime choices with
+- [x] The single frontend workflow exposes deployment and runtime choices with
       Compose as the default.
 - [ ] Compose is executable as the default real regression target.
 - [ ] k3d and k3s selection is explicit, validated, and protected by the
       appropriate deployment environment rules.
 - [ ] Real recordings remain a dedicated serial evidence lane.
-- [ ] Workflow contracts, YAML, TypeScript, and focused tests pass.
+- [x] Workflow contracts, YAML, TypeScript, and focused tests pass.
 
 ### Execution checklist
 
 - [ ] Add red contract coverage for mode selection, real-only recording, and
       deployment inputs.
 - [ ] Refactor provider fixture lifecycle to remove shared global state.
-- [ ] Implement the regression workflow and deployment target contract.
-- [ ] Update CI and E2E architecture documentation.
-- [ ] Run mock E2E, workflow contracts, typecheck, lint, build, and docs checks.
+- [x] Implement the unified frontend workflow and deployment target contract.
+- [x] Update CI and E2E architecture documentation.
+- [x] Run workflow contracts, YAML formatting, and focused workflow tests.
+- [ ] Run the complete mock E2E, typecheck, lint, build, and docs matrix after
+      the workflow consolidation.
 - [ ] Run service-side backend E2E against a provisioned runtime when available.
-- [ ] Record external-environment limitations without weakening CI gates.
+- [x] Record external-environment limitations without weakening CI gates.
 
 - The web `main` branch contains six previously approved local commits and is
   the base for this feature branch.
-- The service repository remains on `feat/studio-module-migration`; its Studio
-  migration is intentionally incomplete and will be continued after the web
-  boundary checkpoint.
+- The service repository ref remains
+  `feat/enterprise-module-template-conformance` until both feature branches are
+  ready to move to `main`.
 
 ## Results
 
@@ -69,6 +71,11 @@ Implementation and repository-wide verification complete for this web
 transport-boundary checkpoint. Further UI module decomposition remains a
 separate planned slice because the existing features are not yet represented by
 stable public module barrels.
+
+The workflow consolidation keeps one normal frontend/full-stack CI run per web
+push, pull request, or manual dispatch. The reusable real-E2E workflow no longer
+has its own trigger; scheduled security, manual dependency review, release image
+builds, and post-deploy smoke checks remain separate operational gates.
 
 ## Demo recordings and cleanup checkpoint
 

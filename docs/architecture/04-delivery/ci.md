@@ -13,11 +13,11 @@ flowchart LR
 ```
 
 Pull requests MUST run documentation validation, typecheck, lint, unit/component
-tests, production build, and high-severity dependency audit. The
-`regression.yml` workflow runs the mock E2E lane independently and can run the
-real lane against the default Compose target or an explicitly supplied k3d/k3s
-environment. The real recording suite is serial and is the only lane allowed to
-archive videos.
+tests, production build, and high-severity dependency audit. The single
+`ci-frontend.yml` workflow owns the repository quality gates, mock E2E lane, and
+the conditional real full-stack lane. The real lane uses the default Compose
+target or an explicitly supplied k3d/k3s environment. The real recording suite
+is serial and is the only lane allowed to archive videos.
 
 The repository also runs `security-scan.yml` for Gitleaks and Bun audit. The
 `dependency-review.yml` workflow is available for manual dispatch after GitHub
@@ -47,11 +47,10 @@ with a compensating control and review date.
 ```mermaid
 flowchart TB
     PR[Pull request / main push]
-    PR --> Frontend[Frontend CI quality]
+    PR --> Frontend[Frontend and full-stack CI]
     PR --> Backend[Service CI quality]
-    PR --> Regression[Full-stack regression]
-    Regression --> Mock[Mock provider E2E]
-    Regression --> Real[Real provider E2E]
+    Frontend --> Mock[Mock provider E2E]
+    Frontend --> Real[Real provider E2E on push/manual selection]
     Real --> Compose[Compose default]
     Real --> K3d[k3d explicit target]
     Real --> K3s[k3s protected target]
@@ -61,8 +60,9 @@ flowchart TB
     CVE[Scheduled CVE workflow] --> Deep[Deep dependency/filesystem/image scan]
 ```
 
-`ci-frontend.yml` and the service repository's unified backend CI remain the
-repository-owned quality gates. `regression.yml` is the cross-repository
-browser contract. `real-e2e-recordings.yml` is reusable by regression and
-manual dispatch; its `suite` input selects either the full real suite or the
-serial recording subset.
+`ci-frontend.yml` and the service repository's unified backend CI are the
+repository-owned verification runs. `real-e2e-recordings.yml` is a reusable
+workflow called by the frontend run; its `suite` input selects either the full
+real suite or the serial recording subset. Release image builds, scheduled
+security scans, and post-deploy smoke checks remain separate operational gates
+because they require different permissions, credentials, or environments.
