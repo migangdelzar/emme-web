@@ -42,7 +42,7 @@ Create scripts/validate-ci-workflows.mjs with this assertion:
     const action = await readFile('.github/actions/setup-bun/action.yml', 'utf8');
     for (const fragment of [
       "bun-version: '1.3.14'",
-      'actions/cache@v4',
+      'actions/cache@v6',
       '~/.bun/install/cache',
       'bun install --frozen-lockfile',
     ]) {
@@ -54,7 +54,7 @@ Create scripts/validate-ci-workflows.mjs with this assertion:
 
 - [x] Step 2: Run the contract and verify it fails.
 
-    bun run scripts/validate-ci-workflows.mjs
+  bun run scripts/validate-ci-workflows.mjs
 
 Expected: failure because the composite action does not exist.
 
@@ -77,7 +77,7 @@ Use this action shape:
           with:
             bun-version: '1.3.14'
         - name: Cache Bun packages
-          uses: actions/cache@v4
+          uses: actions/cache@v6
           with:
             path: ~/.bun/install/cache
             key: \${{ runner.os }}-bun-\${{ hashFiles('**/bun.lock') }}
@@ -90,15 +90,15 @@ Use this action shape:
 
 - [x] Step 4: Run the contract and local install.
 
-    bun run scripts/validate-ci-workflows.mjs
-    bun install --frozen-lockfile
+  bun run scripts/validate-ci-workflows.mjs
+  bun install --frozen-lockfile
 
 Expected: both commands pass.
 
 - [x] Step 5: Commit.
 
-    git add .github/actions/setup-bun/action.yml scripts/validate-ci-workflows.mjs
-    git commit -m "ci(web): centralize Bun workspace setup"
+  git add .github/actions/setup-bun/action.yml scripts/validate-ci-workflows.mjs
+  git commit -m "ci(web): centralize Bun workspace setup"
 
 ## Task 2: Use the Bun action and add selectable frontend steps
 
@@ -125,7 +125,7 @@ Require these fragments:
 
 - [x] Step 2: Run the validator and verify it fails.
 
-    bun run scripts/validate-ci-workflows.mjs
+  bun run scripts/validate-ci-workflows.mjs
 
 Expected: failure because the workflow has no dispatch inputs and directly installs Bun.
 
@@ -161,15 +161,15 @@ Gate the audit with:
 
 - [x] Step 4: Run web quality and workflow validation.
 
-    bun run scripts/validate-ci-workflows.mjs
-    bun run quality
+  bun run scripts/validate-ci-workflows.mjs
+  bun run quality
 
 Expected: all commands pass.
 
 - [x] Step 5: Commit.
 
-    git add .github/workflows/ci-frontend.yml scripts/validate-ci-workflows.mjs
-    git commit -m "ci(web): make frontend optional checks selectable"
+  git add .github/workflows/ci-frontend.yml scripts/validate-ci-workflows.mjs
+  git commit -m "ci(web): make frontend optional checks selectable"
 
 ## Task 3: Reuse setup in recording workflows
 
@@ -204,16 +204,16 @@ For real E2E, invoke the action with an input after both repositories are checke
 
 - [x] Step 2: Validate recording workflow contracts.
 
-    bun run scripts/validate-ci-workflows.mjs
-    bun run docs:check
+  bun run scripts/validate-ci-workflows.mjs
+  bun run docs:check
 
 Expected: all commands pass and the root workflow installs Chromium only when
 mock or real E2E is selected.
 
 - [x] Step 3: Commit.
 
-    git add .github/workflows/ci-frontend.yml .github/workflows/real-e2e-recordings.yml
-    git commit -m "ci(web): unify frontend and full-stack workflow"
+  git add .github/workflows/ci-frontend.yml .github/workflows/real-e2e-recordings.yml
+  git commit -m "ci(web): unify frontend and full-stack workflow"
 
 ## Task 4: Verify web CI locally and remotely
 
@@ -223,28 +223,28 @@ mock or real E2E is selected.
 
 - [x] Step 1: Run local gates.
 
-    bun run scripts/validate-ci-workflows.mjs
-    bun run quality
+  bun run scripts/validate-ci-workflows.mjs
+  bun run quality
 
 Expected: documentation, i18n, formatting, typecheck, lint, tests, coverage, build, and dependency audit pass.
 
 - [x] Step 2: Inspect changed-file scope.
 
-    git diff --check
-    git status --short
+  git diff --check
+  git status --short
 
 Expected: no whitespace errors and only planned files changed.
 
 - [ ] Step 3: Push and verify the unified Frontend and full-stack CI run.
 
-    git push origin feat/api-version-contract
-    gh run list -R migangdel/emme-web --branch feat/api-version-contract --limit 3
+  git push origin feat/api-version-contract
+  gh run list -R migangdel/emme-web --branch feat/api-version-contract --limit 3
 
 Verify the default event path executes the frontend gates, mock E2E, and the
 conditional real lane without creating a second regression workflow run.
 
 - [ ] Step 4: Commit verification evidence.
 
-    git add tasks/todo.md
-    git commit -m "docs(ci): record web pipeline verification"
-    git push origin feat/api-version-contract
+  git add tasks/todo.md
+  git commit -m "docs(ci): record web pipeline verification"
+  git push origin feat/api-version-contract

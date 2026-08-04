@@ -1,7 +1,7 @@
 ---
 name: Dependency Review
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 permissions:
@@ -14,7 +14,7 @@ jobs:
     # blocking dependency check.
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high

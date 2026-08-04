@@ -90,14 +90,14 @@ jobs:
 
     steps:
       - name: Check out web ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.web_ref }}
           path: emme-web
           persist-credentials: false
 
       - name: Check out service ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: migangdelzar/emme-service
           ref: ${{ inputs.service_ref }}
@@ -112,7 +112,7 @@ jobs:
             >> "$GITHUB_ENV"
 
       - name: Set up Java 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: temurin
@@ -295,7 +295,7 @@ jobs:
 
       - name: Upload real E2E reports and evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: >-
             emme-real-full-stack-${{ inputs.suite }}-

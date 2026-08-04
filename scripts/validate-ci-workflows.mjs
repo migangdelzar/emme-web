@@ -5,7 +5,7 @@ const workflow = await readFile('.github/workflows/ci-frontend.yml', 'utf8');
 
 for (const fragment of [
   "bun-version: '1.3.14'",
-  'actions/cache@v4',
+  'actions/cache@v6',
   '~/.bun/install/cache',
   'bun install --frozen-lockfile',
 ]) {
