@@ -62,13 +62,19 @@ jobs:
         run: bun run --filter '*' build
 
       - name: Install Chromium for mock E2E
-        if: github.event_name != 'workflow_dispatch' || inputs.run_mock_e2e == true
+        if: >-
+          github.event_name != 'workflow_dispatch' ||
+          inputs.run_mock_e2e == true
         run: cd e2e/src && bunx playwright install --with-deps chromium
 
       - name: Mock critical browser flows
-        if: github.event_name != 'workflow_dispatch' || inputs.run_mock_e2e == true
+        if: >-
+          github.event_name != 'workflow_dispatch' ||
+          inputs.run_mock_e2e == true
         run: bun run test:e2e:mock
 
       - name: Dependency vulnerability audit
-        if: github.event_name != 'workflow_dispatch' || inputs.run_security == true
+        if: >-
+          github.event_name != 'workflow_dispatch' ||
+          inputs.run_security == true
         run: bun run security:check

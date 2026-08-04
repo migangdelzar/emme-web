@@ -23,6 +23,40 @@ modules, validated i18n resources, and reproducible quality gates.
 
 ## Working notes
 
+## CI regression and deployment selection — 2026-08-04
+
+### Goal
+
+Unify regression validation around separate parallel jobs, run mock and real
+provider lanes without silently switching modes, archive only real full-stack
+recordings, and allow manual selection of Compose, k3d, or protected k3s
+deployment targets with Compose as the default.
+
+### Acceptance criteria
+
+- [ ] `test:real` explicitly selects the real provider mode.
+- [ ] Playwright provider fixtures are isolated per test and safe for parallel
+      workers.
+- [ ] Mock CI diagnostics never archive video recordings.
+- [ ] The regression workflow exposes deployment and runtime choices with
+      Compose as the default.
+- [ ] Compose is executable as the default real regression target.
+- [ ] k3d and k3s selection is explicit, validated, and protected by the
+      appropriate deployment environment rules.
+- [ ] Real recordings remain a dedicated serial evidence lane.
+- [ ] Workflow contracts, YAML, TypeScript, and focused tests pass.
+
+### Execution checklist
+
+- [ ] Add red contract coverage for mode selection, real-only recording, and
+      deployment inputs.
+- [ ] Refactor provider fixture lifecycle to remove shared global state.
+- [ ] Implement the regression workflow and deployment target contract.
+- [ ] Update CI and E2E architecture documentation.
+- [ ] Run mock E2E, workflow contracts, typecheck, lint, build, and docs checks.
+- [ ] Run service-side backend E2E against a provisioned runtime when available.
+- [ ] Record external-environment limitations without weakening CI gates.
+
 - The web `main` branch contains six previously approved local commits and is
   the base for this feature branch.
 - The service repository remains on `feat/studio-module-migration`; its Studio

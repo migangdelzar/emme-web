@@ -1,5 +1,5 @@
 ---
-name: Playwright demo recordings
+name: Mock E2E demo flows
 
 on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
@@ -8,12 +8,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: demo-recordings-${{ github.ref }}
+  group: mock-e2e-demo-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   record:
-    name: Record deterministic frontend flows
+    name: Run deterministic mock flows
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
@@ -29,17 +29,16 @@ jobs:
       - name: Install Chromium
         run: cd e2e/src && bunx playwright install --with-deps chromium
 
-      - name: Record mock-mode flows
+      - name: Run mock-mode flows without recording videos
         run: bun run --filter @emme/e2e test:demo
 
-      - name: Upload demo videos and reports
+      - name: Upload mock diagnostics and reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: emme-web-demo-recordings-${{ github.run_id }}
+          name: emme-web-mock-e2e-diagnostics-${{ github.run_id }}
           if-no-files-found: error
           retention-days: 14
           path: |
-            e2e/src/test-results
             e2e/src/playwright-report
             e2e/src/test-results.json

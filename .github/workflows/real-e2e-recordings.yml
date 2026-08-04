@@ -1,9 +1,10 @@
 ---
-name: Real full-stack E2E recordings
+name: Real full-stack E2E
 
 run-name: >-
-  Full-stack recordings · web=${{ inputs.web_ref }} ·
-  service=${{ inputs.service_ref }}
+  Full-stack E2E · suite=${{ inputs.suite }} ·
+  target=${{ inputs.deployment_target }} · runtime=${{ inputs.runtime }} ·
+  web=${{ inputs.web_ref }} · service=${{ inputs.service_ref }}
 
 'on':
   workflow_dispatch:
@@ -14,7 +15,7 @@ run-name: >-
         default: feat/enterprise-module-template-conformance
         type: string
       web_ref:
-        description: Emme web branch, tag, or commit to record
+        description: Emme web branch, tag, or commit to run
         required: true
         default: feat/api-version-contract
         type: string
@@ -23,26 +24,123 @@ run-name: >-
         required: true
         default: e2e-owner@emme.app
         type: string
+      suite:
+        description: Full-stack suite to run
+        required: true
+        default: recordings
+        type: choice
+        options:
+          - recordings
+          - regression
+      deployment_target:
+        description: Provisioned runtime target; Compose is the default
+        required: true
+        default: compose
+        type: choice
+        options:
+          - compose
+          - k3d
+          - k3s
+      runtime:
+        description: Service runtime for the selected target
+        required: true
+        default: jvm
+        type: choice
+        options:
+          - jvm
+          - native
+      service_base_url:
+        description: >-
+          Existing service URL for k3d/k3s; Compose uses its local URL
+        required: false
+        default: ''
+        type: string
+      web_base_url:
+        description: >-
+          Existing web URL for k3d/k3s; Compose starts the selected web ref
+        required: false
+        default: ''
+        type: string
+      k3s_environment:
+        description: Protected GitHub Environment for a k3s target
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+  workflow_call:
+    inputs:
+      service_ref:
+        required: true
+        type: string
+      web_ref:
+        required: true
+        type: string
+      e2e_owner_username:
+        required: true
+        type: string
+      suite:
+        required: true
+        default: recordings
+        type: string
+      deployment_target:
+        required: true
+        default: compose
+        type: string
+      runtime:
+        required: true
+        default: jvm
+        type: string
+      service_base_url:
+        required: false
+        default: ''
+        type: string
+      web_base_url:
+        required: false
+        default: ''
+        type: string
+      k3s_environment:
+        required: true
+        default: staging
+        type: string
+    secrets:
+      E2E_KEYCLOAK_PASSWORD:
+        required: true
+      E2E_KEYCLOAK_ADMIN_PASSWORD:
+        required: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: real-e2e-recordings-${{ github.ref }}
+  group: real-e2e-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   record:
-    name: Full-stack · tenant-owner journeys
+    name: >-
+      Full-stack · ${{ inputs.suite }} · ${{ inputs.deployment_target }} ·
+      ${{ inputs.runtime }}
+    environment: >-
+      ${{ inputs.deployment_target == 'k3s'
+        && format('k3s-{0}', inputs.k3s_environment)
+        || 'e2e' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       E2E_MODE: real
-      RECORD_DEMO: 'true'
-      E2E_BASE_URL: http://127.0.0.1:3000
-      E2E_API_URL: http://127.0.0.1:8081
-      VITE_API_BASE_URL: http://127.0.0.1:8081
+      RECORD_DEMO: ${{ inputs.suite == 'recordings' && 'true' || 'false' }}
+      E2E_BASE_URL: ${{ inputs.web_base_url || 'http://127.0.0.1:3000' }}
+      E2E_API_URL: ${{ inputs.service_base_url || 'http://127.0.0.1:8081' }}
+      VITE_API_BASE_URL: >-
+        ${{ inputs.service_base_url || 'http://127.0.0.1:8081' }}
       VITE_WEB_BASE_DOMAIN: localhost
+      E2E_EXTERNAL_WEB: ${{ inputs.web_base_url != '' && 'true' || 'false' }}
+      DEPLOYMENT_TARGET: ${{ inputs.deployment_target }}
+      RUNTIME: ${{ inputs.runtime }}
+      SUITE: ${{ inputs.suite }}
       E2E_KEYCLOAK_USERNAME: ${{ inputs.e2e_owner_username }}
       E2E_KEYCLOAK_PASSWORD: ${{ secrets.E2E_KEYCLOAK_PASSWORD }}
       E2E_OWNER_USERNAME: ${{ inputs.e2e_owner_username }}
@@ -106,33 +204,42 @@ jobs:
           }
 
       - name: Build immutable service image
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
-        run: >-
-          ./gradlew :applications:emme-platform:bootBuildImage
-          --imageName="${EMME_SERVICE_IMAGE}"
-          --no-daemon --no-configuration-cache --stacktrace
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            ./gradlew :applications:emme-platform:bootBuildImage
+            --imageName="${EMME_SERVICE_IMAGE}"
+            --no-daemon --no-configuration-cache --stacktrace
+          )
+          if [[ "${RUNTIME}" == 'native' ]]; then
+            args+=( -Pemme.native-image=true )
+          fi
+          "${args[@]}"
 
       - name: Validate E2E Compose configuration
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         run: >-
           docker compose
           -f deployment/compose/compose.yaml
-          -f deployment/compose/compose.runtime-jvm.yaml
+          -f deployment/compose/compose.runtime-${{ inputs.runtime }}.yaml
           -f deployment/compose/compose.environment-e2e.yaml
           config --quiet
 
       - name: Start disposable dependencies
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         env:
-          EMME_E2E_KEYCLOAK_ADMIN_PASSWORD: >-
-            ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
           TENANT_SEED_SLUGS: e2e-studio
         run: |
           set -euo pipefail
           compose=(
             docker compose
             -f deployment/compose/compose.yaml
-            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.runtime-${RUNTIME}.yaml
             -f deployment/compose/compose.environment-e2e.yaml
           )
           "${compose[@]}" down --volumes --remove-orphans || true
@@ -140,6 +247,7 @@ jobs:
           "${compose[@]}" run --rm database-migrations
 
       - name: Wait for Keycloak readiness
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         shell: bash
         run: |
@@ -147,7 +255,7 @@ jobs:
           compose=(
             docker compose
             -f deployment/compose/compose.yaml
-            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.runtime-${RUNTIME}.yaml
             -f deployment/compose/compose.environment-e2e.yaml
           )
           for attempt in $(seq 1 60); do
@@ -161,6 +269,7 @@ jobs:
           exit 1
 
       - name: Provision disposable tenant-owner identity
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         env:
           KEYCLOAK_URL: http://127.0.0.1:18080
@@ -179,6 +288,7 @@ jobs:
           --no-daemon --no-configuration-cache --stacktrace
 
       - name: Start service image
+        if: ${{ inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         shell: bash
         run: |
@@ -186,12 +296,13 @@ jobs:
           compose=(
             docker compose
             -f deployment/compose/compose.yaml
-            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.runtime-${RUNTIME}.yaml
             -f deployment/compose/compose.environment-e2e.yaml
           )
           "${compose[@]}" up -d emme-platform
 
       - name: Wait for service health
+        if: ${{ inputs.deployment_target == 'compose' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -202,56 +313,81 @@ jobs:
             fi
             sleep 2
           done
+          runtime_file="emme-service/deployment/compose/compose.runtime-${RUNTIME}.yaml"
           docker compose \
             -f emme-service/deployment/compose/compose.yaml \
-            -f emme-service/deployment/compose/compose.runtime-jvm.yaml \
+            -f "${runtime_file}" \
             -f emme-service/deployment/compose/compose.environment-e2e.yaml \
             logs --no-color emme-platform
           exit 1
 
-      - name: Run real tenant-owner recordings
+      - name: Validate pre-provisioned Kubernetes target
+        if: ${{ inputs.deployment_target != 'compose' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${{ inputs.service_base_url }}" || {
+            echo 'service_base_url is required for k3d and k3s targets'
+            exit 1
+          }
+          test -n "${{ inputs.web_base_url }}" || {
+            echo 'web_base_url is required for k3d and k3s targets'
+            exit 1
+          }
+          curl --fail --silent "${E2E_API_URL}/actuator/health" >/dev/null
+          curl --fail --silent "${E2E_BASE_URL}" >/dev/null
+
+      - name: Run real full-stack suite
         working-directory: emme-web
-        run: bun run --filter @emme/e2e test:real:recordings
+        run: |
+          if [[ "${SUITE}" == 'recordings' ]]; then
+            bun run --filter @emme/e2e test:real:recordings
+          else
+            bun run --filter @emme/e2e test:real
+          fi
 
       - name: Collect Compose diagnostics
-        if: ${{ always() }}
+        if: ${{ always() && inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         run: |
           docker compose \
             -f deployment/compose/compose.yaml \
-            -f deployment/compose/compose.runtime-jvm.yaml \
+            -f "deployment/compose/compose.runtime-${RUNTIME}.yaml" \
             -f deployment/compose/compose.environment-e2e.yaml \
             logs --no-color > "${RUNNER_TEMP}/emme-compose.log" || true
 
-      - name: Upload videos and test reports
+      - name: Upload real E2E reports and evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: emme-real-full-stack-recordings-${{ github.run_id }}
+          name: >-
+            emme-real-full-stack-${{ inputs.suite }}-
+            ${{ inputs.deployment_target }}-${{ inputs.runtime }}-
+            ${{ github.run_id }}
           if-no-files-found: warn
           retention-days: 30
           path: |
-            emme-web/e2e/src/test-results/real-recordings
+            emme-web/e2e/src/test-results
             emme-web/e2e/src/playwright-report
             emme-web/e2e/src/test-results.json
             ${{ runner.temp }}/emme-compose.log
 
       - name: Dump Compose logs on failure
-        if: ${{ failure() }}
+        if: ${{ failure() && inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         run: |
           docker compose \
             -f deployment/compose/compose.yaml \
-            -f deployment/compose/compose.runtime-jvm.yaml \
+            -f "deployment/compose/compose.runtime-${RUNTIME}.yaml" \
             -f deployment/compose/compose.environment-e2e.yaml \
             logs --no-color
 
       - name: Tear down disposable dependencies
-        if: ${{ always() }}
+        if: ${{ always() && inputs.deployment_target == 'compose' }}
         working-directory: emme-service
         run: >-
           docker compose
           -f deployment/compose/compose.yaml
-          -f deployment/compose/compose.runtime-jvm.yaml
+          -f deployment/compose/compose.runtime-${{ inputs.runtime }}.yaml
           -f deployment/compose/compose.environment-e2e.yaml
           down --volumes --remove-orphans

@@ -18,10 +18,6 @@ const DEFAULT_SEED: SeedData = {
   }],
 };
 
-// Shared instances: set by authenticatedPage, used by provider fixture
-let sharedRealProvider: RealProvider | null = null;
-let sharedMockProvider: MockProvider | null = null;
-
 /**
  * Authenticated page fixture. Same API for mock and real:
  * - Mock: injects fake tokens via localStorage, intercepts API with page.route()
@@ -41,12 +37,6 @@ interface Fixtures {
   provider: ApiProvider;
   authenticatedPage: Page;
   unauthenticatedPage: Page;
-}
-
-async function mockLogin(page: Page, user: TestUser) {
-  const provider = new MockProvider();
-  await provider.setup(page, user);
-  return provider;
 }
 
 function requiredRealEnvironment(name: string): string {
@@ -77,7 +67,6 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   provider.setToken(token);
   await provider.setup(page, user);
 
-  sharedRealProvider = provider;
   return provider;
 }
 
@@ -88,19 +77,22 @@ export const test = base.extend<Fixtures>({
     releaseUser(user.userId);
   }, { scope: 'test' }],
 
-  provider: [async ({ authenticatedPage: _authenticatedPage }, use) => {
+  provider: [async ({ page, testUser }, use) => {
+    let provider: ApiProvider;
+
     if (MODE === 'mock') {
-      // Use the shared MockProvider set up by authenticatedPage (depends on it running first)
-      if (!sharedMockProvider) throw new Error('Provider fixture was initialized before authenticatedPage.');
-      await use(sharedMockProvider);
-      await sharedMockProvider.teardown();
-      sharedMockProvider = null;
+      const mockProvider = new MockProvider();
+      await mockProvider.setup(page, testUser);
+      await mockProvider.seed(DEFAULT_SEED);
+      provider = mockProvider;
     } else {
-      // Use the shared RealProvider set up by authenticatedPage (depends on it running first)
-      if (!sharedRealProvider) throw new Error('Provider fixture was initialized before authenticatedPage.');
-      await use(sharedRealProvider);
-      await sharedRealProvider.teardown();
-      sharedRealProvider = null;
+      provider = await realLogin(page, testUser);
+    }
+
+    try {
+      await use(provider);
+    } finally {
+      await provider.teardown();
     }
   }, { scope: 'test' }],
 
@@ -110,18 +102,8 @@ export const test = base.extend<Fixtures>({
     await use(page);
   }, { scope: 'test' }],
 
-  authenticatedPage: [async ({ page, testUser }, use) => {
-    if (MODE === 'mock') {
-      const provider = new MockProvider();
-      await provider.setup(page, testUser);
-      await provider.seed(DEFAULT_SEED);
-      sharedMockProvider = provider;
-      await use(page);
-      sharedMockProvider = null;
-    } else {
-      await realLogin(page, testUser);
-      await use(page);
-    }
+  authenticatedPage: [async ({ page, provider: _provider }, use) => {
+    await use(page);
   }, { scope: 'test' }],
 });
 

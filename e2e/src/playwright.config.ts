@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
-const recordDemo = process.env.RECORD_DEMO === 'true';
+const recordDemo = process.env.E2E_MODE === 'real' && process.env.RECORD_DEMO === 'true';
+const useExternalWeb = process.env.E2E_EXTERNAL_WEB === 'true';
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 
 export default defineConfig({
@@ -24,7 +25,7 @@ export default defineConfig({
   use: {
     baseURL,
     headless: true,
-    video: recordDemo ? 'on' : 'retain-on-failure',
+    video: recordDemo ? 'on' : process.env.E2E_MODE === 'real' ? 'retain-on-failure' : 'off',
     trace: recordDemo ? 'on' : 'on-first-retry',
     screenshot: recordDemo ? 'on' : 'only-on-failure',
   },
@@ -43,15 +44,21 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    command: 'cd ../../apps/emme-salon-app && bun dev',
-    port: 3000,
-    reuseExistingServer: true,
-    env: {
-      ...process.env,
-      VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
-      VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:8081',
-      VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
-    },
-  },
+  ...(useExternalWeb
+    ? {}
+    : {
+        webServer: {
+          command: 'cd ../../apps/emme-salon-app && bun dev',
+          port: 3000,
+          // E2E must start Vite with the same runtime configuration every time.
+          // Reusing a stale local server can silently omit VITE_* variables.
+          reuseExistingServer: false,
+          env: {
+            ...process.env,
+            VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
+            VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:8081',
+            VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
+          },
+        },
+      }),
 });

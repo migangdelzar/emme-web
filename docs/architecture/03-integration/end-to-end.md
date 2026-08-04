@@ -48,15 +48,19 @@ flowchart LR
 | Mock | In-memory provider | None | Local only | Fast UI and interaction feedback |
 | Real | Reachable `emme-service` | Actions secrets | Real workflow only | Tenant-owner contract and release evidence |
 
-The real recording workflow is manually dispatched with `service_ref`,
-`web_ref`, and `service_base_url`. The service ref is checked out beside the
-web repository so an artifact can be traced to both source revisions. The
-service URL must point to an already provisioned deterministic tenant-owner
-environment; the workflow does not silently substitute a mock service.
+The reusable real workflow accepts `service_ref`, `web_ref`, `suite`,
+`deployment_target`, and `runtime`. Compose is the default target: the workflow
+builds the selected service image, starts PostgreSQL/Redis/Keycloak, runs the
+typed provisioner, and starts the web ref locally. k3d and k3s are explicit
+pre-provisioned targets and require both `service_base_url` and `web_base_url`.
+The service ref is checked out beside the web repository so an artifact can be
+traced to both source revisions.
 
-Required real variables are `E2E_MODE=real`, `RECORD_DEMO=true`,
+Required real variables are `E2E_MODE=real`,
 `E2E_BASE_URL`, `E2E_API_URL`, `E2E_KEYCLOAK_USERNAME`, and
 `E2E_KEYCLOAK_PASSWORD`. Tokens and cookies must never be printed or uploaded.
+`RECORD_DEMO=true` is reserved for the real recording suite. Mock commands
+cannot enable CI video archival.
 
 ## Journey checklist
 
@@ -78,7 +82,7 @@ sequenceDiagram
 
     Actions->>Web: checkout exact web_ref
     Actions->>Service: checkout exact service_ref for traceability
-    Actions->>Service: use provisioned service_base_url
+    Actions->>Service: provision Compose or validate selected target
     Browser->>Web: run tagged real journeys
     Web->>Service: versioned /api calls with API-Version: 1.0
     Browser->>Store: upload real videos/reports on success or failure
@@ -86,4 +90,5 @@ sequenceDiagram
 
 Mock artifacts are not a substitute for the real evidence lane. Generated
 recordings, traces, screenshots, tokens, cookies, and response bodies remain
-ignored and untracked.
+ignored and untracked. Regression diagnostics may upload failure reports, but
+only `suite=recordings` uploads the real full-stack video directory.
