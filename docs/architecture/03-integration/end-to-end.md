@@ -28,6 +28,36 @@ sequenceDiagram
 - Do not commit HAR files, tokens, cookies, response bodies, or local paths.
 - Capture diagnostics only on failure and redact before retention.
 
+## Mock and real lanes
+
+The browser contract is shared, but the providers are intentionally separate:
+
+```mermaid
+flowchart LR
+    Spec[Playwright journey]
+    Spec --> Fixture[tenant-owner fixture]
+    Fixture --> Mock[MockProvider\nlocal deterministic state]
+    Fixture --> Real[RealProvider\nreal web + emme-service]
+    Mock --> LocalEvidence[Local smoke evidence]
+    Real --> FullStack[Full-stack evidence]
+    FullStack --> Artifact[GitHub Actions artifact]
+```
+
+| Lane | Backend | Credentials | Video archive | Purpose |
+|---|---|---|---|---|
+| Mock | In-memory provider | None | Local only | Fast UI and interaction feedback |
+| Real | Reachable `emme-service` | Actions secrets | Real workflow only | Tenant-owner contract and release evidence |
+
+The real recording workflow is manually dispatched with `service_ref`,
+`web_ref`, and `service_base_url`. The service ref is checked out beside the
+web repository so an artifact can be traced to both source revisions. The
+service URL must point to an already provisioned deterministic tenant-owner
+environment; the workflow does not silently substitute a mock service.
+
+Required real variables are `E2E_MODE=real`, `RECORD_DEMO=true`,
+`E2E_BASE_URL`, `E2E_API_URL`, `E2E_KEYCLOAK_USERNAME`, and
+`E2E_KEYCLOAK_PASSWORD`. Tokens and cookies must never be printed or uploaded.
+
 ## Journey checklist
 
 - [ ] Authentication and tenant selection.
@@ -35,3 +65,25 @@ sequenceDiagram
 - [ ] Authorization denial or tenant isolation.
 - [ ] Loading, empty, error, offline, and retry states.
 - [ ] Responsive/accessibility behavior where applicable.
+
+## Evidence policy
+
+```mermaid
+sequenceDiagram
+    participant Actions as GitHub Actions
+    participant Web as Web ref
+    participant Service as Service ref/runtime
+    participant Browser as Playwright
+    participant Store as Artifact storage
+
+    Actions->>Web: checkout exact web_ref
+    Actions->>Service: checkout exact service_ref for traceability
+    Actions->>Service: use provisioned service_base_url
+    Browser->>Web: run tagged real journeys
+    Web->>Service: versioned /api calls with API-Version: 1.0
+    Browser->>Store: upload real videos/reports on success or failure
+```
+
+Mock artifacts are not a substitute for the real evidence lane. Generated
+recordings, traces, screenshots, tokens, cookies, and response bodies remain
+ignored and untracked.

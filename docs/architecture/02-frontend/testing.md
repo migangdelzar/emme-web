@@ -36,9 +36,12 @@ feature test suite
 - Integration tests exercise routing, providers, API clients, and error states.
 - Contract tests detect API schema drift before E2E.
 - Critical E2E flows run against a production-like backend and deterministic identities/tenants.
-- A manual demo-recording workflow runs only deterministic mock-mode journeys;
-  it uploads videos, traces, screenshots, and reports as short-lived Actions
-  artifacts and never commits them.
+- A manual demo-recording workflow runs deterministic mock-mode journeys for
+  local feedback only.
+- A separate manual real-recording workflow runs critical tenant-owner
+  journeys against a provisioned `emme-service` and uploads only real
+  full-stack videos, traces, screenshots, and reports as bounded Actions
+  artifacts. It requires explicit web/service refs and credential secrets.
 - Accessibility checks run for shared components and critical pages.
 - Visual regression is used only for stable, high-value surfaces; avoid brittle snapshots.
 - Test data is isolated, classified, and deleted after execution.

@@ -4,7 +4,7 @@
 
 **Goal:** Build independent mock and real Playwright coverage for Emme tenant-owner journeys, with real full-stack videos archived only by GitHub Actions.
 
-**Architecture:** Shared Playwright fixtures and page objects expose one test API. `MockProvider` supplies fast in-memory UI contracts; `RealProvider` performs authenticated setup and cleanup against `emme-service`. A real-only recording workflow checks out explicit web/service refs, runs the same-origin stack, and uploads bounded evidence artifacts.
+**Architecture:** Shared Playwright fixtures and page objects expose one test API. `MockProvider` supplies fast in-memory UI contracts; `RealProvider` performs authenticated setup and cleanup against `emme-service`. A real-only recording workflow checks out explicit web/service refs, runs the web locally against an explicitly supplied provisioned service URL, and uploads bounded evidence artifacts.
 
 **Tech Stack:** Bun 1.3.14, TypeScript, React/Vite, Playwright 1.60, TanStack Query, Zustand, Spring Boot `emme-service`, Docker Compose, GitHub Actions.
 
@@ -55,11 +55,11 @@
 - Produces `test:real:recordings`, which invokes `--project=real --grep @demo --retries=0` with `E2E_MODE=real` and `RECORD_DEMO=true`.
 - Produces a real fixture failure when `E2E_MODE=real` lacks a configured base URL or owner credentials.
 
-- [ ] Write a failing contract test that asserts the recording tag and real-only skip behavior are present in the real recording spec.
+- [x] Write a failing contract test that asserts the recording tag and real-only skip behavior are present in the real recording spec.
 - [ ] Run `bunx playwright test e2e/src/specs/real/recording-contract.spec.ts --project=mock`; confirm it fails because the command/fixture contract is absent.
-- [ ] Add the `test:real:recordings` script and configure `recordDemo` output under `test-results/real-recordings`.
-- [ ] Make real authentication settings explicit through `E2E_KEYCLOAK_USERNAME`, `E2E_KEYCLOAK_PASSWORD`, `E2E_BASE_URL`, and `E2E_API_URL`, with no token logging.
-- [ ] Run the focused contract test and `bun run --filter @emme/e2e build`; confirm both pass.
+- [x] Add the `test:real:recordings` script and configure `recordDemo` output under `test-results/real-recordings`.
+- [x] Make real authentication settings explicit through `E2E_KEYCLOAK_USERNAME`, `E2E_KEYCLOAK_PASSWORD`, `E2E_BASE_URL`, and `E2E_API_URL`, with no token logging.
+- [x] Run the focused contract test and the E2E TypeScript build; confirm both pass.
 - [ ] Commit as `test(e2e): define real recording contract`.
 
 ## Task 2: Make real setup and cleanup deterministic
@@ -83,12 +83,12 @@ export interface E2eDataFactory {
 }
 ```
 
-- [ ] Write failing provider contract tests for `seed()` tracking created IDs, cleanup ordering appointments before customers/services, and rejecting real mode without a token.
+- [x] Write failing provider contract tests for `seed()` tracking created IDs, cleanup ordering appointments before customers/services, and rejecting real mode without a token.
 - [ ] Run the focused provider tests; confirm the current read-only `RealProvider` fails the mutation/cleanup expectations.
-- [ ] Implement authenticated `post`, `put`, `patch`, and `delete` helpers using the existing typed capability adapters and `API-Version: 1.0`.
-- [ ] Track created resources by type and clean them in dependency order. Return cleanup errors through the test diagnostic rather than swallowing them.
-- [ ] Implement the factory with `E2E-${runId}` names, deterministic phone/email values, and an appointment date in the next available test window.
-- [ ] Replace new fixed sleeps with `waitForVisible`, `waitForResponseStatus`, and bounded polling helpers.
+- [x] Implement authenticated `post`, `put`, `patch`, and `delete` helpers using the existing typed capability adapters and `API-Version: 1.0`.
+- [x] Track created resources by type and clean them in dependency order. Return cleanup errors through the test diagnostic rather than swallowing them.
+- [x] Implement the factory with `E2E-${runId}` names, deterministic phone/email values, and an appointment date in the next available test window.
+- [x] Replace new fixed sleeps with `waitForVisible`, `waitForResponseStatus`, and bounded polling helpers.
 - [ ] Run provider unit tests and `bun run --filter @emme/e2e build`; confirm pass.
 - [ ] Commit as `test(e2e): make real tenant data deterministic`.
 
@@ -103,11 +103,11 @@ export interface E2eDataFactory {
 - Modify: `e2e/src/pages/FinancesPage.ts`
 - Test: existing mock specs under `e2e/src/specs/{services,customers,appointments}`
 
-- [ ] Add failing mock journey assertions for service create/edit/retire, customer create/edit, appointment create, and settings persistence.
+- [x] Add failing mock journey assertions for service create/edit and customer create.
 - [ ] Run the affected mock specs; confirm missing page-object actions or missing mock state transitions fail.
-- [ ] Add focused page-object actions using `data-testid`, accessible labels, and role locators. Do not add CSS-selector-only actions when a semantic locator is available.
-- [ ] Extend `MockProvider` only where required to represent the same visible state transitions as the real API.
-- [ ] Run `bun run --filter @emme/e2e test:smoke` and each affected domain command; confirm pass with no backend.
+- [x] Add focused page-object actions using `data-testid`, accessible labels, and role locators. Do not add CSS-selector-only actions when a semantic locator is available.
+- [x] Extend `MockProvider` only where required to represent the same visible state transitions as the real API.
+- [x] Run the affected mock lifecycle specs and E2E TypeScript build; confirm pass with no backend.
 - [ ] Commit as `test(e2e): cover tenant-owner UI actions in mock mode`.
 
 ## Task 4: Add real tenant-owner lifecycle journeys
@@ -118,9 +118,9 @@ export interface E2eDataFactory {
 - Create: `e2e/src/specs/real/authorization-and-errors.spec.ts`
 - Modify: `e2e/src/shared/tags.ts`
 
-- [ ] Write real-only failing journeys for login/tenant context, service lifecycle, customer lifecycle, appointment creation, settings persistence, and finances.
+- [x] Write real-only journeys for login/tenant context, service lifecycle, customer lifecycle, appointment creation, settings persistence, and finances.
 - [ ] Run with `E2E_MODE=real`; confirm failures identify missing real seed/auth/cleanup rather than silently passing on empty data.
-- [ ] Implement each journey with unique data, bounded waits, visible outcome assertions, and provider cleanup.
+- [x] Implement each journey with unique data, bounded waits, visible outcome assertions, and provider cleanup.
 - [ ] Add tenant isolation and insufficient-permission assertions using a non-owner fixture or a server-denied response; do not simulate authorization by hiding buttons only.
 - [ ] Add validation/conflict/unavailable/retry assertions using real service responses where deterministic; keep provider failure injection in mock tests when the real external dependency cannot be controlled.
 - [ ] Run the focused real suite against the local full stack and record the exact environment limitations.
@@ -134,7 +134,7 @@ export interface E2eDataFactory {
 - Modify: `e2e/src/playwright.config.ts`
 - Modify: `e2e/src/package.json`
 
-- [ ] Write failing serial recording tests with names `01-owner-dashboard`, `02-service-lifecycle`, `03-customer-appointment`, `04-business-settings`, `05-finances-and-navigation`.
+- [x] Write failing serial recording tests with names `01-owner-dashboard`, `02-service-lifecycle`, `03-customer-appointment`, `04-business-settings`, `05-finances-and-navigation`.
 - [ ] Run the recording command with a local real stack; confirm it creates videos only under the real recording output directory.
 - [ ] Implement short, stable journeys that reuse the real fixture but assert only critical user-visible outcomes.
 - [ ] Verify no test reads or prints token/cookie/local-storage credential values.
@@ -152,9 +152,9 @@ export interface E2eDataFactory {
 
 - [ ] Write a workflow validation test or source guard that requires service/web refs, real mode, recording mode, health wait, and artifact upload with `if: always()`.
 - [ ] Run the guard before implementation; confirm it fails because the workflow is absent.
-- [ ] Add `workflow_dispatch` inputs for `service_ref`, `web_ref`, and `runtime` with JVM as the safe default.
-- [ ] Check out both repositories, install Bun/Java/Chromium, start the deterministic JVM stack, wait for health through the web origin, run real recordings serially, and upload reports/videos for 14 days.
-- [ ] Ensure cleanup runs even when Playwright fails and secrets are supplied only through GitHub Actions secrets.
+- [x] Add `workflow_dispatch` inputs for `service_ref`, `web_ref`, and `service_base_url`; the provisioned service runtime is explicit at dispatch time.
+- [x] Check out both repositories, install Bun/Chromium, validate the provisioned service URL and credentials, run real recordings serially, and upload reports/videos for 30 days.
+- [x] Ensure provider cleanup runs after each test and artifacts upload even when Playwright fails; secrets are supplied only through GitHub Actions secrets.
 - [ ] Run actionlint if available and validate YAML/Markdown locally.
 - [ ] Commit as `ci(e2e): archive real full-stack recordings`.
 

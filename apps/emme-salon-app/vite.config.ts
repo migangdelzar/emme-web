@@ -46,10 +46,6 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: { '@': path.resolve(__dirname, './src') },
-      dedupe: ['firebase'],
-    },
-    optimizeDeps: {
-      include: ['firebase/app', 'firebase/auth'],
     },
     server: {
       hmr: {

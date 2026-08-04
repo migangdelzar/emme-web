@@ -50,6 +50,19 @@ stable public module barrels.
 - [ ] Audit the sibling `emme-service` repository for duplicate metadata,
       unused source candidates, and generated artifacts.
 
+## Tenant-owner real E2E checkpoint — 2026-08-03
+
+- [x] Define separate mock and real provider contracts.
+- [x] Add deterministic real seed data and dependency-aware cleanup.
+- [x] Add mock service/customer lifecycle journeys using shared page objects.
+- [x] Add real tenant-owner lifecycle and recording journey specifications.
+- [x] Add a manual real full-stack recording workflow with exact web/service
+      refs, explicit service URL, credential secrets, and artifact retention.
+- [ ] Provision a deterministic Keycloak/service environment and run the real
+      workflow; this is an environment prerequisite, not a hidden mock fallback.
+- [ ] Add shell/accessibility/transport guards and run the complete quality
+      matrix.
+
 ### Working notes
 
 - Demo recordings intentionally use the deterministic `MockProvider`; they do

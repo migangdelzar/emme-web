@@ -24,6 +24,7 @@
   "devDependencies": {
     "@emme/contracts": "workspace:*",
     "@emme/i18n": "workspace:*",
-    "@playwright/test": "^1.60.0"
+    "@playwright/test": "^1.60.0",
+    "typescript": "^5.8.0"
   }
 }
