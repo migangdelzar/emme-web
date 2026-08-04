@@ -28,7 +28,7 @@ breaking contract requires a coordinated compatibility window and migration.
 | [00 — Project](00-project/architecture-model.md)         | Frontend lens, Bun workspace, and documentation ownership              |
 | [02 — Frontend](02-frontend/app.md)                      | App shell, modules, features, React, Vite, state, i18n, testing        |
 | [03 — Integration](03-integration/frontend-backend.md)   | Typed HTTP boundary, contract consumption, E2E topology, compatibility |
-| [04 — Delivery](04-delivery/container.md)                | Web image, CI, and release promotion                                   |
+| [04 — Delivery](04-delivery/container.md)                | Web image, CI, release promotion, and secret boundaries               |
 | [05 — Operations](05-operations/production-readiness.md) | Browser reliability, telemetry, and approval evidence                  |
 
 ## Normative policy links
@@ -39,6 +39,7 @@ breaking contract requires a coordinated compatibility window and migration.
 - [Git and review](../git.md)
 - [Frontend code splitting](../code-splitting.md)
 - [Frontend feature template](../templates/frontend-feature-template.md)
+- [Secrets and configuration boundary](04-delivery/secrets.md)
 
 ## Architecture lenses
 

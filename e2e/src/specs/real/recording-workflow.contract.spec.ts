@@ -76,5 +76,7 @@ test('real mode and recording mode cannot silently be selected by mock commands'
 
   expect(packageJson).toContain('"test:real": "E2E_MODE=real');
   expect(playwrightConfig).toContain("process.env.E2E_MODE === 'real'");
+  expect(playwrightConfig).not.toContain('...process.env');
+  expect(playwrightConfig).toContain('VITE_API_BASE_URL: process.env.VITE_API_BASE_URL');
   expect(frontendWorkflow).toContain('bun run test:e2e:mock');
 });

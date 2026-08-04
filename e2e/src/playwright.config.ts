@@ -54,7 +54,6 @@ export default defineConfig({
           // Reusing a stale local server can silently omit VITE_* variables.
           reuseExistingServer: false,
           env: {
-            ...process.env,
             VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
             VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:8081',
             VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
