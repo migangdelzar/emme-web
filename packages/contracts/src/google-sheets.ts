@@ -1,5 +1,5 @@
-import type { HttpClient } from "@emme/api-client";
 import { API } from "./routes.js";
+import type { HttpClient } from "./transport.js";
 
 export interface SheetsExportRequest {
   exportType: "APPOINTMENTS" | "CLIENTS" | "FULL";
