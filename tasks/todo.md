@@ -118,7 +118,7 @@ small Zustand store. Component-local transient state remains local React state.
 - [x] Existing feature behavior and E2E flows remain unchanged.
 - [x] No new `any` is introduced in the refactored path.
 - [x] Typecheck, unit tests, lint, build, docs, and mock E2E pass.
-- [ ] Changes are committed and pushed on `feat/api-version-contract`.
+- [x] Changes are committed and pushed on `feat/api-version-contract`.
 
 ## FSD feature and capability API boundaries
 
@@ -148,4 +148,4 @@ Keep shared HTTP behavior in `@emme/api-client`, capability adapters in
       the transport client.
 - [x] No salon-specific endpoint methods are added to `@emme/api-client`.
 - [x] FSD/API dependency direction is documented.
-- [ ] Full verification and push are complete.
+- [x] Full verification and push are complete.
