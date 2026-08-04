@@ -5,7 +5,7 @@ run-name: >-
   Full-stack recordings · web=${{ inputs.web_ref }} ·
   service=${{ inputs.service_ref }}
 
-on: # yamllint disable-line rule:truthy
+'on':
   workflow_dispatch:
     inputs:
       service_ref:
@@ -48,7 +48,8 @@ jobs:
       E2E_OWNER_USERNAME: ${{ inputs.e2e_owner_username }}
       E2E_OWNER_PASSWORD: ${{ secrets.E2E_KEYCLOAK_PASSWORD }}
       E2E_KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
-      EMME_E2E_KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
+      EMME_E2E_KEYCLOAK_ADMIN_PASSWORD: >-
+        ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
       E2E_TENANT_SLUG: e2e-studio
       E2E_TENANT_NAME: E2E Studio
 
@@ -71,7 +72,9 @@ jobs:
       - name: Resolve immutable service image tag
         working-directory: emme-service
         shell: bash
-        run: echo "EMME_SERVICE_IMAGE=emme-service:e2e-sha-$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+        run: |
+          echo "EMME_SERVICE_IMAGE=emme-service:e2e-sha-$(git rev-parse HEAD)" \
+            >> "$GITHUB_ENV"
 
       - name: Set up Java 25
         uses: actions/setup-java@v4
@@ -117,23 +120,24 @@ jobs:
         working-directory: emme-service
         run: >-
           docker compose
-          -f deployment/compose/compose.yml
-          -f deployment/compose/compose.jvm.yml
-          -f deployment/compose/compose.e2e.yml
+          -f deployment/compose/compose.yaml
+          -f deployment/compose/compose.runtime-jvm.yaml
+          -f deployment/compose/compose.environment-e2e.yaml
           config --quiet
 
       - name: Start disposable dependencies
         working-directory: emme-service
         env:
-          EMME_E2E_KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
+          EMME_E2E_KEYCLOAK_ADMIN_PASSWORD: >-
+            ${{ secrets.E2E_KEYCLOAK_ADMIN_PASSWORD }}
           TENANT_SEED_SLUGS: e2e-studio
         run: |
           set -euo pipefail
           compose=(
             docker compose
-            -f deployment/compose/compose.yml
-            -f deployment/compose/compose.jvm.yml
-            -f deployment/compose/compose.e2e.yml
+            -f deployment/compose/compose.yaml
+            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.environment-e2e.yaml
           )
           "${compose[@]}" down --volumes --remove-orphans || true
           "${compose[@]}" up -d postgres redis keycloak
@@ -146,12 +150,13 @@ jobs:
           set -euo pipefail
           compose=(
             docker compose
-            -f deployment/compose/compose.yml
-            -f deployment/compose/compose.jvm.yml
-            -f deployment/compose/compose.e2e.yml
+            -f deployment/compose/compose.yaml
+            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.environment-e2e.yaml
           )
           for attempt in $(seq 1 60); do
-            if curl --fail --silent http://127.0.0.1:18080/health/ready >/dev/null; then
+            if curl --fail --silent \
+              http://127.0.0.1:18080/health/ready >/dev/null; then
               exit 0
             fi
             sleep 2
@@ -184,9 +189,9 @@ jobs:
           set -euo pipefail
           compose=(
             docker compose
-            -f deployment/compose/compose.yml
-            -f deployment/compose/compose.jvm.yml
-            -f deployment/compose/compose.e2e.yml
+            -f deployment/compose/compose.yaml
+            -f deployment/compose/compose.runtime-jvm.yaml
+            -f deployment/compose/compose.environment-e2e.yaml
           )
           "${compose[@]}" up -d emme-platform
 
@@ -202,9 +207,9 @@ jobs:
             sleep 2
           done
           docker compose \
-            -f emme-service/deployment/compose/compose.yml \
-            -f emme-service/deployment/compose/compose.jvm.yml \
-            -f emme-service/deployment/compose/compose.e2e.yml \
+            -f emme-service/deployment/compose/compose.yaml \
+            -f emme-service/deployment/compose/compose.runtime-jvm.yaml \
+            -f emme-service/deployment/compose/compose.environment-e2e.yaml \
             logs --no-color emme-platform
           exit 1
 
@@ -230,9 +235,9 @@ jobs:
         working-directory: emme-service
         run: |
           docker compose \
-            -f deployment/compose/compose.yml \
-            -f deployment/compose/compose.jvm.yml \
-            -f deployment/compose/compose.e2e.yml \
+            -f deployment/compose/compose.yaml \
+            -f deployment/compose/compose.runtime-jvm.yaml \
+            -f deployment/compose/compose.environment-e2e.yaml \
             logs --no-color > "${RUNNER_TEMP}/emme-compose.log" || true
 
       - name: Dump Compose logs on failure
@@ -240,9 +245,9 @@ jobs:
         working-directory: emme-service
         run: |
           docker compose \
-            -f deployment/compose/compose.yml \
-            -f deployment/compose/compose.jvm.yml \
-            -f deployment/compose/compose.e2e.yml \
+            -f deployment/compose/compose.yaml \
+            -f deployment/compose/compose.runtime-jvm.yaml \
+            -f deployment/compose/compose.environment-e2e.yaml \
             logs --no-color
 
       - name: Tear down disposable dependencies
@@ -250,7 +255,7 @@ jobs:
         working-directory: emme-service
         run: >-
           docker compose
-          -f deployment/compose/compose.yml
-          -f deployment/compose/compose.jvm.yml
-          -f deployment/compose/compose.e2e.yml
+          -f deployment/compose/compose.yaml
+          -f deployment/compose/compose.runtime-jvm.yaml
+          -f deployment/compose/compose.environment-e2e.yaml
           down --volumes --remove-orphans

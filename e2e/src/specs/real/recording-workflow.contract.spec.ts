@@ -18,8 +18,8 @@ test('real recording workflow protects the full-stack evidence contract', async 
   expect(workflow).toContain('EMME_SERVICE_IMAGE=emme-service:e2e-sha-');
   expect(workflow).toContain('bootBuildImage');
   expect(workflow).toContain(':tools:e2e-provisioner:run');
-  expect(workflow).toContain('compose.jvm.yml');
-  expect(workflow).toContain('compose.e2e.yml');
+  expect(workflow).toContain('compose.runtime-jvm.yaml');
+  expect(workflow).toContain('compose.environment-e2e.yaml');
   expect(workflow).toContain('up -d emme-platform');
   expect(workflow).toContain('test:real:recordings');
   expect(workflow).toContain('always()');

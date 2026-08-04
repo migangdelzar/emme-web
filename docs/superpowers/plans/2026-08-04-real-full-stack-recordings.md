@@ -39,7 +39,7 @@ Bun, Vite, Playwright, GitHub Actions artifacts, CodeRabbit.
 ## Verification
 
 - `./gradlew :tools:e2e-provisioner:test --no-daemon --no-configuration-cache`
-- `docker compose -f deployment/compose/compose.yml -f deployment/compose/compose.e2e.yml config --quiet`
+- `docker compose -f deployment/compose/compose.yaml -f deployment/compose/compose.runtime-jvm.yaml -f deployment/compose/compose.environment-e2e.yaml config --quiet`
 - Web formatting, typecheck, unit, build, mock E2E, and workflow contract tests.
 - GitHub Actions real E2E with disposable Keycloak/PostgreSQL/Redis and the
   current feature refs.
