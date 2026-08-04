@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 const recordDemo = process.env.RECORD_DEMO === 'true';
+const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 
 export default defineConfig({
   testDir: './specs',
@@ -18,10 +19,10 @@ export default defineConfig({
     ['json', { outputFile: 'test-results.json' }],
   ],
 
-  outputDir: recordDemo ? 'test-results/demo-recordings' : 'test-results',
+  outputDir: recordDemo ? 'test-results/real-recordings' : 'test-results',
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL,
     headless: true,
     video: recordDemo ? 'on' : 'retain-on-failure',
     trace: recordDemo ? 'on' : 'on-first-retry',

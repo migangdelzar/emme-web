@@ -4,6 +4,7 @@ import { acquireUser, releaseUser, type TestUser } from './userPool';
 import { MockProvider } from '../providers/MockProvider';
 import { RealProvider } from '../providers/RealProvider';
 import type { ApiProvider, SeedData } from '../providers/ApiProvider';
+import { LoginPage } from '../pages/LoginPage';
 
 const MODE = process.env.E2E_MODE || 'mock';
 
@@ -48,27 +49,30 @@ async function mockLogin(page: Page, user: TestUser) {
   return provider;
 }
 
-async function realLogin(page: Page): Promise<RealProvider> {
+function requiredRealEnvironment(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(`Real E2E requires ${name} to be configured; refusing to use an implicit environment.`);
+  }
+  return value;
+}
+
+async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   const provider = new RealProvider();
+  const baseUrl = requiredRealEnvironment('E2E_BASE_URL');
+  const username = requiredRealEnvironment('E2E_KEYCLOAK_USERNAME');
+  const password = requiredRealEnvironment('E2E_KEYCLOAK_PASSWORD');
 
-  await page.goto('http://localhost:3000/');
-  await page.getByRole('button', { name: /Ingresar|Iniciar/i }).click();
-  await page.waitForTimeout(500);
-
-  const username = process.env.E2E_KEYCLOAK_USERNAME || 'owner';
-  const password = process.env.E2E_KEYCLOAK_PASSWORD || 'owner123';
-  await page.getByPlaceholder(/email|usuario|correo/i).fill(username);
-  await page.getByRole('textbox', { name: /contraseña|password/i }).fill(password);
-  await page.getByRole('button', { name: /Iniciar|Ingresar/i }).click();
-
-  // Wait for OAuth2 redirect + app load
-  await page.waitForTimeout(4000);
-  await page.goto('http://localhost:3000/#/dashboard');
-  await page.waitForTimeout(1000);
+  await page.goto(baseUrl);
+  const login = new LoginPage(page);
+  await login.login(username, password);
+  await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 15000 });
 
   // Extract access token from browser localStorage → pass to RealProvider for Node.js API calls
   const token = await page.evaluate(() => localStorage.getItem('access_token'));
-  if (token) provider.setToken(token);
+  if (!token) throw new Error('Real E2E login completed without an access token.');
+  provider.setToken(token);
+  await provider.setup(page, user);
 
   sharedRealProvider = provider;
   return provider;
@@ -110,7 +114,7 @@ export const test = base.extend<Fixtures>({
       await use(page);
       sharedMockProvider = null;
     } else {
-      await realLogin(page);
+      await realLogin(page, testUser);
       await use(page);
     }
   }, { scope: 'test' }],

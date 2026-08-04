@@ -10,12 +10,15 @@
     "test:retry": "bunx playwright test --project=mock --last-failed",
     "test:real": "bunx playwright test --project=real",
     "test:real:headed": "bunx playwright test --project=real --headed",
+    "test:real:recordings": "E2E_MODE=real RECORD_DEMO=true bunx playwright test --project=real --grep @demo --retries=0",
     "test:demo": "RECORD_DEMO=true bunx playwright test --project=mock --grep @demo --retries=0",
     "test:services": "bunx playwright test --project=mock --grep @services",
     "test:clients": "bunx playwright test --project=mock --grep @clients",
     "test:appointments": "bunx playwright test --project=mock --grep @appointments",
     "test:errors": "bunx playwright test --project=mock --grep @error-state",
     "test:debug": "bunx playwright test --project=mock --debug",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "bun run typecheck",
     "report": "bunx playwright show-report"
   },
   "devDependencies": {

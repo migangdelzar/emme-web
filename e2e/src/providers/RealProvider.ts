@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import type { TestUser } from '@fixtures/userPool';
 import type { ApiProvider, SeedData, RouteConfig } from './ApiProvider';
 import { createClientApi, createServiceApi, createAppointmentApi } from '@emme/contracts';
+import { API_VERSION } from '@emme/contracts';
 import { API } from '@routes/routes';
 import { type RouteOverride, matchPattern } from './shared';
 
@@ -16,7 +17,7 @@ export class RealProvider implements ApiProvider {
   private overrides: RouteOverride[] = [];
 
   constructor() {
-    this.baseUrl = process.env.E2E_API_URL || 'http://localhost:8081';
+    this.baseUrl = process.env.E2E_API_URL?.trim() || '';
   }
 
   /** Set the auth token (extracted from browser after OAuth2 login). */
@@ -33,6 +34,8 @@ export class RealProvider implements ApiProvider {
         ...init,
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'API-Version': API_VERSION,
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           ...(init?.headers as Record<string, string> || {}),
         },
@@ -113,7 +116,8 @@ export class RealProvider implements ApiProvider {
   }
 
   async setup(_page: Page, _user: TestUser): Promise<void> {
-    // Auth token is set via setToken() after browser login
+    if (!this.baseUrl) throw new Error('Real E2E requires E2E_API_URL to be configured.');
+    if (!this.token) throw new Error('Real E2E provider requires an authenticated browser token.');
   }
 
    async seed(_data: SeedData): Promise<void> {
