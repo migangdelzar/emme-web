@@ -37,11 +37,9 @@ export class RealProvider implements ApiProvider {
   private createHttp() {
     const token = this.token;
     const tenantSlug = this.tenantSlug;
-    const baseUrl = this.baseUrl;
 
     const request = async <T>(path: string, method: string, body?: unknown): Promise<T> => {
-      const tenantParam = tenantSlug && !path.includes('?tenant=') ? `?tenant=${tenantSlug}` : '';
-      const url = `${baseUrl}${path}${tenantParam}`;
+      const url = `${this.baseUrl}${path}`;
       const headers: Record<string, string> = {
         Accept: 'application/json',
         'API-Version': API_VERSION,
