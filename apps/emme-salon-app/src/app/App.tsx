@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Sidebar, MobileNav } from '@/shared/layout/Navigation';
+import { Sidebar, MobileNav } from '@/widgets/Navigation';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '@/context/AppContext';
