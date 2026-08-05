@@ -10,22 +10,14 @@ const MODE = process.env.E2E_MODE || 'mock';
 
 const DEFAULT_SEED: SeedData = {
   services: [
-    {
-      id: 'svc-default',
-      name: 'Manicure Clásica',
-      price: 350,
-      duration: 45,
-      category: 'Manicura',
-      isActive: true,
-    },
+    { id: 's1', name: 'Manicure Clasica', price: 350, duration: 45, category: 'Manicura y Cuidado Natural', isActive: true },
+    { id: 's2', name: 'Manicure Rusa', price: 750, duration: 90, category: 'Manicura y Cuidado Natural', isActive: true },
+    { id: 's3', name: 'Soft Gel Premium', price: 1200, duration: 120, category: 'Extensiones y Estructura', isActive: true },
   ],
   customers: [
-    {
-      id: 'cust-default',
-      name: 'Cliente Demo',
-      phone: '555-0000',
-      email: 'demo@emme.app',
-    },
+    { id: 'c1', name: 'Valeria Arriaza', phone: '555-0101', email: 'valeria@test.com' },
+    { id: 'c2', name: 'Elena Garcia', phone: '555-0102', email: 'elena@test.com' },
+    { id: 'c3', name: 'Maria Jose', phone: '555-0103', email: 'maria@test.com' },
   ],
 };
 
@@ -111,8 +103,9 @@ export const test = base.extend<Fixtures>({
       } else {
         provider = await realLogin(page, testUser);
         await provider.seed(DEFAULT_SEED);
-        // Wait for backend to commit seed data before page navigates
-        await page.waitForTimeout(800);
+        // Wait for UI to fully hydrate with seeded data
+        await page.waitForTimeout(1000);
+        await page.waitForLoadState('networkidle');
       }
 
       try {
@@ -139,6 +132,11 @@ export const test = base.extend<Fixtures>({
 
   authenticatedPage: [
     async ({ page, provider: _provider }, use) => {
+      // Reload to ensure UI reflects seeded data
+      if (MODE === 'real') {
+        await page.reload();
+        await page.waitForLoadState('networkidle');
+      }
       await use(page);
     },
     { scope: 'test' },

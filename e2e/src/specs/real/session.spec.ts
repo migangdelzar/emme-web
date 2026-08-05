@@ -23,7 +23,7 @@ test.describe(
       await expect(authenticatedPage.getByTestId('sidebar-container')).toBeVisible({
         timeout: 15000,
       });
-      await expect(authenticatedPage.getByTestId('dashboard-greeting')).toBeVisible();
+      await expect(authenticatedPage.getByTestId('greeting-heading')).toBeVisible();
     });
   }
 );
