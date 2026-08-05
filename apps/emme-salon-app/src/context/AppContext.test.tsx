@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AppProvider, useApp } from './AppContext';
-import { AuthContext, type AuthContextValue } from '@/auth/useAuth';
+import { AuthContext, type AuthContextValue } from '@/app/auth/useAuth';
 
 const authContext: AuthContextValue = {
   status: 'signedOut',

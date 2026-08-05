@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { els } from '@emme/i18n';
 import { useApp, type BusinessProfile } from '@/context/AppContext';
 import { useSettingsData } from '@/features/settings/hooks/useSettingsData';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/app/auth/useAuth';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { PhoneInput } from '@/shared/ui/PhoneInput';

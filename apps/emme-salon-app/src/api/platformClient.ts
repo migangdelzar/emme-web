@@ -1,6 +1,6 @@
 import { createApiClient, type ApiClient, type ApiClientOptions } from '@emme/api-client';
 
-import type { RuntimeConfig } from '../config/runtimeConfig';
+import type { RuntimeConfig } from '../../app/config/runtimeConfig';
 
 export interface PlatformClientOptions {
   runtimeConfig: RuntimeConfig;

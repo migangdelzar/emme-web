@@ -1,7 +1,7 @@
 import { createHttpClient } from '@emme/api-client';
 import type { HttpClient } from '@emme/api-client';
 
-import { getRuntimeConfig } from '@/config/runtimeConfig';
+import { getRuntimeConfig } from '@/app/config/runtimeConfig';
 
 async function getToken(): Promise<string | null> {
   try {

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/app/auth/useAuth';
 import { getApiClient } from './apiClientInstance';
 import type { CurrentUser, HealthResponse } from '@emme/contracts';
 

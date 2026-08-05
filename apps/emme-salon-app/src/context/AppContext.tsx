@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { provider } from '@/providers/DataProvider';
-import { useAuth } from '../auth/useAuth';
+import { useAuth } from '../app/auth/useAuth';
 import type {
   Service,
   Client,

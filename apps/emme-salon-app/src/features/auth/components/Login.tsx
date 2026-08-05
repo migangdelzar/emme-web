@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/app/auth/useAuth';
 import { els } from '@emme/i18n';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';

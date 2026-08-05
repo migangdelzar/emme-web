@@ -1,5 +1,5 @@
 import { createPlatformClient } from './platformClient';
-import { getRuntimeConfig } from '@/config/runtimeConfig';
+import { getRuntimeConfig } from '@/app/config/runtimeConfig';
 import type { ApiClient } from '@emme/api-client';
 
 let clientInstance: ApiClient | null = null;

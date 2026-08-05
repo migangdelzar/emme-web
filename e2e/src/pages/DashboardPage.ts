@@ -9,8 +9,9 @@ export class DashboardPage {
   readonly greeting = () => this.page.getByTestId(tid('dashboard.greeting')!);
   readonly sidebar = () => this.page.getByTestId(tid('sidebar.container')!);
   readonly navItem = (key: string) => {
-    const shortKey = key.split('.').pop() ?? key;
-    return this.page.getByTestId(findTestId(key) ?? tid(`nav.${shortKey}`) ?? key).first();
+    const shortKey = (key.split('.').pop() ?? key) as string;
+    const navTid = tid(`nav.${shortKey}` as ElementKey);
+    return this.page.getByTestId(findTestId(key) ?? navTid ?? key).first();
   };
 
   readonly incomeCard = () => this.page.getByTestId(tid('dashboard.incomeToday')!);

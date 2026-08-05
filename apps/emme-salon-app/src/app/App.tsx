@@ -5,7 +5,7 @@ import { Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '@/context/AppContext';
 import { useUiStore } from '@/stores/uiStore';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/app/auth/useAuth';
 import { Toaster } from '@/shared/ui/sonner';
 import { TooltipProvider } from '@/shared/ui/tooltip';
 import { els } from '@emme/i18n';
@@ -45,7 +45,7 @@ const Onboarding = React.lazy(() =>
   }))
 );
 const TenantSelector = React.lazy(() =>
-  import('@/auth/TenantSelector').then((m) => ({ default: m.TenantSelector }))
+  import('@/app/auth/TenantSelector').then((m) => ({ default: m.TenantSelector }))
 );
 
 function PageLoader() {
