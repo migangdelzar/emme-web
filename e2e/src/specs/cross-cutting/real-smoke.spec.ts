@@ -9,7 +9,8 @@ test.describe('Smoke', { tag: [Tag.SMOKE, Tag.DASHBOARD, Tag.CRITICAL] }, () => 
 
   test('backend health endpoint reachable', async ({ page }) => {
     test.skip(process.env.E2E_MODE !== 'real', 'Real-only: requires backend');
-    const resp = await page.request.get('http://localhost:8080/actuator/health');
+    const apiUrl = process.env.E2E_API_URL || 'http://localhost:8081';
+    const resp = await page.request.get(`${apiUrl}/actuator/health`);
     expect(resp.status()).toBe(200);
     expect((await resp.json()).status).toBe('UP');
   });

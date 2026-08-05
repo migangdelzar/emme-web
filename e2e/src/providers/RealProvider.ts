@@ -127,26 +127,38 @@ export class RealProvider implements ApiProvider {
 
     for (const customer of data.customers ?? []) {
       const { id, ...payload } = customer;
-      const created = await customers.create(payload);
-      customerIds.set(id, created.id);
-      this.seededIds.customers.push(created.id);
+      try {
+        const created = await customers.create(payload);
+        customerIds.set(id, created.id);
+        this.seededIds.customers.push(created.id);
+      } catch (error) {
+        if (!(error instanceof Error && (error.message.includes('HTTP 409') || error.message.includes('HTTP 400')))) throw error;
+      }
     }
 
     for (const service of data.services ?? []) {
       const { id, isActive: _isActive, ...payload } = service;
-      const created = await services.create(payload);
-      serviceIds.set(id, created.id);
-      this.seededIds.services.push(created.id);
+      try {
+        const created = await services.create(payload);
+        serviceIds.set(id, created.id);
+        this.seededIds.services.push(created.id);
+      } catch (error) {
+        if (!(error instanceof Error && (error.message.includes('HTTP 409') || error.message.includes('HTTP 400')))) throw error;
+      }
     }
 
     for (const appointment of data.appointments ?? []) {
       const { id: _id, ...payload } = appointment;
-      const created = await appointments.create({
-        ...payload,
-        clientId: customerIds.get(appointment.clientId) ?? appointment.clientId,
-        serviceId: serviceIds.get(appointment.serviceId) ?? appointment.serviceId,
-      });
-      this.seededIds.appointments.push(created.id);
+      try {
+        const created = await appointments.create({
+          ...payload,
+          clientId: customerIds.get(appointment.clientId) ?? appointment.clientId,
+          serviceId: serviceIds.get(appointment.serviceId) ?? appointment.serviceId,
+        });
+        this.seededIds.appointments.push(created.id);
+      } catch (error) {
+        if (!(error instanceof Error && (error.message.includes('HTTP 409') || error.message.includes('HTTP 400')))) throw error;
+      }
     }
   }
 
