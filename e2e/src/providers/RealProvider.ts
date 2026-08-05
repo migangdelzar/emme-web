@@ -38,10 +38,10 @@ export class RealProvider implements ApiProvider {
     const token = this.token;
     const tenantSlug = this.tenantSlug;
     const baseUrl = this.baseUrl;
-    console.log(`[RealProvider] createHttp: token=${token ? token.substring(0,20)+'...' : 'EMPTY'}, tenantSlug=${tenantSlug}, baseUrl=${baseUrl}`);
 
     const request = async <T>(path: string, method: string, body?: unknown): Promise<T> => {
-      const url = `${baseUrl}${path}`;
+      const tenantParam = tenantSlug && !path.includes('?tenant=') ? `?tenant=${tenantSlug}` : '';
+      const url = `${baseUrl}${path}${tenantParam}`;
       const headers: Record<string, string> = {
         Accept: 'application/json',
         'API-Version': API_VERSION,
@@ -50,7 +50,6 @@ export class RealProvider implements ApiProvider {
       if (token) headers['Authorization'] = `Bearer ${token}`;
       if (tenantSlug) headers['X-Emme-Tenant-Slug'] = tenantSlug;
 
-      console.log(`[RealProvider] ${method} ${path} token=${!!token} tenant=${tenantSlug}`);
       const response = await this.fetcher(url, {
         method,
         headers,
