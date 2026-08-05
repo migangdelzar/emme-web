@@ -175,7 +175,7 @@ export function Dashboard() {
       icon: TrendingUp,
       color: 'text-[#34C759]',
       bg: 'bg-[#34C759]/10',
-      testId: els.dashboard.incomeToday.testId,
+      testId: els.dashboard.incomeToday,
     },
     {
       label: t('dashboard.confirmedToday'),
@@ -183,7 +183,7 @@ export function Dashboard() {
       icon: CheckCheck,
       color: 'text-[#007AFF]',
       bg: 'bg-[#007AFF]/10',
-      testId: els.dashboard.confirmedToday.testId,
+      testId: els.dashboard.confirmedToday,
     },
     {
       label: t('dashboard.occupancy'),
@@ -191,7 +191,7 @@ export function Dashboard() {
       icon: Gauge,
       color: 'text-[#FF9500]',
       bg: 'bg-[#FF9500]/10',
-      testId: els.dashboard.occupancy.testId,
+      testId: els.dashboard.occupancy,
     },
     {
       label: t('dashboard.newClients'),
@@ -199,7 +199,7 @@ export function Dashboard() {
       icon: UserPlus,
       color: 'text-[#AF52DE]',
       bg: 'bg-[#AF52DE]/10',
-      testId: els.dashboard.newClients.testId,
+      testId: els.dashboard.newClients,
     },
   ];
 
@@ -264,7 +264,7 @@ export function Dashboard() {
               </p>
               <div className="space-y-1">
                 <h2
-                  data-testid={els.dashboard.greeting.testId}
+                  data-testid={els.dashboard.greeting}
                   className="text-[44px] lg:text-[72px] font-display font-semibold tracking-[-0.05em] text-foreground leading-none"
                 >
                   {getGreeting()}, {(profile.ownerName || 'Studio').split(' ')[0]}.
@@ -312,7 +312,7 @@ export function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pt-4">
             {/* Main Section: Agenda List */}
             <section
-              data-testid={els.dashboard.agendaSection.testId}
+              data-testid={els.dashboard.agenda}
               className="lg:col-span-8 space-y-6"
             >
               <div className="flex items-center justify-between px-0">
@@ -423,7 +423,7 @@ export function Dashboard() {
             {/* Sidebar Bento Section */}
             <aside className="lg:col-span-4 space-y-6 px-0">
               <motion.div
-                data-testid={els.dashboard.missionCard.testId}
+                data-testid={els.dashboard.missionCard}
                 whileHover={{ y: -4 }}
                 className="relative p-10 rounded-[32px] overflow-hidden group shadow-2xl bg-[#1D1D1F] transition-all duration-500"
               >
@@ -456,7 +456,7 @@ export function Dashboard() {
 
               {/* Goal Progress Card */}
               <motion.div
-                data-testid={els.dashboard.goalCard.testId}
+                data-testid={els.dashboard.goalCard}
                 whileHover={{ y: -4 }}
                 onClick={() => {
                   setTempGoal(goal);
@@ -471,7 +471,7 @@ export function Dashboard() {
                         {t('dashboard.goalSubtitle')}
                       </p>
                       <h3
-                        data-testid={els.dashboard.goalTitle.testId}
+                        data-testid={els.dashboard.goalTitle}
                         className="text-2xl font-display font-semibold tracking-tight text-foreground"
                       >
                         {t('dashboard.goalTitle')}

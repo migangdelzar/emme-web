@@ -8,8 +8,10 @@ export class DashboardPage {
   // Primary: testId
   readonly greeting = () => this.page.getByTestId(tid('dashboard.greeting')!);
   readonly sidebar = () => this.page.getByTestId(tid('sidebar.container')!);
-  readonly navItem = (key: string) =>
-    this.page.getByTestId(findTestId(key) ?? tid(`nav.${key}` as ElementKey) ?? key).first();
+  readonly navItem = (key: string) => {
+    const shortKey = key.split('.').pop() ?? key;
+    return this.page.getByTestId(findTestId(key) ?? tid(`nav.${shortKey}`) ?? key).first();
+  };
 
   readonly incomeCard = () => this.page.getByTestId(tid('dashboard.incomeToday')!);
   readonly confirmedCard = () => this.page.getByTestId(tid('dashboard.confirmedToday')!);
@@ -17,7 +19,7 @@ export class DashboardPage {
   readonly newClientsCard = () => this.page.getByTestId(tid('dashboard.newClients')!);
   readonly goalCard = () => this.page.getByTestId(tid('dashboard.goalCard')!);
   readonly missionCard = () => this.page.getByTestId(tid('dashboard.missionCard')!);
-  readonly agendaSection = () => this.page.getByTestId(tid('dashboard.agendaSection')!);
+  readonly agendaSection = () => this.page.getByTestId(tid('dashboard.agenda')!);
 
   // Fallback: text-based (i18n coverage)
   readonly greetingByText = () => this.page.getByRole('heading', { name: t('dashboard.greeting') });

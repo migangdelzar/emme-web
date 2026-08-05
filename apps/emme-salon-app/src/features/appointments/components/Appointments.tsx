@@ -142,7 +142,7 @@ const AgendarModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent
-        data-testid={els.appointments.dialog.testId}
+        data-testid={els.appointments.dialog}
         className="max-w-xl md:max-w-4xl lg:max-w-5xl glass border-none shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] p-0 overflow-hidden outline-none sm:rounded-[3.5rem] rounded-t-[3.5rem] h-[95vh] sm:h-[85vh] flex flex-col"
       >
         <AppointmentForm
@@ -677,7 +677,7 @@ export function Appointments() {
           </p>
           <div className="space-y-0">
             <h2
-              data-testid={els.appointments.header.testId}
+              data-testid={els.appointments.header}
               className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-none"
             >
               Calendario.

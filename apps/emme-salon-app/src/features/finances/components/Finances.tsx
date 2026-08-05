@@ -357,7 +357,7 @@ export function Finances() {
               </p>
               <div className="space-y-0">
                 <h2
-                  data-testid={els.finances.header.testId}
+                  data-testid={els.finances.header}
                   className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-none"
                 >
                   {t('finances.heading')}.

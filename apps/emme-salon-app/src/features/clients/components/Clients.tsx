@@ -717,7 +717,7 @@ export function Clients() {
           </span>
           <div className="space-y-1">
             <h2
-              data-testid={els.clients.header.testId}
+              data-testid={els.clients.header}
               className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-[0.9]"
             >
               Relaciones.
@@ -734,7 +734,7 @@ export function Clients() {
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent
-          data-testid={els.clients.dialog.testId}
+          data-testid={els.clients.dialog}
           className="max-w-xl md:max-w-2xl lg:max-w-3xl material-thick border-none shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] p-0 overflow-hidden outline-none rounded-[32px] h-[95vh] sm:h-[85vh] flex flex-col focus:outline-none"
         >
           <DialogTitle className="sr-only">{t('clients.newTitle')}</DialogTitle>
@@ -745,7 +745,7 @@ export function Clients() {
       <div className="relative group w-full">
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-5.5 text-muted-foreground opacity-35 group-focus-within:text-primary group-focus-within:opacity-100 transition-all duration-500" />
         <Input
-          data-testid={els.clients.search.testId}
+          data-testid={els.clients.search}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t('clients.searchPlaceholder')}
@@ -849,7 +849,7 @@ export function Clients() {
           </div>
         ) : filteredClients.length === 0 ? (
           <div
-            data-testid={els.clients.empty.testId}
+            data-testid={els.clients.empty}
             className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4"
           >
             <div className="size-24 rounded-3xl mx-auto flex items-center justify-center mb-6 bg-card shadow-sm border border-border">

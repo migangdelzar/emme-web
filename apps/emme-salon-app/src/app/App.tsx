@@ -99,7 +99,7 @@ function AppContent() {
       <Sidebar activeTab={currentPath} />
 
       <main
-        data-testid={els.layout.main.testId}
+        data-testid={els.layout.main}
         className="flex-1 pb-32 lg:pb-0 h-screen overflow-y-auto custom-scrollbar relative"
       >
         <div className="max-w-[1800px] mx-auto px-4 sm:px-10 lg:px-16 py-8 lg:py-12">

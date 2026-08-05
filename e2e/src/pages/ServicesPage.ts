@@ -6,11 +6,11 @@ export class ServicesPage {
   constructor(readonly page: Page) {}
 
   // Primary: testId
-  readonly header = () => this.page.getByTestId(tid('services.header')!);
-  readonly searchInput = () => this.page.getByTestId(tid('services.search')!);
-  readonly emptyState = () => this.page.getByTestId(tid('services.empty')!);
-  readonly addButton = () => this.page.getByTestId(tid('services.addButton')!);
-  readonly dialog = () => this.page.getByTestId(tid('services.dialog')!);
+  readonly header = () => this.page.getByTestId(tid('services.header'));
+  readonly searchInput = () => this.page.getByTestId(tid('services.search'));
+  readonly emptyState = () => this.page.getByTestId(tid('services.empty'));
+  readonly addButton = () => this.page.getByTestId(tid('services.addButton'));
+  readonly dialog = () => this.page.getByTestId(tid('services.dialog'));
 
   // Fallback: text-based (i18n coverage)
   readonly activeCountBadge = () =>

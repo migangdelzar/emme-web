@@ -76,7 +76,7 @@ export function Onboarding() {
 
   return (
     <div
-      data-testid={els.onboarding.dialog.testId}
+      data-testid={els.onboarding.dialog}
       className="fixed inset-0 z-[250] bg-card flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -115,7 +115,7 @@ export function Onboarding() {
                 ))}
               </div>
               <button
-                data-testid={els.onboarding.skipBtn.testId}
+                data-testid={els.onboarding.skip}
                 onClick={completeOnboarding}
                 className="text-xs font-black uppercase tracking-[0.2em] text-black/30 hover:text-black transition-colors"
               >
@@ -153,7 +153,7 @@ export function Onboarding() {
             </div>
 
             <Button
-              data-testid={els.onboarding.nextBtn.testId}
+              data-testid={els.onboarding.next}
               onClick={nextStep}
               className="h-16 px-10 rounded-2xl bg-[#1d1d1f] text-white font-display font-black text-lg hover:bg-black active:scale-[0.98] transition-all group"
             >

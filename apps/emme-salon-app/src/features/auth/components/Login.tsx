@@ -97,7 +97,7 @@ export function Login() {
 
                 <div className="space-y-3">
                   <Button
-                    data-testid={els.auth.landingBtn.testId}
+                    data-testid={els.auth.landingEnter}
                     onClick={() => setView('login')}
                     className="w-full h-14 rounded-2xl bg-primary text-white font-bold text-[15px] hover:brightness-105 active:scale-[0.98] transition-all shadow-xl shadow-primary/10"
                   >
@@ -125,7 +125,7 @@ export function Login() {
               >
                 <div className="space-y-1">
                   <button
-                    data-testid={els.auth.backBtn.testId}
+                    data-testid={els.auth.back}
                     onClick={() => setView('landing')}
                     className="text-[10px] font-bold uppercase tracking-[.25em] text-primary/60 mb-6 flex items-center gap-1.5 hover:text-primary transition-colors"
                   >
@@ -153,7 +153,7 @@ export function Login() {
                     )}
 
                     <Input
-                      data-testid={els.auth.emailInput.testId}
+                      data-testid={els.auth.email}
                       type="text"
                       placeholder={t('auth.email')}
                       defaultValue={view === 'login' ? 'admin@emmenails.app' : ''}
@@ -162,7 +162,7 @@ export function Login() {
                     />
 
                     <Input
-                      data-testid={els.auth.passwordInput.testId}
+                      data-testid={els.auth.password}
                       type="password"
                       placeholder={t('auth.password')}
                       defaultValue={view === 'login' ? 'password' : ''}
@@ -172,7 +172,7 @@ export function Login() {
                   </div>
 
                   <Button
-                    data-testid={els.auth.submitBtn.testId}
+                    data-testid={els.auth.submit}
                     type="submit"
                     disabled={loading}
                     className="w-full h-14 rounded-2xl bg-foreground text-background font-bold text-[15px] hover:bg-foreground/90 active:scale-[0.98] transition-all shadow-xl shadow-black/10"

@@ -6,11 +6,11 @@ export class LoginPage {
   constructor(readonly page: Page) {}
 
   // Primary: testId
-  readonly emailInput = () => this.page.getByTestId(tid('auth.emailInput')!);
-  readonly passwordInput = () => this.page.getByTestId(tid('auth.passwordInput')!);
-  readonly submitBtn = () => this.page.getByTestId(tid('auth.submitBtn')!);
-  readonly landingBtn = () => this.page.getByTestId(tid('auth.landingBtn')!);
-  readonly backBtn = () => this.page.getByTestId(tid('auth.backBtn')!);
+  readonly emailInput = () => this.page.getByTestId(tid('auth.email')!);
+  readonly passwordInput = () => this.page.getByTestId(tid('auth.password')!);
+  readonly submitBtn = () => this.page.getByTestId(tid('auth.submit')!);
+  readonly landingBtn = () => this.page.getByTestId(tid('auth.landingEnter')!);
+  readonly backBtn = () => this.page.getByTestId(tid('auth.back')!);
 
   // Fallback: text-based (i18n coverage)
   readonly heading = () => this.page.locator('h1');

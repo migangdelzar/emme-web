@@ -37,13 +37,13 @@ export function Sidebar({ activeTab }: NavProps) {
 
   return (
     <aside
-      data-testid={els.sidebar.container.testId}
+      data-testid={els.sidebar.container}
       className="w-[18rem] xl:w-80 h-screen border-r border-border flex flex-col sticky top-0 hidden lg:flex z-50 px-5 xl:px-10 py-8 xl:py-16 bg-background overflow-y-auto custom-scrollbar shrink-0"
     >
       <div className="mb-10 xl:mb-16 flex items-center justify-between px-2">
         <button
           type="button"
-          data-testid={els.sidebar.brand.testId}
+          data-testid={els.sidebar.brand}
           className="flex items-center group cursor-pointer border-none bg-transparent p-0 m-0"
           onClick={() => navigate('/dashboard')}
         >
@@ -63,7 +63,7 @@ export function Sidebar({ activeTab }: NavProps) {
         {menuItems.map((item) => (
           <button
             key={item.id}
-            data-testid={els.nav[item.id as keyof typeof els.nav].testId}
+            data-testid={els.nav[item.id as keyof typeof els.nav]}
             onClick={() => navigate(`/${item.id}`)}
             className={cn(
               'w-full flex items-center gap-5 px-6 py-4 rounded-[1.25rem] transition-all duration-500 group relative overflow-hidden',
@@ -240,7 +240,7 @@ export function MobileNav({ activeTab }: NavProps) {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              data-testid={els.nav[item.id as keyof typeof els.nav].testId}
+              data-testid={els.nav[item.id as keyof typeof els.nav]}
               onClick={() => navigate(`/${item.id}`)}
               className={cn(
                 'flex-1 flex flex-col items-center justify-center h-full transition-all duration-500 relative group min-w-[48px]',

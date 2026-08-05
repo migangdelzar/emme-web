@@ -32,6 +32,6 @@ describe('i18n catalog', () => {
   });
 
   it('resolves element ids from the typed element catalog', () => {
-    expect(tid('dashboard.agendaSection')).toBe('dashboard-agenda');
+    expect(tid('dashboard.agenda')).toBe('dashboard-agenda');
   });
 });

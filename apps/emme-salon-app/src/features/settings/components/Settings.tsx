@@ -533,7 +533,7 @@ export function Settings() {
           </p>
           <div className="space-y-0">
             <h2
-              data-testid={els.settings.header.testId}
+              data-testid={els.settings.header}
               className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-none"
             >
               Ajustes.
@@ -611,7 +611,7 @@ export function Settings() {
                 {category}
               </h3>
               <div
-                data-testid={els.settings.tabs.testId}
+                data-testid={els.settings.tabs}
                 className="bg-card border border-border rounded-[32px] p-2 flex flex-col gap-1 shadow-sm"
               >
                 {tabItems

@@ -23,7 +23,7 @@ export class AppointmentsPage {
   readonly dialogServiceLabel = () => this.dialogByRole().getByText('Servicio');
   readonly dialogCloseBtn = () => this.dialogByRole().locator('button').first();
   readonly stepIndicator = (label?: string) => {
-    const indicator = this.page.getByTestId(tid('appointments.stepIndicator')!);
+    const indicator = this.page.getByTestId(tid('appointments.step01')!);
     const currentStep = this.page.getByText(/Paso\s+0?1/i);
     return label ? indicator.or(this.page.getByText(label)).or(currentStep) : indicator.or(currentStep);
   };

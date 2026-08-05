@@ -254,7 +254,7 @@ export function Services() {
           </span>
           <div className="space-y-1">
             <h2
-              data-testid={els.services.header.testId}
+              data-testid={els.services.header}
               className="text-[40px] lg:text-[56px] font-display font-semibold tracking-tight text-foreground leading-[0.9]"
             >
               {t('services.header')}.
@@ -271,7 +271,7 @@ export function Services() {
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent
-          data-testid={els.services.dialog.testId}
+          data-testid={els.services.dialog}
           className="max-w-xl md:max-w-4xl lg:max-w-[1200px] xl:max-w-[1300px] material-thick border-none shadow-[0_80px_200px_-30px_rgba(0,0,0,0.4)] p-0 overflow-hidden outline-none sm:rounded-[32px] rounded-t-[32px] sm:!top-1/2 sm:!translate-y-[-50%] w-full h-[90vh] lg:h-[85vh] flex flex-col focus:outline-none"
         >
           <DialogTitle className="sr-only">
@@ -531,7 +531,7 @@ export function Services() {
         <div className="relative group w-full px-2">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-5.5 text-muted-foreground opacity-35 group-focus-within:text-primary group-focus-within:opacity-100 transition-all duration-500" />
           <Input
-            data-testid={els.services.search.testId}
+            data-testid={els.services.search}
             placeholder="¿Qué experiencia buscas hoy?"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -697,7 +697,7 @@ export function Services() {
 
       {filteredServices.length === 0 && (
         <div
-          data-testid={els.services.empty.testId}
+          data-testid={els.services.empty}
           className="py-20 md:py-40 text-center animate-in fade-in zoom-in duration-1000 bg-neutral-50/50 rounded-[44px] mt-4 mx-4"
         >
           <div className="size-24 rounded-3xl mx-auto flex items-center justify-center mb-6 bg-card shadow-sm border border-border">

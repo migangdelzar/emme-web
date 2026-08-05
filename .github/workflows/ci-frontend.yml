@@ -83,7 +83,7 @@ on: # yamllint disable-line rule:truthy
         type: choice
         options:
           - staging
-          - production
+          - prod
 
 permissions:
   contents: read

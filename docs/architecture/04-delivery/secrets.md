@@ -19,13 +19,13 @@ created manually.
 
 | Secret | Scope | Workflow | Required when | Notes |
 |---|---|---|---|---|
-| `E2E_KEYCLOAK_PASSWORD` | `e2e` environment secret | `real-e2e-recordings.yml` | Real regression or recording execution | Disposable tenant-owner password |
-| `E2E_KEYCLOAK_ADMIN_PASSWORD` | `e2e` environment secret, or `k3s-staging`/`k3s-production` for those targets | `real-e2e-recordings.yml` | Compose, k3d, or k3s real execution | Disposable Keycloak admin password; protect production environments |
+| `E2E_KEYCLOAK_PASSWORD` | `regression` environment secret | `real-e2e-recordings.yml` | Real regression or recording execution | Disposable tenant-owner password |
+| `E2E_KEYCLOAK_ADMIN_PASSWORD` | `regression`, `staging`, or `prod` environment secret | `real-e2e-recordings.yml` | Compose, k3d, or k3s real execution | Disposable Keycloak admin password; protect `prod` |
 
-The current repository has no GitHub environments configured. Create `e2e`,
-`k3s-staging`, and `k3s-production` before relying on the workflow's dynamic
-environment selection. Production environments require reviewers and branch or
-tag restrictions.
+The repository uses the shared environment vocabulary `local`, `dev`,
+`regression`, `staging`, and `prod`. `local` is developer-only; GitHub Actions
+uses `regression`, `staging`, and `prod`. Protected environments require
+reviewers and branch or tag restrictions.
 
 ## Browser-safe configuration
 
@@ -51,8 +51,8 @@ credentials, or provider tokens in `VITE_*` variables. In particular,
 After creating the environments and rotating any exposed credential:
 
 ```bash
-gh secret set E2E_KEYCLOAK_PASSWORD --repo migangdelzar/emme-web --env e2e
-gh secret set E2E_KEYCLOAK_ADMIN_PASSWORD --repo migangdelzar/emme-web --env e2e
+gh secret set E2E_KEYCLOAK_PASSWORD --repo migangdelzar/emme-web --env regression
+gh secret set E2E_KEYCLOAK_ADMIN_PASSWORD --repo migangdelzar/emme-web --env regression
 ```
 
 For k3s, set the same logical credentials in the selected protected environment

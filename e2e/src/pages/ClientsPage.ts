@@ -6,11 +6,11 @@ export class ClientsPage {
   constructor(readonly page: Page) {}
 
   // Primary: testId
-  readonly header = () => this.page.getByTestId(tid('clients.header')!);
-  readonly searchInput = () => this.page.getByTestId(tid('clients.search')!);
-  readonly emptyState = () => this.page.getByTestId(tid('clients.empty')!);
-  readonly addButton = () => this.page.getByTestId(tid('clients.addButton')!);
-  readonly dialog = () => this.page.getByTestId(tid('clients.dialog')!);
+  readonly header = () => this.page.getByTestId(tid('clients.header'));
+  readonly searchInput = () => this.page.getByTestId(tid('clients.search'));
+  readonly emptyState = () => this.page.getByTestId(tid('clients.empty'));
+  readonly addButton = () => this.page.getByTestId(tid('clients.addButton'));
+  readonly dialog = () => this.page.getByTestId(tid('clients.dialog'));
   readonly customerNameInput = () => this.dialog().getByPlaceholder('Ej. Sofia Villarreal');
   readonly customerPhoneInput = () => this.dialog().getByPlaceholder('55 1234 5678');
   readonly continueButton = () => this.dialog().getByRole('button', { name: 'Continuar' });

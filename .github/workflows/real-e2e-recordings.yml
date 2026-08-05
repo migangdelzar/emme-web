@@ -62,8 +62,8 @@ jobs:
       ${{ inputs.runtime }}
     environment: >-
       ${{ inputs.deployment_target == 'k3s'
-        && format('k3s-{0}', inputs.k3s_environment)
-        || 'e2e' }}
+        && inputs.k3s_environment
+        || 'regression' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
