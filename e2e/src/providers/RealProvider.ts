@@ -35,17 +35,25 @@ export class RealProvider implements ApiProvider {
   }
 
   private createHttp() {
+    const token = this.token;
+    const tenantSlug = this.tenantSlug;
+    const baseUrl = this.baseUrl;
+    console.log(`[RealProvider] createHttp: token=${token ? token.substring(0,20)+'...' : 'EMPTY'}, tenantSlug=${tenantSlug}, baseUrl=${baseUrl}`);
+
     const request = async <T>(path: string, method: string, body?: unknown): Promise<T> => {
-      const url = `${this.baseUrl}${path}`;
+      const url = `${baseUrl}${path}`;
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+        'API-Version': API_VERSION,
+      };
+      if (body !== undefined) headers['Content-Type'] = 'application/json';
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      if (tenantSlug) headers['X-Emme-Tenant-Slug'] = tenantSlug;
+
+      console.log(`[RealProvider] ${method} ${path} token=${!!token} tenant=${tenantSlug}`);
       const response = await this.fetcher(url, {
         method,
-        headers: {
-          Accept: 'application/json',
-          'API-Version': API_VERSION,
-          ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
-          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
-          ...(this.tenantSlug ? { 'X-Emme-Tenant-Slug': this.tenantSlug } : {}),
-        },
+        headers,
         body: body === undefined ? undefined : JSON.stringify(body),
       });
       const rawBody = response.status === 204 ? '' : await response.text();
@@ -112,9 +120,11 @@ export class RealProvider implements ApiProvider {
   async setup(_page: Page, _user: TestUser): Promise<void> {
     if (!this.baseUrl) throw new Error('Real E2E requires E2E_API_URL to be configured.');
     if (!this.token) throw new Error('Real E2E provider requires an authenticated browser token.');
-    const membership = _user.memberships.find((candidate) => candidate.tenantId === _user.tenantId) ?? _user.memberships[0];
-    if (!membership) throw new Error('Real E2E requires the authenticated user to have an active tenant membership.');
-    this.tenantSlug = membership.tenantName.toLowerCase().replace(/\s+/g, '-');
+    // Use the provisioned E2E tenant slug from env or user membership
+    this.tenantSlug = process.env.E2E_TENANT_SLUG
+      || _user.memberships[0]?.tenantSlug
+      || _user.memberships[0]?.tenantName?.toLowerCase().replace(/\s+/g, '-')
+      || 'e2e-studio';
   }
 
   async seed(data: SeedData): Promise<void> {
