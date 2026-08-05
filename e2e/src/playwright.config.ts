@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
-const recordDemo = process.env.E2E_MODE === 'real' && process.env.RECORD_DEMO === 'true';
+const recordDemo = process.env.RECORD_DEMO === 'true';
+const isReal = process.env.E2E_MODE === 'real';
 const useExternalWeb = process.env.E2E_EXTERNAL_WEB === 'true';
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 
@@ -16,16 +17,18 @@ export default defineConfig({
 
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report' }],
+    ['html',{ outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results.json' }],
   ],
 
-  outputDir: recordDemo ? 'test-results/real-recordings' : 'test-results',
+  outputDir: recordDemo
+    ? isReal ? 'test-results/real-recordings' : 'test-results/mock-recordings'
+    : 'test-results',
 
   use: {
     baseURL,
     headless: true,
-    video: recordDemo ? 'on' : process.env.E2E_MODE === 'real' ? 'retain-on-failure' : 'off',
+    video: recordDemo ? 'on' : isReal ? 'retain-on-failure' : 'off',
     trace: recordDemo ? 'on' : 'on-first-retry',
     screenshot: recordDemo ? 'on' : 'only-on-failure',
   },
