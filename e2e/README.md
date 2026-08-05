@@ -12,7 +12,14 @@ fixture that contains no credentials before proposing a new recording.
 bun run --filter @emme/e2e test
 bun run --filter @emme/e2e test:real
 bun run --filter @emme/e2e test:demo
-bun run --filter @emme/e2e test:real:recordings
+
+# Recordings (mock + real) — videos, traces, screenshots retained
+bun run --filter @emme/e2e test:demo:mock
+bun run --filter @emme/e2e test:demo:real
+
+# Full suite recordings (all specs, single worker)
+bun run --filter @emme/e2e test:record:mock
+bun run --filter @emme/e2e test:record:real
 ```
 
 ## Demo recordings
