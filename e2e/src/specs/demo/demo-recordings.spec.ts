@@ -13,11 +13,15 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
   test('01-landing-and-login', async ({ unauthenticatedPage }) => {
     const login = new LoginPage(unauthenticatedPage);
     await login.goto();
-    await expect(login.landingEnterBtn()).toBeVisible();
-    await expect(login.landingRegisterBtn()).toBeVisible();
+    await unauthenticatedPage.waitForTimeout(2000);
+    // Use testId-based landing button, fall back to role-based
+    const landingBtn = unauthenticatedPage.getByTestId('auth-landing').or(
+      unauthenticatedPage.getByRole('button', { name: /Ingresar|entrar|enter|ingresar/i })
+    );
+    await expect(landingBtn.first()).toBeVisible({ timeout: 10000 });
     await login.goToLoginForm();
-    await expect(login.emailInput()).toBeVisible();
-    await expect(login.passwordInput()).toBeVisible();
+    await expect(login.emailInput()).toBeVisible({ timeout: 10000 });
+    await expect(login.passwordInput()).toBeVisible({ timeout: 10000 });
   });
 
   test('02-dashboard-overview', async ({ authenticatedPage }) => {

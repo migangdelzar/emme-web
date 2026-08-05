@@ -257,6 +257,7 @@
     "clients": "nav-clients",
     "agenda": "nav-agenda",
     "finances": "nav-finances",
-    "settings": "nav-settings"
+    "settings": "nav-settings",
+    "appointments": "nav-agenda"
   }
 }
