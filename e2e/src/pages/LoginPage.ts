@@ -20,7 +20,7 @@ export class LoginPage {
   readonly poweredBy = () => this.page.getByText(t('auth.poweredBy'));
 
   async goto() {
-    await this.page.goto(PAGE.LANDING);
+    await this.page.goto(PAGE.LANDING)
   }
 
   async goToLoginForm() {

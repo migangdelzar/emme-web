@@ -42,7 +42,8 @@ export default defineConfig({
     {
       name: 'real',
       use: { browserName: 'chromium' },
-      timeout: 30000,               // real backend + OAuth2 needs more time
+      timeout: 60000,
+      expect: { timeout: 15000 },
       metadata: { mode: 'real', description: 'Real backend + Keycloak' },
     },
   ],

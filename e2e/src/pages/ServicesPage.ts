@@ -83,7 +83,7 @@ export class ServicesPage {
     this.page.locator('h3').filter({ hasText: name });
 
   async goto() {
-    await this.page.goto(PAGE.SERVICES);
+    await this.page.goto(PAGE.SERVICES)
   }
 
   async editService(name: string): Promise<void> {

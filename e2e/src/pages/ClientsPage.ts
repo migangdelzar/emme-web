@@ -21,11 +21,11 @@ export class ClientsPage {
   readonly emptyStateCount = () => this.page.getByText(/0 almas|alma/i);
 
   async goto() {
-    await this.page.goto(PAGE.CLIENTS);
+    await this.page.goto(PAGE.CLIENTS)
   }
 
   async createCustomer(name: string, phone: string): Promise<void> {
-    await this.page.goto(`${PAGE.CLIENTS}?add=true`);
+    await this.page.goto(`${PAGE.CLIENTS}?add=true`)
     await this.dialog().waitFor({ state: 'visible' });
     await this.customerNameInput().fill(name);
     await this.customerPhoneInput().fill(phone);

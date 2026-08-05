@@ -41,10 +41,10 @@ export class AppointmentsPage {
     this.page.locator('button svg.lucide-x').first();
 
   async goto() {
-    await this.page.goto(PAGE.AGENDA);
+    await this.page.goto(PAGE.AGENDA)
   }
 
   async gotoNewAppointment() {
-    await this.page.goto(PAGE.AGENDA + '?add=true');
+    await this.page.goto(PAGE.AGENDA + '?add=true')
   }
 }

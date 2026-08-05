@@ -13,6 +13,6 @@ export class SettingsPage {
   readonly profileSection = () => this.page.locator('text=Perfil');
 
   async goto() {
-    await this.page.goto(PAGE.SETTINGS);
+    await this.page.goto(PAGE.SETTINGS)
   }
 }

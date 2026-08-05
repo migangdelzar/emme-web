@@ -38,6 +38,6 @@ export class DashboardPage {
   readonly tenantSelector = () => this.page.getByText('Selecciona tu estudio');
 
   async goto() {
-    await this.page.goto(PAGE.DASHBOARD);
+    await this.page.goto(PAGE.DASHBOARD)
   }
 }

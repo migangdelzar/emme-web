@@ -83,6 +83,9 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   provider.setToken(token);
   await provider.setup(page, user);
 
+  // Wait for app to fully hydrate after real login
+  await page.waitForLoadState('networkidle');
+
   return provider;
 }
 
