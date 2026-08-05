@@ -61,6 +61,7 @@ export function createServiceApi(http: HttpClient): ServiceApi {
     },
     create: async (data) => {
       const body = {
+        code: data.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now().toString(36),
         name: data.name,
         category: data.category,
         basePrice: data.price,

@@ -110,6 +110,9 @@ export const test = base.extend<Fixtures>({
         provider = mockProvider;
       } else {
         provider = await realLogin(page, testUser);
+        await provider.seed(DEFAULT_SEED);
+        // Wait for backend to commit seed data before page navigates
+        await page.waitForTimeout(800);
       }
 
       try {
