@@ -23,13 +23,14 @@
 **Files:**
 - Create: `docs/superpowers/specs/2026-08-05-same-origin-api-proxy-design.md`
 - Create: `docs/superpowers/plans/2026-08-05-same-origin-api-proxy.md`
+- Create: `.dockerignore`
 - Modify: `tasks/todo.md`
 
-- [ ] **Step 1: Write design and plan documents**
+- [x] **Step 1: Write design and plan documents**
 
 Record the Nginx decision, same-origin request flow, configurable upstreams, SSE behavior, non-goals, and verification commands.
 
-- [ ] **Step 2: Record acceptance criteria in `tasks/todo.md`**
+- [x] **Step 2: Record acceptance criteria in `tasks/todo.md`**
 
 ```markdown
 - [ ] Browser API base points to the web origin in local and E2E Vite runs
@@ -40,7 +41,7 @@ Record the Nginx decision, same-origin request flow, configurable upstreams, SSE
 - [ ] Tests, typecheck, lint, build, and config validation pass
 ```
 
-- [ ] **Step 3: Commit documentation**
+- [x] **Step 3: Commit documentation**
 
 ```bash
 git add docs/superpowers/specs/2026-08-05-same-origin-api-proxy-design.md \
@@ -55,11 +56,11 @@ git commit -m "docs: plan same-origin API proxying"
 - Create: `apps/emme-salon-app/src/features/dashboard/hooks/dashboardStream.test.ts`
 - Create: `apps/emme-salon-app/src/features/dashboard/hooks/dashboardStream.ts`
 
-- [ ] **Step 1: Write the failing API URL test**
+- [x] **Step 1: Write the failing API URL test**
 
 Add a test using `createHttpClient({ baseUrl: "http://localhost:3000" })` and assert that `/api/me` is requested at `http://localhost:3000/api/me`.
 
-- [ ] **Step 2: Run the focused API test and observe the baseline**
+- [x] **Step 2: Run the focused API test and observe the baseline**
 
 ```bash
 bun run --filter @emme/api-client test -- client.test.ts
@@ -67,11 +68,11 @@ bun run --filter @emme/api-client test -- client.test.ts
 
 Expected: existing tests pass; the new assertion documents same-origin URL behavior.
 
-- [ ] **Step 3: Write the failing dashboard stream URL test**
+- [x] **Step 3: Write the failing dashboard stream URL test**
 
 Define `createDashboardStreamUrl(webOrigin: string): string` and assert that `createDashboardStreamUrl("https://app.example.com")` returns `https://app.example.com/api/dashboard/stream`.
 
-- [ ] **Step 4: Run the focused dashboard test**
+- [x] **Step 4: Run the focused dashboard test**
 
 ```bash
 cd apps/emme-salon-app && bunx vitest run src/features/dashboard/hooks/dashboardStream.test.ts
@@ -89,19 +90,19 @@ Expected: FAIL until the helper exists.
 - Modify: `e2e/src/playwright.config.ts`
 - Modify: `.github/workflows/real-e2e-recordings.yml`
 
-- [ ] **Step 1: Configure Vite's server-side target**
+- [x] **Step 1: Configure Vite's server-side target**
 
 Load `API_PROXY_TARGET` only in Vite config and use it for `/api`, `/oauth2`, `/login/oauth2`, and `/q`, defaulting to `http://localhost:8081`.
 
-- [ ] **Step 2: Configure same-origin browser base URLs**
+- [x] **Step 2: Configure same-origin browser base URLs**
 
 Set `.env.example` to `VITE_API_BASE_URL=http://localhost:3000`, set the E2E web-server API base to `http://localhost:3000`, and set the local proxy target to `http://localhost:8081`.
 
-- [ ] **Step 3: Route dashboard SSE through the browser origin**
+- [x] **Step 3: Route dashboard SSE through the browser origin**
 
 Use `createDashboardStreamUrl(window.location.origin)` and keep the existing local-development skip behavior.
 
-- [ ] **Step 4: Run app tests and build**
+- [x] **Step 4: Run app tests and build**
 
 ```bash
 bun run --filter @emme/emme-salon-app test
@@ -120,19 +121,19 @@ Expected: all commands pass.
 - Modify: `apps/emme-salon-app/README.md`
 - Modify: `docs/architecture/04-delivery/container.md`
 
-- [ ] **Step 1: Add Nginx proxy locations**
+- [x] **Step 1: Add Nginx proxy locations**
 
 Template `/api`, `/oauth2`, `/login/oauth2`, and `/q` locations with `proxy_pass http://${EMME_API_UPSTREAM};`, forwarded headers, and SSE-safe buffering/timeouts. Keep static assets, `/health`, and SPA fallback behavior.
 
-- [ ] **Step 2: Wire the official Nginx template entrypoint**
+- [x] **Step 2: Wire the official Nginx template entrypoint**
 
 Copy the template to `/etc/nginx/templates/default.conf.template` and set a safe image default for `EMME_API_UPSTREAM`; allow Compose/Kubernetes to override it without rebuilding the image.
 
-- [ ] **Step 3: Configure local Docker networking**
+- [x] **Step 3: Configure local Docker networking**
 
 Set `EMME_API_UPSTREAM=host.docker.internal:8081` in the frontend Compose file and document `emme-service:8081` or the platform's internal service DNS as the production override.
 
-- [ ] **Step 4: Validate the rendered Nginx configuration**
+- [x] **Step 4: Validate the rendered Nginx configuration**
 
 ```bash
 docker build -f apps/emme-salon-app/Dockerfile -t emme-web-proxy-check .
@@ -141,12 +142,17 @@ docker run --rm emme-web-proxy-check nginx -T
 
 Expected: rendered config contains the proxy locations and no unresolved `${EMME_API_UPSTREAM}` placeholder.
 
+Rendered configuration passed `nginx -t` and exposed the expected
+`proxy_pass`, `proxy_buffering off`, and `proxy_read_timeout 1h` directives.
+The full image build was attempted but the npm registry returned an integrity
+failure for `whatwg-mimetype@3.0.0` after downloading dependencies.
+
 ### Task 5: Full verification and handoff
 
 **Files:**
 - Modify: `tasks/todo.md`
 
-- [ ] **Step 1: Run repository verification**
+- [x] **Step 1: Run repository verification**
 
 ```bash
 bun run typecheck
@@ -155,7 +161,7 @@ bun run test
 bun run build
 ```
 
-- [ ] **Step 2: Review the diff and preserve unrelated changes**
+- [x] **Step 2: Review the diff and preserve unrelated changes**
 
 ```bash
 git diff --check
@@ -164,6 +170,12 @@ git diff --stat
 ```
 
 Ensure `e2e/src/specs/services/services.spec.ts` remains unstaged and untouched.
+
+Focused and full unit tests, frontend build, frontend lint, diff checks, and
+rendered Nginx validation passed. Repository typecheck remains blocked by
+pre-existing E2E fixture type errors and a `platformClient` import path
+mismatch. Docker Compose validation is unavailable because this machine has no
+Compose plugin.
 
 - [ ] **Step 3: Commit and push the proxy work**
 

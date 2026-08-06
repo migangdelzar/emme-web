@@ -25,6 +25,8 @@ flowchart LR
 
 1. Keep the Vite config small and composable.
 2. Proxy local API calls to the backend without embedding environment-specific URLs in components.
+   Keep `VITE_API_BASE_URL` on the Vite web origin and use the server-only
+   `API_PROXY_TARGET` value for the backend target.
 3. Treat all browser-exposed environment variables as public.
 4. Fail early for missing required build-time configuration.
 5. Keep aliases aligned with TypeScript compiler paths.
@@ -49,5 +51,6 @@ If configuration must vary after the static bundle is built, use a deliberate ru
 - [ ] `dev`, `test`, `build`, `preview`, and CI commands are deterministic.
 - [ ] Public environment variables are validated and documented.
 - [ ] API proxy behavior matches local authentication and CORS behavior.
+- [ ] `/api`, OAuth, and `/q` requests remain same-origin in local Vite runs.
 - [ ] Production preview verifies deep links, refreshes, asset caching, and error pages.
 - [ ] Bundle and dependency checks run in CI.

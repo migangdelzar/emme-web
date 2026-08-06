@@ -299,13 +299,21 @@ Vite development and production Nginx to avoid frontend CORS requirements.
 
 ### Implementation
 
-- [ ] Browser API base points to the web origin in local and E2E Vite runs.
-- [ ] Vite proxies API, OAuth, and health paths to the backend.
-- [ ] Production Nginx proxies API, OAuth, and health paths.
-- [ ] Nginx preserves SPA fallback only for non-API paths.
-- [ ] SSE uses a same-origin URL and Nginx supports streaming.
+- [x] Browser API base points to the web origin in local and E2E Vite runs.
+- [x] Vite proxies API, OAuth, and health paths to the backend.
+- [x] Production Nginx proxies API, OAuth, and health paths.
+- [x] Nginx preserves SPA fallback only for non-API paths.
+- [x] SSE uses a same-origin URL and Nginx supports streaming.
 - [ ] Tests, typecheck, lint, build, and config validation pass.
 
 ### Results
 
-Pending implementation and verification.
+- Same-origin API URL and dashboard SSE tests pass.
+- App unit tests (31), API-client tests (12), app build, app lint, and rendered
+  Nginx syntax validation pass.
+- Full Docker build was attempted but stopped on an external npm registry
+  integrity failure for `whatwg-mimetype@3.0.0`.
+- Repository typecheck remains blocked by existing E2E fixture type errors and
+  an existing `platformClient` import path mismatch.
+- Docker Compose validation was unavailable because the local Docker CLI has no
+  Compose plugin.
