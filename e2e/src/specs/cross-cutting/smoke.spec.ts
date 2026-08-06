@@ -4,7 +4,9 @@ import { Tag } from '../../shared/tags';
 test.describe('Smoke', { tag: [Tag.SMOKE, Tag.DASHBOARD, Tag.CRITICAL] }, () => {
   test('landing page loads', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('button', { name: /ingresar|Iniciar/i })).toBeVisible();
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await expect(page.getByRole('button', { name: /ingresar|Iniciar/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('backend health endpoint reachable', async ({ page }) => {

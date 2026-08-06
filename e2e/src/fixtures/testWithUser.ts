@@ -100,8 +100,7 @@ async function realSetupFromStorageState(page: Page, user: TestUser): Promise<Re
 
   const token = await page.evaluate(() => localStorage.getItem('access_token'));
   if (!token) {
-    // Token expired or storageState corrupted — fall back to full login
-    console.warn('[Provider] No token in storageState, falling back to full OAuth2 login');
+    console.warn('[Provider] No token found after navigation, falling back to full OAuth2 login');
     return realLogin(page, user);
   }
 
@@ -132,15 +131,7 @@ export const test = base.extend<Fixtures>({
         await mockProvider.seed(DEFAULT_SEED);
         provider = mockProvider;
       } else {
-        // Detect if storageState already provides auth (token in localStorage)
-        // This avoids the 3-8s OAuth2 flow when using shared login setup
-        const existingToken = await page.evaluate(() => localStorage.getItem('access_token'));
-
-        if (existingToken) {
-          provider = await realSetupFromStorageState(page, testUser);
-        } else {
-          provider = await realLogin(page, testUser);
-        }
+        provider = await realSetupFromStorageState(page, testUser);
 
         await provider.seed(DEFAULT_SEED);
         await page.waitForTimeout(1000);

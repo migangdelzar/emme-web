@@ -50,7 +50,7 @@ export default defineConfig({
   fullyParallel: !isReal,
   maxFailures: 0,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 4 : (isReal ? 1 : undefined),
+  workers: process.env.CI ? 4 : (isReal ? 4 : undefined),
 
   reporter: [
     ['list'],
