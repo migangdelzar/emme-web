@@ -10,10 +10,10 @@ export default defineConfig({
   timeout: 30000,
   expect: { timeout: 8000 },
   retries: 0,
-  fullyParallel: true,
+  fullyParallel: !isReal,
   maxFailures: 0,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.CI ? 4 : (isReal ? 2 : undefined),
 
   reporter: [
     ['list'],
@@ -42,8 +42,8 @@ export default defineConfig({
     {
       name: 'real',
       use: { browserName: 'chromium' },
-      timeout: 60000,
-      expect: { timeout: 15000 },
+      timeout: 90000,
+      expect: { timeout: 25000 },
       metadata: { mode: 'real', description: 'Real backend + Keycloak' },
     },
   ],
