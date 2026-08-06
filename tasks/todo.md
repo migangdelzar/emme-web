@@ -289,3 +289,23 @@ commit run the slowest browser or full-stack suites.
 - [x] Run local formatting, typecheck, lint, unit, coverage, build, audit, and
       mock E2E checks.
 - [ ] Push and verify the GitHub Actions workflow.
+
+## Same-origin API proxy — 2026-08-05
+
+### Goal
+
+Route browser API, OAuth, health, and SSE traffic through the web origin in
+Vite development and production Nginx to avoid frontend CORS requirements.
+
+### Implementation
+
+- [ ] Browser API base points to the web origin in local and E2E Vite runs.
+- [ ] Vite proxies API, OAuth, and health paths to the backend.
+- [ ] Production Nginx proxies API, OAuth, and health paths.
+- [ ] Nginx preserves SPA fallback only for non-API paths.
+- [ ] SSE uses a same-origin URL and Nginx supports streaming.
+- [ ] Tests, typecheck, lint, build, and config validation pass.
+
+### Results
+
+Pending implementation and verification.
