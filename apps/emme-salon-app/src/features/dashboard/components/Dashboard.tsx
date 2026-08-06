@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { els } from '@emme/i18n';
 import { useApp } from '@/context/AppContext';
 import { useDashboardData } from '../hooks/useDashboardData';
@@ -147,11 +147,11 @@ export function Dashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleUpdateGoal = () => {
+  const handleUpdateGoal = useCallback(() => {
     updateProfile({ ...profile, monthlyGoal: tempGoal });
     setIsGoalDialogOpen(false);
     toast.success(t('dashboard.monthlyGoalUpdated'));
-  };
+  }, [updateProfile, profile, tempGoal]);
 
   const [selectedApt, setSelectedApt] = React.useState<{
     apt: Appointment;
