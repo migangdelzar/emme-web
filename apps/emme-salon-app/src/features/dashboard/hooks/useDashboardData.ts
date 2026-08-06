@@ -4,6 +4,7 @@ import { useNailServicesRest } from '@/api/hooks/useServices';
 import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
 import { mapNailServiceView } from '@/features/services/mappers/serviceViewMapper';
 import type { Appointment, Service } from '@/context/AppContext';
+import { createDashboardStreamUrl } from './dashboardStream';
 
 interface DashboardData {
   loading: boolean;
@@ -51,11 +52,8 @@ export function useDashboardData(): DashboardData {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
-    // SSE doesn't support custom headers natively. Token passed via
-    // query param; backend also reads session cookie if using Keycloak.
-    const url = new URL(`${apiUrl}/api/dashboard/stream`);
-    const source = new EventSource(url.toString());
+    // Same-origin EventSource requests can send the backend session cookie.
+    const source = new EventSource(createDashboardStreamUrl(window.location.origin));
 
     source.addEventListener('connected', () => setConnected(true));
 

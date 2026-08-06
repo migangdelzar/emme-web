@@ -153,6 +153,26 @@ describe("createApiClient", () => {
 });
 
 describe("createHttpClient", () => {
+  it("resolves API paths against the frontend origin for same-origin proxying", async () => {
+    const requests: Array<RequestInfo | URL> = [];
+    const fetcher = async (input: RequestInfo | URL) => {
+      requests.push(input);
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
+    const client = createHttpClient({
+      baseUrl: "http://localhost:3000",
+      fetcher,
+    });
+
+    await client.get("/api/me");
+
+    expect(requests[0]?.toString()).toBe("http://localhost:3000/api/me");
+  });
+
   it("uses the header-based API version and removes legacy path versioning", async () => {
     const fetcher = vi.fn<Fetcher>(async () => new Response("{}", { status: 200 }));
     const client = createHttpClient({ baseUrl: "https://api.emme.app", fetcher });
