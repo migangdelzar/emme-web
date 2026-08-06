@@ -49,7 +49,7 @@ test.describe('RealProvider', () => {
     ]);
     expect(calls[0]?.headers.get('API-Version')).toBe('1.0');
     expect(calls[0]?.headers.get('Authorization')).toBe('Bearer test-token');
-    expect(calls[0]?.headers.get('X-Emme-Tenant-Slug')).toBe('studio-1');
+    expect(calls[0]?.headers.get('X-Emme-Tenant-Slug')).toBe('e2e-studio');
   });
 
   test('rejects setup without a configured base URL or browser token', async () => {

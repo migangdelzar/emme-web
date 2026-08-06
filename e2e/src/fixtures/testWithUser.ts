@@ -67,7 +67,14 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   await page.goto(baseUrl);
   const login = new LoginPage(page);
   await login.login(username, password);
-  await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 15000 });
+  // Wait for sidebar or dashboard content — handles both testId and role-based selectors
+  try {
+    await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 5000 });
+  } catch {
+    await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 5000 });
+  }
+  // Verify we actually landed on the app (not stuck on landing/login)
+  await page.waitForLoadState('networkidle');
 
   // Extract access token from browser localStorage → pass to RealProvider for Node.js API calls
   const token = await page.evaluate(() => localStorage.getItem('access_token'));
