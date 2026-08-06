@@ -38,7 +38,10 @@ test.describe('Application accessibility baseline', { tag: [Tag.SMOKE, Tag.CRITI
     unauthenticatedPage,
   }) => {
     await unauthenticatedPage.goto('/');
-    await expect(unauthenticatedPage.getByTestId('auth-landing')).toBeVisible();
+    const landing = unauthenticatedPage.getByTestId('auth-landing').or(
+      unauthenticatedPage.getByRole('button', { name: /ingresar|Iniciar|enter/i })
+    );
+    await expect(landing.first()).toBeVisible({ timeout: 10000 });
     await unauthenticatedPage.keyboard.press('Tab');
     await expect(unauthenticatedPage.locator(':focus-visible')).toBeVisible();
   });

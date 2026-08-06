@@ -14,7 +14,6 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
     const login = new LoginPage(unauthenticatedPage);
     await login.goto();
     await unauthenticatedPage.waitForTimeout(2000);
-    // Use testId-based landing button, fall back to role-based
     const landingBtn = unauthenticatedPage.getByTestId('auth-landing').or(
       unauthenticatedPage.getByRole('button', { name: /Ingresar|entrar|enter|ingresar/i })
     );
@@ -24,46 +23,36 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
     await expect(login.passwordInput()).toBeVisible({ timeout: 10000 });
   });
 
-  test('02-dashboard-overview', async ({ authenticatedPage }) => {
+  test('02-dashboard-and-navigation', async ({ authenticatedPage }) => {
     const dashboard = new DashboardPage(authenticatedPage);
     await dashboard.goto();
     await authenticatedPage.waitForLoadState('networkidle');
     await expect(dashboard.sidebar()).toBeVisible();
     await expect(dashboard.greeting()).toBeVisible();
     await expect(dashboard.agendaSection()).toBeVisible();
-  });
-
-  test('03-navigation-all-sections', async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await dashboard.goto();
-    await authenticatedPage.waitForLoadState('networkidle');
 
     await dashboard.navItem('common.services').click();
     await authenticatedPage.waitForTimeout(500);
-
     await dashboard.navItem('common.clients').click();
     await authenticatedPage.waitForTimeout(500);
-
     await dashboard.navItem('common.dashboard').click();
     await authenticatedPage.waitForTimeout(500);
     await expect(dashboard.greeting()).toBeVisible();
   });
 
-  test('04-service-catalog', async ({ authenticatedPage }) => {
+  test('03-service-catalog-and-clients', async ({ authenticatedPage }) => {
     const services = new ServicesPage(authenticatedPage);
     await services.goto();
     await authenticatedPage.waitForTimeout(800);
     await expect(services.header()).toBeVisible();
-  });
 
-  test('05-client-crm', async ({ authenticatedPage }) => {
     const clients = new ClientsPage(authenticatedPage);
     await clients.goto();
     await authenticatedPage.waitForTimeout(800);
     await expect(clients.header()).toBeVisible();
   });
 
-  test('06-appointment-views', async ({ authenticatedPage }) => {
+  test('04-appointments-and-finances', async ({ authenticatedPage }) => {
     const appointments = new AppointmentsPage(authenticatedPage);
     await appointments.goto();
     await authenticatedPage.waitForTimeout(1000);
@@ -71,16 +60,14 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
     await expect(appointments.dialog()).toBeVisible();
     await appointments.dialogCloseBtn().click();
     await expect(appointments.dialog()).not.toBeVisible();
-  });
 
-  test('07-finances-overview', async ({ authenticatedPage }) => {
     const finances = new FinancesPage(authenticatedPage);
     await finances.goto();
     await authenticatedPage.waitForTimeout(1000);
     await expect(finances.header()).toBeVisible();
   });
 
-  test('08-settings-and-tabs', async ({ authenticatedPage }) => {
+  test('05-settings-and-security', async ({ authenticatedPage }) => {
     await authenticatedPage.goto('/#/settings');
     await authenticatedPage.waitForTimeout(1000);
     await expect(authenticatedPage.getByTestId('settings-header')).toBeVisible();
@@ -91,9 +78,7 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
         await authenticatedPage.waitForTimeout(300);
       }
     }
-  });
 
-  test('09-settings-appearance-language', async ({ authenticatedPage }) => {
     await authenticatedPage.goto('/#/settings');
     await authenticatedPage.waitForTimeout(1000);
     for (const tab of ['Apariencia', 'Idioma', 'Datos']) {
@@ -103,11 +88,7 @@ test.describe('Demo recordings', { tag: [Tag.DEMO, Tag.CRITICAL] }, () => {
         await authenticatedPage.waitForTimeout(300);
       }
     }
-  });
 
-  test('10-security-logout', async ({ authenticatedPage }) => {
-    await authenticatedPage.goto('/#/settings');
-    await authenticatedPage.waitForTimeout(1000);
     const securityBtn = authenticatedPage.locator('text=Seguridad').first();
     if (await securityBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await securityBtn.click();

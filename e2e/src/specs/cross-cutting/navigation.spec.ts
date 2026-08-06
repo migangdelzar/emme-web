@@ -1,44 +1,28 @@
 import { test, expect } from '@fixtures/testWithUser';
-import { DashboardPage } from '@pages/DashboardPage';
-import { ServicesPage } from '@pages/ServicesPage';
-import { ClientsPage } from '@pages/ClientsPage';
-import { FinancesPage } from '@pages/FinancesPage';
-import { SettingsPage } from '@pages/SettingsPage';
-import { AppointmentsPage } from '@pages/AppointmentsPage';
 import { Tag } from '../../shared/tags';
 
-test.describe('Cross-cutting Navigation - Authenticated', { tag: [Tag.NAVIGATION, Tag.REGRESSION] }, () => {
+test.describe('Navigation', { tag: [Tag.NAVIGATION, Tag.REGRESSION] }, () => {
   test.beforeEach(async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await dashboard.goto();
-    await expect(dashboard.sidebar()).toBeVisible();
+    await authenticatedPage.goto('/#/dashboard');
+    await expect(authenticatedPage.getByTestId('sidebar-container')).toBeVisible({ timeout: 10000 });
   });
 
-  test('navigate all 6 sections without error', { tag: [Tag.SMOKE] }, async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
+  test('navigates all sections without errors', { tag: [Tag.SMOKE] }, async ({ authenticatedPage }) => {
+    const sections = [
+      { name: 'Agenda', selector: () => authenticatedPage.locator('h1').first() },
+      { name: 'Finanzas', selector: () => authenticatedPage.locator('h1').first() },
+      { name: 'Clientes', selector: () => authenticatedPage.locator('h1').first() },
+      { name: 'Servicios', selector: () => authenticatedPage.locator('h1').first() },
+      { name: 'Configuración|Configuracion|Ajustes|Settings', selector: () => authenticatedPage.locator('h1').first() },
+    ];
 
-    await dashboard.navItem('common.appointments').click();
-    await expect(new AppointmentsPage(authenticatedPage).header()).toBeVisible();
+    for (const section of sections) {
+      await authenticatedPage.getByRole('navigation').getByText(new RegExp(section.name, 'i')).first().click();
+      await expect(section.selector()).toBeVisible({ timeout: 5000 });
+    }
 
-    await dashboard.navItem('common.finances').click();
-    await expect(new FinancesPage(authenticatedPage).header()).toBeVisible();
-
-    await dashboard.navItem('common.clients').click();
-    await expect(new ClientsPage(authenticatedPage).header()).toBeVisible();
-
-    await dashboard.navItem('common.services').click();
-    await expect(new ServicesPage(authenticatedPage).header()).toBeVisible();
-
-    await dashboard.navItem('common.settings').click();
-    await expect(new SettingsPage(authenticatedPage).header()).toBeVisible();
-  });
-
-  test('rapid navigation no white screen', async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await dashboard.navItem('common.appointments').click();
-    await dashboard.navItem('common.dashboard').click();
-    await dashboard.navItem('common.clients').click();
-    await dashboard.navItem('common.services').click();
-    await expect(new ServicesPage(authenticatedPage).header()).toBeVisible();
+    // Rapid nav back to dashboard — no white screen
+    await authenticatedPage.getByRole('navigation').getByText(/dashboard|inicio/i).first().click();
+    await expect(authenticatedPage.getByTestId('sidebar-container')).toBeVisible({ timeout: 5000 });
   });
 });

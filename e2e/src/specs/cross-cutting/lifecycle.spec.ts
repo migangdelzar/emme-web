@@ -8,22 +8,16 @@ import { SettingsPage } from '@pages/SettingsPage';
 import { createE2eDataFactory } from '../../shared/factories/e2eDataFactory';
 import { Tag } from '../../shared/tags';
 
-test.describe('Real tenant-owner lifecycle', { tag: [Tag.REAL, Tag.CRITICAL] }, () => {
-  test.beforeEach(() => {
-    test.skip(process.env.E2E_MODE !== 'real', 'Real-only: requires the full stack and owner credentials');
-  });
-
+test.describe('Tenant-Owner Lifecycle', { tag: [Tag.CRITICAL] }, () => {
   test.describe.configure({ mode: 'serial' });
 
-  test('owner reaches dashboard with tenant context', async ({ authenticatedPage }) => {
+  test('owner reaches dashboard and manages services', async ({ authenticatedPage, provider }) => {
     const dashboard = new DashboardPage(authenticatedPage);
     await dashboard.goto();
     await expect(dashboard.sidebar()).toBeVisible();
     await expect(dashboard.greeting()).toBeVisible();
-  });
 
-  test('owner can read and update a tenant service', async ({ authenticatedPage, provider }) => {
-    const factory = createE2eDataFactory(`service-${Date.now()}`);
+    const factory = createE2eDataFactory(`svc-${Date.now()}`);
     const service = factory.service();
     await provider.seed({ services: [{ id: 'source-service', ...service, isActive: true }] });
 
@@ -36,8 +30,8 @@ test.describe('Real tenant-owner lifecycle', { tag: [Tag.REAL, Tag.CRITICAL] }, 
     await expect(services.serviceName(`${service.name} Updated`)).toBeVisible();
   });
 
-  test('owner can read customers and open appointment creation', async ({ authenticatedPage, provider }) => {
-    const factory = createE2eDataFactory(`appointment-${Date.now()}`);
+  test('owner reads customers and opens appointment form', async ({ authenticatedPage, provider }) => {
+    const factory = createE2eDataFactory(`appt-${Date.now()}`);
     const customer = factory.customer();
     const service = factory.service();
     await provider.seed({
@@ -54,7 +48,7 @@ test.describe('Real tenant-owner lifecycle', { tag: [Tag.REAL, Tag.CRITICAL] }, 
     await expect(appointments.dialog()).toBeVisible();
   });
 
-  test('owner can open finance and business settings sections', async ({ authenticatedPage }) => {
+  test('owner opens finance and settings sections', async ({ authenticatedPage }) => {
     const finances = new FinancesPage(authenticatedPage);
     await finances.goto();
     await expect(finances.header()).toBeVisible();

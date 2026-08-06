@@ -8,7 +8,7 @@ const mockCustomers = [
   { id: 'c3', name: 'Maria Jose', email: 'maria@test.com', phone: '555-0103' },
 ];
 
-test.describe('Customers Page', { tag: [Tag.CLIENTS, Tag.REGRESSION] }, () => {
+test.describe('Customers', { tag: [Tag.CLIENTS, Tag.REGRESSION] }, () => {
   test.beforeEach(async ({ authenticatedPage, provider }) => {
     await provider.seed({ customers: mockCustomers });
     const clients = new ClientsPage(authenticatedPage);
@@ -16,28 +16,25 @@ test.describe('Customers Page', { tag: [Tag.CLIENTS, Tag.REGRESSION] }, () => {
     await expect(clients.header()).toBeVisible();
   });
 
-  test('customers heading renders', { tag: [Tag.SMOKE] }, async ({ authenticatedPage }) => {
+  test('list renders and search works', { tag: [Tag.SMOKE] }, async ({ authenticatedPage }) => {
     const clients = new ClientsPage(authenticatedPage);
-    await expect(clients.header()).toBeVisible();
-  });
 
-  test('customer list renders items', async ({ authenticatedPage }) => {
-    const clients = new ClientsPage(authenticatedPage);
     await expect(clients.clientRow('Valeria Arriaza')).toBeVisible();
     await expect(clients.clientRow('Elena Garcia')).toBeVisible();
     await expect(clients.clientRow('Maria Jose')).toBeVisible();
+
+    await clients.searchInput().fill('zzz-non-existent');
+    await expect(clients.emptyState()).toBeVisible();
   });
 
-  test('add client via URL param opens dialog', async ({ authenticatedPage }) => {
+  test('add dialog opens via URL param', async ({ authenticatedPage }) => {
     await authenticatedPage.goto('/#/clients?add=true');
     await expect(new ClientsPage(authenticatedPage).dialog()).toBeVisible();
   });
 
-  test('empty search shows no client results', { tag: [Tag.EMPTY_STATE] }, async ({ authenticatedPage }) => {
+  test('creates a customer through the UI', { tag: [Tag.CRITICAL] }, async ({ authenticatedPage }) => {
     const clients = new ClientsPage(authenticatedPage);
-    await clients.goto();
-    await expect(clients.header()).toBeVisible();
-    await clients.searchInput().fill('zzz-non-existent');
-    await expect(clients.emptyState()).toBeVisible();
+    await clients.createCustomer('E2E Customer', '555-0199');
+    await expect(clients.clientRow('E2E Customer')).toBeVisible();
   });
 });

@@ -4,9 +4,9 @@ import { RealProvider } from '@providers/RealProvider';
 const user = {
   userId: 'e2e-user-1',
   tenantId: 'e2e-tenant-1',
-  memberships: [{ tenantId: 'e2e-tenant-1', tenantName: 'Studio 1', role: 'OWNER' }],
-  name: 'E2E Owner',
-  email: 'owner@example.test',
+  memberships: [{ tenantId: 'e2e-tenant-1', tenantName: 'E2E Studio', tenantSlug: 'e2e-studio', role: 'OWNER' as const }],
+  name: 'E2E User 1',
+  email: 'e2e-1@emme.app',
 };
 
 function responseFor(pathname: string, method: string): Record<string, unknown> {
