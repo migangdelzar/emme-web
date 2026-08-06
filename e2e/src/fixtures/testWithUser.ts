@@ -77,7 +77,12 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   await page.waitForLoadState('networkidle');
 
   // Extract access token from browser localStorage → pass to RealProvider for Node.js API calls
-  const token = await page.evaluate(() => localStorage.getItem('access_token'));
+  let token: string | null = null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    token = await page.evaluate(() => localStorage.getItem('access_token'));
+    if (token) break;
+    await page.waitForTimeout(500);
+  }
   if (!token) throw new Error('Real E2E login completed without an access token.');
   provider.setToken(token);
   await provider.setup(page, user);

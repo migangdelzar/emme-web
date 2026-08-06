@@ -62,7 +62,10 @@ export class RealProvider implements ApiProvider {
       this.applyOverrides(method, new URL(url).pathname, result);
       const delay = this.overrides.find((override) => matchPattern(override.pattern, method, new URL(url).pathname))?.slowMs;
       if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
-      if (result.status >= 400) throw new Error(`HTTP ${result.status} ${method} ${path}`);
+      if (result.status >= 400) {
+        const detail = result.body?.detail || result.body?.title || JSON.stringify(result.body).slice(0, 200);
+        throw new Error(`HTTP ${result.status} ${method} ${path}: ${detail}`);
+      }
       return result.body as T;
     };
 

@@ -9,6 +9,7 @@
     "test:headed": "bunx playwright test --project=mock --headed",
     "test:retry": "bunx playwright test --project=mock --last-failed",
     "test:real": "E2E_MODE=real bunx playwright test --project=real",
+    "test:real:built": "bun run --filter @emme/emme-salon-app build && (cd ../../apps/emme-salon-app && bun preview --port 3000 &) && sleep 3 && E2E_MODE=real E2E_EXTERNAL_WEB=true bunx playwright test --project=real; kill $(lsof -t -i:3000) 2>/dev/null",
     "test:real:headed": "E2E_MODE=real bunx playwright test --project=real --headed",
     "test:demo": "RECORD_DEMO=true bunx playwright test --project=mock --grep @demo --retries=0",
     "test:demo:mock": "RECORD_DEMO=true bunx playwright test specs/demo/demo-recordings.spec.ts --project=mock --workers=1 --retries=0",
