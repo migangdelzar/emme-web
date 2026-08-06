@@ -21,20 +21,6 @@ const DEFAULT_SEED: SeedData = {
   ],
 };
 
-/**
- * Authenticated page fixture. Same API for mock and real:
- * - Mock: injects fake tokens via localStorage, intercepts API with page.route()
- * - Real: does BFF OAuth2 flow through Keycloak, hits real backend
- *
- * Usage:
- * ```
- * test('flow', async ({ authenticatedPage }) => {
- *   await authenticatedPage.goto('/#/dashboard');
- *   // ... test UI flows
- * });
- * ```
- */
-
 interface Fixtures {
   testUser: TestUser;
   provider: ApiProvider;
@@ -67,16 +53,13 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   await page.goto(baseUrl);
   const login = new LoginPage(page);
   await login.login(username, password);
-  // Wait for sidebar or dashboard content — handles both testId and role-based selectors
   try {
     await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 5000 });
   } catch {
     await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 5000 });
   }
-  // Verify we actually landed on the app (not stuck on landing/login)
   await page.waitForLoadState('networkidle');
 
-  // Extract access token from browser localStorage → pass to RealProvider for Node.js API calls
   let token: string | null = null;
   for (let attempt = 0; attempt < 5; attempt++) {
     token = await page.evaluate(() => localStorage.getItem('access_token'));
@@ -87,9 +70,45 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   provider.setToken(token);
   await provider.setup(page, user);
 
-  // Wait for app to fully hydrate after real login
   await page.waitForLoadState('networkidle');
 
+  return provider;
+}
+
+/**
+ * Real mode setup using shared storageState auth.
+ * Skips the expensive OAuth2 Keycloak flow — token is already in localStorage.
+ */
+async function realSetupFromStorageState(page: Page, user: TestUser): Promise<RealProvider> {
+  const provider = new RealProvider();
+  const baseUrl = requiredRealEnvironment('E2E_BASE_URL');
+
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'emme-ui-state',
+      JSON.stringify({ state: { isFirstTime: false }, version: 0 })
+    );
+  });
+  await page.goto(baseUrl);
+
+  try {
+    await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 10000 });
+  } catch {
+    await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 10000 });
+  }
+  await page.waitForLoadState('networkidle');
+
+  const token = await page.evaluate(() => localStorage.getItem('access_token'));
+  if (!token) {
+    // Token expired or storageState corrupted — fall back to full login
+    console.warn('[Provider] No token in storageState, falling back to full OAuth2 login');
+    return realLogin(page, user);
+  }
+
+  provider.setToken(token);
+  await provider.setup(page, user);
+
+  await page.waitForLoadState('networkidle');
   return provider;
 }
 
@@ -113,9 +132,17 @@ export const test = base.extend<Fixtures>({
         await mockProvider.seed(DEFAULT_SEED);
         provider = mockProvider;
       } else {
-        provider = await realLogin(page, testUser);
+        // Detect if storageState already provides auth (token in localStorage)
+        // This avoids the 3-8s OAuth2 flow when using shared login setup
+        const existingToken = await page.evaluate(() => localStorage.getItem('access_token'));
+
+        if (existingToken) {
+          provider = await realSetupFromStorageState(page, testUser);
+        } else {
+          provider = await realLogin(page, testUser);
+        }
+
         await provider.seed(DEFAULT_SEED);
-        // Wait for UI to fully hydrate with seeded data
         await page.waitForTimeout(1000);
         await page.waitForLoadState('networkidle');
       }
@@ -144,7 +171,6 @@ export const test = base.extend<Fixtures>({
 
   authenticatedPage: [
     async ({ page, provider: _provider }, use) => {
-      // Reload to ensure UI reflects seeded data
       if (MODE === 'real') {
         await page.reload();
         await page.waitForLoadState('networkidle');

@@ -5,6 +5,43 @@ const isReal = process.env.E2E_MODE === 'real';
 const useExternalWeb = process.env.E2E_EXTERNAL_WEB === 'true';
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 
+const webServerConfig = useExternalWeb
+  ? undefined
+  : {
+      command: 'cd ../../apps/emme-salon-app && bun dev',
+      port: 3000,
+      reuseExistingServer: false,
+      env: {
+        VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
+        VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
+        API_PROXY_TARGET: process.env.API_PROXY_TARGET ?? 'http://localhost:8081',
+        VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
+      },
+    };
+
+const realProjects = isReal
+  ? [
+      {
+        name: 'setup',
+        testDir: './specs/setup',
+        testMatch: /real-login\.setup\.ts/,
+        metadata: { mode: 'real' },
+      },
+      {
+        name: 'real',
+        use: {
+          browserName: 'chromium' as const,
+          storageState: '.auth/auth-state.json',
+        },
+        dependencies: ['setup'],
+        testIgnore: '**/setup/**',
+        timeout: 120000,
+        expect: { timeout: 40000 },
+        metadata: { mode: 'real', description: 'Real backend + Keycloak (shared login)' },
+      },
+    ]
+  : [];
+
 export default defineConfig({
   testDir: './specs',
   timeout: 30000,
@@ -17,7 +54,7 @@ export default defineConfig({
 
   reporter: [
     ['list'],
-    ['html',{ outputFolder: 'playwright-report' }],
+    ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results.json' }],
   ],
 
@@ -39,30 +76,8 @@ export default defineConfig({
       use: { browserName: 'chromium' },
       metadata: { mode: 'mock', description: 'Mock API — fast, no backend' },
     },
-    {
-      name: 'real',
-      use: { browserName: 'chromium' },
-      timeout: 120000,
-      expect: { timeout: 40000 },
-      metadata: { mode: 'real', description: 'Real backend + Keycloak' },
-    },
+    ...realProjects,
   ],
 
-  ...(useExternalWeb
-    ? {}
-    : {
-        webServer: {
-          command: 'cd ../../apps/emme-salon-app && bun dev',
-          port: 3000,
-          // E2E must start Vite with the same runtime configuration every time.
-          // Reusing a stale local server can silently omit VITE_* variables.
-          reuseExistingServer: false,
-          env: {
-            VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
-            VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
-            API_PROXY_TARGET: process.env.API_PROXY_TARGET ?? 'http://localhost:8081',
-            VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
-          },
-        },
-      }),
+  ...(webServerConfig ? { webServer: webServerConfig } : {}),
 });
