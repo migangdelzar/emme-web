@@ -177,7 +177,7 @@ pre-existing E2E fixture type errors and a `platformClient` import path
 mismatch. Docker Compose validation is unavailable because this machine has no
 Compose plugin.
 
-- [ ] **Step 3: Commit and push the proxy work**
+- [x] **Step 3: Commit and push the proxy work**
 
 ```bash
 git add apps packages e2e/src/playwright.config.ts .github/workflows/real-e2e-recordings.yml docs tasks/todo.md
