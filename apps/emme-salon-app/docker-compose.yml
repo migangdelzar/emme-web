@@ -6,6 +6,10 @@ services:
       dockerfile: apps/emme-salon-app/Dockerfile
     ports:
       - "8080:80"
+    environment:
+      EMME_API_UPSTREAM: host.docker.internal:8081
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:80/health"]

@@ -36,17 +36,28 @@ bun run --filter @emme/emme-salon-app preview
 Copy `.env.example` to `.env` and configure:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:8080
+VITE_API_BASE_URL=http://localhost:3000
+API_PROXY_TARGET=http://localhost:8081
 VITE_OIDC_ISSUER=http://localhost:8081/realms/emme
 VITE_OIDC_CLIENT_ID=emme-salon-app
 VITE_WEB_BASE_DOMAIN=localhost
 ```
+
+`VITE_API_BASE_URL` is the browser-visible web origin. Vite proxies API
+requests to `API_PROXY_TARGET` during local development. In the production
+container, set `EMME_API_UPSTREAM` to the backend's internal DNS name and port,
+for example `emme-service:8081`; it is substituted into Nginx when the
+container starts.
 
 ## Docker
 
 ```bash
 docker compose -f apps/emme-salon-app/docker-compose.yml up --build
 ```
+
+The Compose example maps `host.docker.internal:8081` to the host backend. When
+the web container and backend share a Compose network, override
+`EMME_API_UPSTREAM` with the backend service name instead.
 
 ## PWA
 

@@ -23,6 +23,11 @@ flowchart LR
 - Build in a separate stage from the minimal Nginx runtime.
 - Run the runtime as non-root and expose only required ports.
 - Configure security headers and SPA fallback explicitly.
+- Proxy `/api`, OAuth, and `/q` requests through Nginx to the configured
+  `EMME_API_UPSTREAM`; never let authenticated API requests fall through to the
+  SPA entry point.
+- Disable Nginx response buffering and use a long read timeout for the
+  dashboard SSE endpoint.
 - Never embed secrets in the image or `VITE_*` values.
 - Exclude `/api` from service-worker fallback/caching unless an approved design
   explicitly defines safe authenticated caching.
@@ -33,4 +38,6 @@ flowchart LR
 - [ ] Static assets and SPA routes load from the image.
 - [ ] `/health` is available without exposing application data.
 - [ ] API requests are not cached as static content.
+- [ ] `EMME_API_UPSTREAM` resolves from the deployment network and Nginx config
+      validation shows the expected proxy locations.
 - [ ] Image scan and non-root checks pass.

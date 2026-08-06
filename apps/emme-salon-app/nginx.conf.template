@@ -1,4 +1,5 @@
-# ─── Nginx config for Emme PWA ───
+# Nginx template for the Emme PWA.
+# The official image entrypoint substitutes EMME_API_UPSTREAM at startup.
 server {
     listen 80;
     server_name _;
@@ -6,38 +7,52 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # Gzip
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml;
     gzip_min_length 256;
     gzip_vary on;
 
-    # Security headers
     add_header X-Frame-Options "DENY" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
 
-    # PWA: never cache service worker
     location = /sw.js {
         add_header Cache-Control "no-cache";
         add_header Service-Worker-Allowed "/";
     }
 
-    # Static assets — aggressive cache (hashed filenames)
     location /assets/ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    # Health
     location /health {
         access_log off;
         return 200 "OK\n";
         add_header Content-Type text/plain;
     }
 
-    # SPA fallback
+    # Keep browser API, OAuth, and API health traffic on the web origin.
+    location ~ ^/(api|oauth2|login/oauth2|q)(/|$) {
+        proxy_pass http://${EMME_API_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Authorization $http_authorization;
+        proxy_set_header Cookie $http_cookie;
+        proxy_set_header Connection "";
+
+        # Required for dashboard Server-Sent Events.
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+    }
+
+    # SPA fallback must not handle API or OAuth paths.
     location / {
         try_files $uri $uri/ /index.html;
     }

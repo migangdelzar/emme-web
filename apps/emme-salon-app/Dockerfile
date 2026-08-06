@@ -5,16 +5,18 @@
 FROM oven/bun:1 AS deps
 WORKDIR /app
 
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+SHELL ["/bin/sh", "-c"]
 
 COPY package.json bun.lock ./
 COPY apps/emme-salon-app/package.json ./apps/emme-salon-app/
+COPY e2e/src/package.json ./e2e/src/
 COPY packages/api-client/package.json ./packages/api-client/
 COPY packages/contracts/package.json ./packages/contracts/
+COPY packages/i18n/package.json ./packages/i18n/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/validation/package.json ./packages/validation/
 
-RUN bun install --frozen-lockfile --filter @emme/emme-salon-app...
+RUN bun install --frozen-lockfile --filter @emme/emme-salon-app
 
 # ─── Stage 2: Build ───
 FROM deps AS builder
@@ -32,8 +34,10 @@ LABEL org.opencontainers.image.title="Emme Salon App"
 LABEL org.opencontainers.image.description="EmmeNails Studio Manager PWA"
 LABEL org.opencontainers.image.source="https://github.com/migangdelzar/emme-web"
 
+ENV EMME_API_UPSTREAM=host.docker.internal:8081
+
 RUN rm /etc/nginx/conf.d/default.conf
-COPY apps/emme-salon-app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/emme-salon-app/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 COPY --from=builder --chown=nginx:nginx /app/apps/emme-salon-app/dist /usr/share/nginx/html
 
