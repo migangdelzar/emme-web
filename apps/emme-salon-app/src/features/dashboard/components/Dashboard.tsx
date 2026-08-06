@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { els } from '@emme/i18n';
 import { useApp } from '@/context/AppContext';
 import { useDashboardData } from '../hooks/useDashboardData';
@@ -131,6 +131,17 @@ export function Dashboard() {
 
   const goal = profile.monthlyGoal || 25000;
 
+  const clientMap = useMemo(() => {
+    const map = new Map();
+    for (const c of clients) map.set(c.id, c);
+    return map;
+  }, [clients]);
+  const serviceMap = useMemo(() => {
+    const map = new Map();
+    for (const s of services) map.set(s.id, s);
+    return map;
+  }, [services]);
+
   React.useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 300);
     return () => clearTimeout(timer);
@@ -152,14 +163,18 @@ export function Dashboard() {
 
   const today = new Date();
 
-  const filteredAppointments = [...todayAppointments]
-    .sort((a, b) => a.startTime.localeCompare(b.startTime))
-    .slice(0, 8);
+  const filteredAppointments = useMemo(() =>
+    [...todayAppointments]
+      .sort((a, b) => a.startTime.localeCompare(b.startTime))
+      .slice(0, 8)
+  , [todayAppointments]);
 
   const currentTimeStr = format(new Date(), 'HH:mm');
-  const nextAppointmentId = todayAppointments
-    .filter((a) => a.startTime >= currentTimeStr)
-    .sort((a, b) => a.startTime.localeCompare(b.startTime))[0]?.id;
+  const nextAppointmentId = useMemo(() =>
+    todayAppointments
+      .filter((a) => a.startTime >= currentTimeStr)
+      .sort((a, b) => a.startTime.localeCompare(b.startTime))[0]?.id
+  , [todayAppointments, currentTimeStr]);
 
   const getGreeting = () => {
     const hours = today.getHours();
@@ -337,8 +352,8 @@ export function Dashboard() {
                     className="space-y-3"
                   >
                     {filteredAppointments.map((apt) => {
-                      const client = clients.find((c) => c.id === apt.clientId);
-                      const service = services.find((s) => s.id === apt.serviceId);
+                      const client = clientMap.get(apt.clientId);
+                      const service = serviceMap.get(apt.serviceId);
                       const isNext = apt.id === nextAppointmentId;
 
                       return (

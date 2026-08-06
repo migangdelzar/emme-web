@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import { useApp, Appointment, Service } from '@/context/AppContext';
@@ -80,6 +80,11 @@ export function Clients() {
     deleteClient,
   } = useClientData();
   const { appointments, services } = useApp();
+  const serviceMap = useMemo(() => {
+    const map = new Map();
+    for (const s of services) map.set(s.id, s);
+    return map;
+  }, [services]);
   const { t } = useAppTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
@@ -131,7 +136,7 @@ export function Clients() {
     const totalSpent = clientAppointments
       .filter((a) => a.status === 'confirmed' || a.status === 'completed')
       .reduce((sum, a) => {
-        const service = services.find((s) => s.id === a.serviceId);
+        const service = serviceMap.get(a.serviceId);
         return sum + (service?.price || 0);
       }, 0);
 
@@ -143,7 +148,7 @@ export function Clients() {
     };
   };
 
-  const filteredClients = clients
+  const filteredClients = useMemo(() => clients
     .filter((c) => {
       const matchesSearch =
         (c.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
@@ -178,7 +183,7 @@ export function Clients() {
         return dateB.localeCompare(dateA);
       }
       return 0;
-    });
+    }), [clients, appointments, search, filterVip, filterType, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filteredClients.length / itemsPerPage));
   const paginatedClients = filteredClients.slice(
@@ -643,7 +648,7 @@ export function Clients() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {stats.appointments.length > 0 ? (
                         stats.appointments.slice(0, historyLimit).map((apt: any) => {
-                          const service = services.find((s) => s.id === apt.serviceId);
+                          const service = serviceMap.get(apt.serviceId);
                           if (clientsLoading) {
                             return (
                               <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50">
