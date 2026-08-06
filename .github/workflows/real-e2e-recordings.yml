@@ -71,8 +71,8 @@ jobs:
       RECORD_DEMO: ${{ inputs.suite == 'recordings' && 'true' || 'false' }}
       E2E_BASE_URL: ${{ inputs.web_base_url || 'http://127.0.0.1:3000' }}
       E2E_API_URL: ${{ inputs.service_base_url || 'http://127.0.0.1:8081' }}
-      VITE_API_BASE_URL: >-
-        ${{ inputs.service_base_url || 'http://127.0.0.1:8081' }}
+      VITE_API_BASE_URL: http://127.0.0.1:3000
+      API_PROXY_TARGET: ${{ inputs.service_base_url || 'http://127.0.0.1:8081' }}
       VITE_WEB_BASE_DOMAIN: localhost
       E2E_EXTERNAL_WEB: ${{ inputs.web_base_url != '' && 'true' || 'false' }}
       DEPLOYMENT_TARGET: ${{ inputs.deployment_target }}

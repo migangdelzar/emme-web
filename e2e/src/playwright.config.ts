@@ -59,7 +59,8 @@ export default defineConfig({
           reuseExistingServer: false,
           env: {
             VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
-            VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:8081',
+            VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
+            API_PROXY_TARGET: process.env.API_PROXY_TARGET ?? 'http://localhost:8081',
             VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
           },
         },

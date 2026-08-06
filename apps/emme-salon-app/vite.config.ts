@@ -2,10 +2,12 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production';
+  const env = loadEnv(mode, process.cwd(), '');
+  const apiProxyTarget = env.API_PROXY_TARGET || 'http://localhost:8081';
 
   return {
     plugins: [
@@ -55,15 +57,19 @@ export default defineConfig(({ mode }) => {
       },
       proxy: {
         '/api': {
-          target: 'http://localhost:8081',
+          target: apiProxyTarget,
           changeOrigin: true,
         },
         '/oauth2': {
-          target: 'http://localhost:8081',
+          target: apiProxyTarget,
           changeOrigin: true,
         },
         '/login/oauth2': {
-          target: 'http://localhost:8081',
+          target: apiProxyTarget,
+          changeOrigin: true,
+        },
+        '/q': {
+          target: apiProxyTarget,
           changeOrigin: true,
         },
       },
