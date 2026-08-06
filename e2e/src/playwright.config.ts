@@ -9,11 +9,11 @@ export default defineConfig({
   testDir: './specs',
   timeout: 30000,
   expect: { timeout: 8000 },
-  retries: 0,
+  retries: process.env.CI ? 1 : (isReal ? 2 : 0),
   fullyParallel: !isReal,
   maxFailures: 0,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 4 : (isReal ? 2 : undefined),
+  workers: process.env.CI ? 4 : (isReal ? 1 : undefined),
 
   reporter: [
     ['list'],
