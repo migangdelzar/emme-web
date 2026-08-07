@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { t } from '@emme/i18n';
 import { Tag } from '../../shared/tags';
 
 test.describe('Smoke', { tag: [Tag.SMOKE, Tag.CRITICAL] }, () => {
@@ -8,7 +9,7 @@ test.describe('Smoke', { tag: [Tag.SMOKE, Tag.CRITICAL] }, () => {
       await page.evaluate(() => localStorage.clear());
       await page.reload();
     }
-    await expect(page.getByRole('button', { name: /ingresar|Iniciar/i })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: t('landing.enter') })).toBeVisible({ timeout: 10000 });
   });
 
   test('backend health endpoint reachable', async ({ page }) => {

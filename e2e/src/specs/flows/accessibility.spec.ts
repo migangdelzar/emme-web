@@ -1,6 +1,6 @@
 import { test, expect } from '@fixtures/testWithUser';
-import { Tag } from '../../shared/tags';
 import { t } from '@emme/i18n';
+import { Tag } from '../../shared/tags';
 
 const protectedRoutes = ['/dashboard', '/agenda', '/clients', '/services', '/finances', '/settings'];
 
@@ -29,7 +29,7 @@ test.describe('Shell Integrity', { tag: [Tag.SMOKE, Tag.CRITICAL] }, () => {
   test('unauthenticated landing is accessible and protected routes redirect', async ({ unauthenticatedPage }) => {
     await unauthenticatedPage.goto('/');
     const landing = unauthenticatedPage.getByTestId('auth-landing').or(
-      unauthenticatedPage.getByRole('button', { name: /ingresar|Iniciar|enter/i })
+      unauthenticatedPage.getByRole('button', { name: t('landing.enter') })
     );
     await expect(landing.first()).toBeVisible({ timeout: 10000 });
     await unauthenticatedPage.keyboard.press('Tab');
@@ -37,7 +37,7 @@ test.describe('Shell Integrity', { tag: [Tag.SMOKE, Tag.CRITICAL] }, () => {
 
     for (const route of protectedRoutes) {
       await unauthenticatedPage.goto(`/#${route}`);
-      await expect(unauthenticatedPage.getByRole('button', { name: /ingresar|Iniciar|enter/i })).toBeVisible({ timeout: 5000 });
+      await expect(unauthenticatedPage.getByRole('button', { name: t('landing.enter') })).toBeVisible({ timeout: 5000 });
     }
   });
 });

@@ -1,8 +1,9 @@
 import { test, expect } from '@fixtures/testWithUser';
+import { t } from '@emme/i18n';
 import { Tag } from '../../shared/tags';
 import { LoginPage } from '@pages/LoginPage';
 
-test.describe('Auth', { tag: [Tag.AUTH, Tag.REGRESSION] }, () => {
+test.describe('Auth — UC-001', { tag: [Tag.AUTH, Tag.REGRESSION] }, () => {
   test('landing renders and auth forms navigate correctly', async ({ unauthenticatedPage }) => {
     const login = new LoginPage(unauthenticatedPage);
 
@@ -33,8 +34,8 @@ test.describe('Auth', { tag: [Tag.AUTH, Tag.REGRESSION] }, () => {
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
     await page.reload();
-    await page.getByRole('button', { name: /ingresar|Iniciar/i }).click();
+    await page.getByRole('button', { name: t('landing.enter') }).click();
     await expect(page.getByPlaceholder(/email|usuario/i)).toBeVisible({ timeout: 5000 });
-    await expect(page.getByRole('button', { name: /Iniciar|Ingresar/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: t('auth.submit') })).toBeVisible();
   });
 });
