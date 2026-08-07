@@ -1,5 +1,34 @@
 # Web Architecture Completion
 
+## Current architecture migration — 2026-08-07
+
+### Goal
+
+Apply the approved seven-library architecture to the Bun workspace while
+preserving the current tenant app behavior and package-level compatibility.
+
+### Execution checklist
+
+- [ ] Update architecture plan and package ownership docs.
+- [ ] Rename `@emme/contracts` to `@emme/api` and reorganize its public modules.
+- [ ] Rename `@emme/api-client` to `@emme/infrastructure` and keep transport behavior.
+- [ ] Update all workspace consumers and remove legacy package imports.
+- [ ] Add tested `@emme/core` foundation modules.
+- [ ] Add tested `@emme/business` capability entry points.
+- [ ] Add `@emme/test-support` only for shared test fixtures that earn extraction.
+- [ ] Migrate the tenant app composition root.
+- [ ] Migrate clients, services, and appointments incrementally.
+- [ ] Run focused and full verification; document unrelated baseline failures.
+
+### Working notes
+
+- Current app: `apps/emme-salon-app` is the tenant-owner/staff application.
+- Future apps: platform admin and client/customer shells are planned, but no
+  product behavior is invented in this migration.
+- Current tooling: Bun workspaces; pnpm/Turbo remains a separate decision.
+- Test convention: colocated `*.test.ts(x)` by default; `__tests__` only for
+  cross-module package integration tests.
+
 ## Goal
 
 Apply the approved frontend architecture and integration guardrails without

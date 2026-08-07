@@ -1,393 +1,156 @@
-# Implementation Plan: Emme Salon App Architecture Migration
+# Implementation Plan: Emme Monorepo Architecture Migration
 
-## Overview
+## Goal
 
-The salon app already has several recommended foundations: feature folders,
-typed contracts, a shared REST client, TanStack Query, a small Zustand UI store,
-and a documented dependency direction. The remaining work is to make ownership
-explicit and remove duplicate orchestration, starting with the app shell and
-one vertical feature slice before migrating the rest of the application.
+Move the current tenant application and reusable packages toward a modular
+monorepo with three application shells and seven cohesive libraries. The
+migration is compatibility-first: existing routes, API paths, query behavior,
+E2E provider seams, and package tooling remain stable while ownership moves.
 
-This plan preserves the current HashRouter URLs and backend contracts. It does
-not copy backend domain rules into the browser or introduce a second server
-state store.
-
-## Current-state audit
-
-| Area | Current state | Target state | Priority |
-|---|---|---|---|
-| App shell | `app/App.tsx` owns providers, auth branching, layout, and routes | `app/AppProviders.tsx`, `app/router.tsx`, and `app/layouts/*` own composition separately | High |
-| Routing | Inline `<Routes>` inside `AppContent` | One route definition module with route-level lazy loading and an app-shell layout | High |
-| Error handling | `shared/components/ErrorBoundary.tsx` | `app/error-boundary/*` for shell/route failure boundaries; shared error UI stays reusable | Medium |
-| Server state | Duplicate `AppContext`, `hooks/useApiQueries`, `providers/DataProvider`, and `api/hooks/*` paths | TanStack Query plus feature-owned query/mutation hooks | High |
-| Feature boundaries | Feature components exist, but import `context` and global `api/hooks` directly | Feature `domain`, `api`, `services`, `hooks`, `pages`, and public `index.ts` boundaries | High |
-| Domain/view types | Contracts and view types are re-exported from `context/AppContext.tsx` | Feature-owned domain/view types and explicit API-to-view mappers | High |
-| Infrastructure | REST/auth/browser storage adapters are split across `api`, `app/auth`, and `services` | Explicit `infrastructure/http`, `infrastructure/auth`, and `infrastructure/storage` adapters | Medium |
-| Shared code | `shared/ui` is reusable; `widgets/Navigation` is app-shell code | Shared UI remains shared; navigation moves under app layouts | Low |
-| Tests | Boundary and mapper tests exist; large screens have limited focused coverage | Add tests at domain/service/hook/page boundaries while preserving E2E coverage | High |
-
-The largest risk is `context/AppContext.tsx`: it currently combines domain
-types, default profile data, server queries, mutation orchestration, cache
-writes, and a context API. Removing it safely requires feature hooks to expose
-the same observable behavior before the context is deleted.
-
-## Workspace package boundary review
-
-The extracted packages are already the correct lower-level dependency boundary:
-
-| Package | Current responsibility | Migration rule |
-|---|---|---|
-| `@emme/api-client` | Generic `HttpClient`, auth/tenant/API-version headers, URL resolution, response parsing, and `ApiHttpError` | Keep transport-only; feature code must not instantiate `fetch` or Axios directly |
-| `@emme/contracts` | Shared application contracts, route constants, response normalization, and capability factories such as `createClientApi`, `createServiceApi`, and `createAppointmentApi` | Treat as the canonical backend boundary; do not duplicate its DTOs or endpoint paths inside the app |
-| `@emme/contracts` `HttpClient` | Narrow structural port consumed by capability factories | Inject the app's `@emme/api-client` `HttpClient`; no adapter wrapper is needed because the interfaces are structurally compatible |
-| `DataProvider` contract | E2E/test provider surface implemented by `MockProvider` and `RealProvider` | Keep for browser-test seams, but stop using it as the production application's server-state abstraction |
-
-This means the target request flow is:
+## Target workspace
 
 ```text
-Feature hook
-    ↓
-Feature service (only when orchestration/domain normalization exists)
-    ↓
-Capability factory from @emme/contracts
-    ↓
-HttpClient from @emme/api-client
-    ↓
-Backend API
+emme-web/
+├── apps/
+│   ├── platform-admin-app/       # future application shell
+│   ├── emme-salon-app/            # current tenant-owner/staff app
+│   └── client-app/                # future customer application
+├── packages/
+│   ├── ui/                        # reusable visual components
+│   ├── core/                      # auth, tenancy, access-control, runtime
+│   ├── api/                       # contracts, ports, typed API operations
+│   ├── infrastructure/           # fetch, storage, auth and external adapters
+│   ├── business/                  # reusable domain and business capabilities
+│   ├── i18n/                      # typed shared localization resources
+│   └── test-support/              # development/test-only fixtures and helpers
+├── e2e/
+└── docs/architecture/
 ```
 
-The current app has a second, transitional path in `src/providers/DataProvider`
-and `src/hooks/useApiQueries`. Those modules call the same contract factories,
-but hide them behind a global provider and duplicate TanStack Query wiring. They
-should be retired after feature hooks take ownership. The E2E `DataProvider`
-interface itself should remain until the browser provider fixtures no longer
-need the direct assertion methods.
+The repository currently uses Bun workspaces. A future pnpm/Turbo migration is
+explicitly out of scope for this architecture migration.
 
-The packages currently export source entry points (`src/index.ts`) rather than
-consuming built declarations. That is valid for this Bun workspace and keeps
-local typechecking immediate, but package build output must remain a release
-artifact concern; feature migration should not import from `dist/`.
-
-## Proposed workspace library architecture
-
-The application architecture should be reflected in the reusable libraries,
-but each package should keep only the layers it owns. The goal is a consistent
-convention, not identical folders in every package.
+## Dependency direction
 
 ```text
-packages/
-├── api-client/
-│   └── src/
-│       ├── http/
-│       │   ├── http-client.ts
-│       │   ├── api-error.ts
-│       │   └── index.ts
-│       ├── platform/
-│       │   ├── platform-client.ts
-│       │   └── index.ts
-│       ├── types/
-│       │   └── api-client.types.ts
-│       └── index.ts
-│
-├── contracts/
-│   └── src/
-│       ├── clients/
-│       │   ├── api.ts
-│       │   ├── client.types.ts
-│       │   └── index.ts
-│       ├── services/
-│       │   ├── api.ts
-│       │   ├── service.types.ts
-│       │   └── index.ts
-│       ├── appointments/
-│       │   ├── api.ts
-│       │   ├── appointment.types.ts
-│       │   └── index.ts
-│       ├── integrations/
-│       │   ├── google-oauth/
-│       │   │   ├── api.ts
-│       │   │   └── types.ts
-│       │   ├── google-sheets/
-│       │   │   ├── api.ts
-│       │   │   └── types.ts
-│       │   └── calendar-sync/
-│       │       ├── api.ts
-│       │       └── types.ts
-│       ├── auth/
-│       │   └── auth.types.ts
-│       ├── common/
-│       │   └── common.types.ts
-│       ├── transport/
-│       │   ├── http-client.ts
-│       │   ├── parsers.ts
-│       │   └── index.ts
-│       ├── routes.ts
-│       ├── testing/
-│       │   └── provider.ts
-│       └── index.ts
-│
-├── ui/
-│   └── src/
-│       ├── components/
-│       ├── primitives/
-│       ├── styles/
-│       └── index.ts
-│
-├── validation/
-│   └── src/
-│       ├── schemas/
-│       ├── validators/
-│       └── index.ts
-│
-└── i18n/
-    └── src/
-        ├── data/
-        ├── catalog/
-        ├── validation/
-        └── index.ts
+@emme/ui       @emme/i18n
+      ↑              ↑
+@emme/core ─────── @emme/api
+      ↑              ↑
+@emme/business ─ @emme/infrastructure
+            ↑
+          apps
 ```
 
-### Naming conventions
+- `@emme/api` is framework-agnostic and owns DTOs, domain-facing contracts,
+  endpoint adapters, route constants, response parsers, and HTTP ports.
+- `@emme/infrastructure` implements concrete HTTP, auth-token, storage,
+  analytics, feature-flag, and browser integrations. It may depend on `api`,
+  but `api` never depends on infrastructure.
+- `@emme/core` owns shared application behavior and providers, not concrete
+  browser implementations.
+- `@emme/business` owns reusable domain rules and business capabilities. It
+  does not become a dumping ground for tenant-only screens.
+- Apps own routes, layouts, composition roots, and role-specific experiences.
+- `@emme/test-support` is dev-only and never a runtime dependency.
 
-- Capability folders use the plural business name: `clients`, `services`,
-  and `appointments`.
-- The capability adapter file is always `api.ts` inside its capability folder;
-  use `clients/api.ts`, never `client-api.ts` or `clients-api.ts`.
-- Capability types use the singular feature name: `client.types.ts`,
-  `service.types.ts`, and `appointment.types.ts`.
-- Each capability folder has an `index.ts` that exposes only its public API.
-- Tests are colocated beside the module they verify: `api.test.ts`,
-  `client.types.test.ts`, or `parsers.test.ts`. Dedicated `__tests__` folders
-  are reserved for cross-module package integration tests.
-- Root package `index.ts` files are the only imports consumers should need;
-  internal file paths are not added as public exports unless a package has a
-  deliberate subpath-export policy.
+## Conventions
 
-### Dependency rules
+- Capability folders are plural: `clients/`, `services/`, `appointments/`.
+- Public capability adapters are named `api.ts`; never `client-api.ts`.
+- Domain contracts use singular names: `client.types.ts`.
+- Tests are colocated beside their module by default (`*.test.ts(x)`).
+- `__tests__/` is reserved for cross-module package integration tests.
+- Public consumers import package root barrels; internal paths are private.
+- TanStack Query owns server state. Zustand owns client-only UI state.
+- Backend authorization and business invariants remain authoritative.
 
-```text
-contracts capability api.ts
-        ↓ depends on
-contracts transport HttpClient port
-        ↑ implemented by
-api-client http client
-```
+## Phases
 
-- `@emme/contracts` must never import `@emme/api-client`.
-- `@emme/api-client` may import shared constants/types from `@emme/contracts`,
-  but must not import application features or React.
-- `@emme/ui`, `@emme/validation`, and `@emme/i18n` remain independent reusable
-  libraries; they must not depend on the salon app or backend capabilities.
-- App features import package root barrels, not `packages/*/src` paths and not
-  generated `dist` files.
-- `testing/provider.ts` is explicitly test support. It must not become the
-  production server-state abstraction.
+### Phase 0 — Package boundary migration
 
-## Library migration phases
+- [ ] Rename `@emme/api-client` to `@emme/infrastructure`.
+- [ ] Rename and reorganize `@emme/contracts` as `@emme/api`.
+- [ ] Preserve public behavior and tests while moving files into capability,
+      port, integration, and testing folders.
+- [ ] Update app, E2E, package scripts, and TypeScript references to the new
+      package names.
+- [ ] Add compatibility notes to architecture documentation.
 
-### Library Phase A: Contracts package
+Acceptance: package tests, workspace typecheck, app tests, and E2E TypeScript
+compile without imports from the old package names.
 
-- [ ] Move clients, services, and appointments implementations into capability
-      folders with `api.ts`, singular `*.types.ts`, and `index.ts`.
-- [ ] Move contract transport helpers into `transport/` and keep a single
-      `HttpClient` port.
-- [ ] Move integrations under `integrations/<name>/` using the same `api.ts`
-      and `types.ts` convention.
-- [ ] Keep temporary root-level re-export files during the migration, then
-      remove them after all imports use the new internal paths.
-- [ ] Keep `@emme/contracts` root exports backward-compatible while the app and
-      E2E packages migrate.
+### Phase 1 — Shared library foundations
 
-### Library Phase B: API client package
+- [ ] Add `@emme/core` with auth, tenancy, access-control, runtime, config,
+      errors, and common types as independently testable modules.
+- [ ] Add `@emme/business` with the first reusable capability modules for
+      clients, services, and appointments; keep UI extraction minimal and
+      behavior-preserving.
+- [ ] Add `@emme/test-support` for shared fakes/factories only when a second
+      consumer needs them.
+- [ ] Keep `@emme/ui`, `@emme/i18n`, and `@emme/validation` stable; schemas that
+      are feature-only remain with their feature.
 
-- [ ] Move generic HTTP implementation into `http/` and platform-specific
-      methods into `platform/`.
-- [ ] Preserve `createHttpClient`, `createApiClient`, `HttpClient`, and
-      `ApiHttpError` from the package root.
-- [ ] Keep this package framework-agnostic and free of React Query hooks.
+Acceptance: each new package has a public root barrel, strict typechecking,
+focused tests for exported behavior, and no circular workspace dependency.
 
-### Library Phase C: Supporting packages
+### Phase 2 — Tenant app composition root
 
-- [ ] Add `components/` and `primitives/` to `@emme/ui` only as reusable
-      components are extracted from the app.
-- [ ] Add schemas to `@emme/validation` only when a schema is shared by more
-      than one app or feature; feature-only schemas stay in the app feature.
-- [ ] Keep translation data and validation under `@emme/i18n`; expose typed
-      catalog functions from the root barrel.
+- [ ] Add `src/app/AppProviders.tsx`.
+- [ ] Add `src/app/router.tsx` and preserve HashRouter paths.
+- [ ] Add `src/app/layouts/AppLayout.tsx` and app-owned error boundaries.
+- [ ] Make `main.tsx` a thin bootstrap.
+- [ ] Keep signed-out, tenant-required, and ready states behaviorally equal.
 
-### Library Phase D: Application adoption
+Acceptance: existing auth and navigation E2E flows remain green and there is
+one provider composition root and one route tree.
 
-- [ ] Update feature APIs to import capability factories from the new contract
-      folders through the root barrel.
-- [ ] Remove the app's duplicate API hook paths after each feature migrates.
-- [ ] Run package and app typechecks/tests after every library phase.
+### Phase 3 — Tenant feature vertical slices
 
-## Architecture decisions
+- [ ] Migrate clients into explicit `domain`, `api`, `services`, `hooks`,
+      `pages`, `components`, and public-barrel ownership.
+- [ ] Migrate services using the same tested boundary.
+- [ ] Migrate appointments and scheduling helpers, preserving status behavior.
+- [ ] Migrate remaining tenant-only features only where a boundary earns its
+      complexity; do not create empty enterprise folders.
+- [ ] Remove `AppContext`, global API hooks, and transitional provider paths
+      only after import scans and focused tests prove they are unused.
 
-- Keep TanStack Query as the only source of truth for remote clients, services,
-  appointments, and tenant data. TanStack Query keys provide caching,
-  refetching, and shared query results; a second global copy would reintroduce
-  stale-state bugs. See the [TanStack Query query model](https://tanstack.com/query/latest/docs/framework/react/guides/queries).
-- Keep `@emme/contracts` as the typed backend capability boundary and keep
-  `@emme/api-client` transport-only. Feature adapters may map contract DTOs to
-  feature view models, but must not import backend internals.
-- Create the React Router route tree once in `app/router.tsx` and provide it
-  through the app shell. React Router documents route objects as the basis for
-  lazy routes and route-level error boundaries; this aligns with the requested
-  `router.tsx` and `error-boundary/` structure.
-- Preserve `HashRouter` in the first slice because the app is deployed as a
-  static SPA and existing E2E URLs use hash navigation. Switching to browser
-  history is a separate deployment decision.
-- Use plain functions and hooks for feature behavior. Classes are not needed
-  unless a concrete error, SDK client, or stateful domain entity requires one.
-- Do not create empty placeholder folders. Add `domain`, `schemas`,
-  `permissions`, `store`, and `mappers` only when the feature has behavior that
-  earns the boundary.
+Acceptance: no migrated feature performs raw HTTP or imports legacy context/API
+hooks; TanStack Query remains the only remote-data source of truth.
 
-## Task list
+### Phase 4 — Verification and future app readiness
 
-### Phase 1: App-shell foundation
+- [ ] Add route/provider/feature boundary tests and preserve E2E coverage.
+- [ ] Add minimal application shells for `platform-admin-app` and `client-app`
+      only when their requirements exist; do not invent product behavior.
+- [ ] Run docs, format, typecheck, lint, unit, build, security, and mock E2E
+      gates.
+- [ ] Update architecture docs and add an ADR for package ownership.
 
-- [ ] Add `src/app/AppProviders.tsx` for QueryClient, auth, app/profile, theme,
-      tooltip, notifications, and error-boundary composition.
-- [ ] Add `src/app/router.tsx` with the existing paths, lazy route modules, and
-      the signed-out/tenant-required/ready branches represented by shell
-      components.
-- [ ] Add `src/app/layouts/AppLayout.tsx` for sidebar, mobile navigation, page
-      transition, and the shared content frame.
-- [ ] Move route-level fallback/error UI to `src/app/error-boundary/` while
-      retaining reusable presentation in `src/shared/components`.
-- [ ] Keep `main.tsx` as a thin bootstrap that renders `App` through the
-      provider composition root.
+## Execution checkpoints
 
-**Acceptance criteria:** Existing hash URLs render the same feature screens;
-auth loading, signed-out, tenant-selection, and authenticated states remain
-observable; the application has one router and one provider composition root.
+After each phase: run focused tests, typecheck affected packages, inspect the
+dependency graph, commit one logical increment, and push the branch. No phase
+may leave the workspace uncompilable.
 
-**Verification:** App shell tests, `bun run --filter @emme/emme-salon-app
-typecheck`, focused Vitest tests, and the mock smoke E2E flow.
-
-### Phase 2: Clients vertical slice
-
-- [ ] Add `features/clients/domain/client.types.ts` for application-facing
-      client types and mutation inputs.
-- [ ] Move client query/mutation adapters to `features/clients/api/`, keeping
-      the existing `createClientApi` capability from `@emme/contracts` and
-      `HttpClient` from `@emme/api-client` behind that boundary.
-- [ ] Add `features/clients/mappers/client.mapper.ts` only when the feature
-      view model differs from the canonical `Client` contract; do not duplicate
-      the contract's response parser.
-- [ ] Add `features/clients/services/client.service.ts` for normalization and
-      operation orchestration that is currently inside the screen/context.
-- [ ] Split `Clients.tsx` into `pages/ClientsPage.tsx` plus focused components
-      incrementally; keep the existing visual behavior and test IDs.
-- [ ] Export the feature's public hooks/components/types from
-      `features/clients/index.ts`.
-- [ ] Replace client reads/writes from `AppContext` with the feature hooks and
-      add focused service/hook/component tests before deleting the old path.
-
-**Acceptance criteria:** Client list, search/filtering, create, edit, delete,
-and appointment-history behavior remain unchanged; no client screen imports
-`context/AppContext`, `src/hooks/useApiQueries`, or `src/api/hooks/useCustomers`.
-
-**Verification:** Domain/service tests with injected fakes, component tests for
-loading/empty/error/submission states, existing mock E2E client flow, typecheck,
-lint, and build.
-
-### Phase 3: Services and appointments vertical slices
-
-- [ ] Apply the clients boundary pattern to services.
-- [ ] Apply the pattern to appointments, including status mutations, scheduling
-      calculations, and calendar export helpers.
-- [ ] Move shared appointment/service types out of `AppContext` and keep the
-      scheduling algorithm independently testable.
-- [ ] Replace cross-feature imports with public feature barrels or explicit
-      shared contracts where the dependency is genuinely shared.
-- [ ] Delete the legacy `src/api/hooks`, `src/hooks/useApiQueries`, and
-      `src/providers/DataProvider` paths only after consumers are migrated.
-
-**Acceptance criteria:** TanStack Query remains the only remote-data store;
-feature hooks own query keys and mutations; scheduling and CRUD flows remain
-green in unit and browser tests.
-
-### Phase 4: Infrastructure and client-state cleanup
-
-- [ ] Move runtime environment parsing to `src/config/environment.ts` and
-      application defaults to `src/config/app-config.ts` without changing the
-      public environment variable contract.
-- [ ] Add explicit `src/infrastructure/http`, `auth`, and `storage` modules by
-      moving existing adapters, not by wrapping the same `@emme/api-client`
-      transport twice.
-- [ ] Keep only client UI state in `src/state`/the existing Zustand store; move
-      onboarding/sidebar ownership behind a public state module.
-- [ ] Move navigation from `src/widgets` into app layout ownership.
-
-**Acceptance criteria:** Feature code depends inward on stable public modules;
-browser APIs and network calls are visible at infrastructure boundaries; no
-remote business data is persisted in Zustand or local storage.
-
-### Phase 5: Verification and cleanup
-
-- [ ] Add/maintain route, provider, mapper, service, hook, and component tests.
-- [ ] Run `bun run docs:check`, `bun run typecheck`, `bun run lint`, `bun run
-      test`, `bun run build`, and the mock E2E suite.
-- [ ] Run the app at 320px, 768px, 1024px, and 1440px for changed shell/feature
-      surfaces and verify keyboard/focus/error/empty/loading states.
-- [ ] Remove compatibility exports and dead files only after import scans and
-      browser verification show no consumers.
-- [ ] Update architecture documentation with the final module ownership and
-      add an ADR if routing, auth storage, or deployment history changes.
-
-## Dependency graph
-
-```text
-AppProviders + router
-        ↓
-AppLayout + route pages
-        ↓
-Feature hooks
-        ↓
-Feature services / domain rules
-        ↓
-Feature API adapters
-        ↓
-@emme/contracts + @emme/api-client
-```
-
-The migration is sequential across shared boundaries but vertical within a
-feature. Clients should be the first feature because it has an existing mapper,
-CRUD hooks, and a clear screen boundary. Services and appointments depend on
-shared view types and cross-feature scheduling data, so they follow after the
-client pattern is proven.
-
-## Risks and mitigations
+## Risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Removing `AppContext` too early | High; large screens stop rendering | Migrate one feature at a time and retain a temporary compatibility export |
-| Query-key drift during API moves | High; stale or missing updates | Reuse `createResourceKey`/query factory and add invalidation tests |
-| Route changes break static hosting or E2E | High | Preserve `HashRouter` and existing paths in Phase 1 |
-| Screens are too large to migrate atomically | Medium | Extract page/container and focused components in vertical slices |
-| Frontend duplicates backend business rules | Medium | Keep only presentation validation and UX guards; backend remains authoritative |
-| Hidden browser side effects in feature code | Medium | Move fetch, storage, and EventSource creation behind infrastructure/adapters |
-
-## Open questions
-
-- Should the migration proceed on a new `feat/salon-app-architecture` branch,
-  or should the current `feat/api-version-contract` branch remain the delivery
-  branch for this follow-up?
-- Should `HashRouter` remain the long-term deployment choice, or is a server
-  fallback configuration available for a future browser-history migration?
-- Which feature should receive the first implementation slice if clients are
-  not the preferred starting point?
+| Package rename breaks hidden consumers | High | Update all workspace references and use repository-wide import scans |
+| API/infrastructure circular dependency | High | Keep ports in `@emme/api`; infrastructure implements them |
+| AppContext removal changes observable behavior | High | Migrate one vertical slice and retain compatibility until consumers are gone |
+| Library extraction duplicates domain models | Medium | Map at explicit boundaries and keep backend contracts canonical |
+| Tooling migration expands scope | Medium | Keep Bun; defer pnpm/Turbo |
+| Empty abstraction folders accumulate | Low | Add folders only with behavior and tests |
 
 ## Definition of done
 
-- [ ] Every migrated feature has explicit ownership and a public barrel.
-- [ ] No feature component performs raw HTTP, storage, or EventSource work.
-- [ ] No feature imports the legacy context or global API hook paths after the
-      relevant migration phase.
-- [ ] All existing behavior and test IDs remain compatible unless explicitly
-      approved.
-- [ ] Typecheck, lint, unit tests, build, docs, and applicable browser tests
-      pass with zero skipped tests introduced by the migration.
+- [ ] Target package boundaries are present and documented.
+- [ ] Old `@emme/contracts` and `@emme/api-client` imports are removed.
+- [ ] Current tenant routes and E2E flows remain compatible.
+- [ ] Every migrated behavior has tests written before implementation changes.
+- [ ] Workspace verification passes or pre-existing failures are documented.
+- [ ] All changes are committed and pushed on the feature branch.
