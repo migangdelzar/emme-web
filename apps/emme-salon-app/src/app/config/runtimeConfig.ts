@@ -24,13 +24,7 @@ const SECRET_KEY_PATTERNS = [
   /GATEWAY_AUTOMATION_TOKEN/i,
 ];
 
-const ENVIRONMENTS = new Set<AppEnvironment>([
-  'local',
-  'dev',
-  'regression',
-  'staging',
-  'prod',
-]);
+const ENVIRONMENTS = new Set<AppEnvironment>(['local', 'dev', 'regression', 'staging', 'prod']);
 
 export function parseRuntimeConfig(input: RuntimeConfigInput): RuntimeConfig {
   rejectSecretLikeKeys(input);

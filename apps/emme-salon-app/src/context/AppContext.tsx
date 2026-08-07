@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { useAuth } from '../app/auth/useAuth';
-import { useQueryClient } from "@tanstack/react-query";
-import { useClients, useServices, useAppointments, useAddClient, useAddService, useAddAppointment } from '@/hooks/useApiQueries';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  useClients,
+  useServices,
+  useAppointments,
+  useAddClient,
+  useAddService,
+  useAddAppointment,
+} from '@/hooks/useApiQueries';
 import type {
   Service,
   Client,
@@ -191,62 +198,102 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // -- mutations with optimistic updates ---
 
-  const addService = useCallback(async (s: Omit<Service, 'id' | 'isActive'>) => {
-    try {
-      await addServiceMutation.mutateAsync(s);
-    } catch (e) {
-      console.error('addService API failed:', e);
-    }
-  }, [addServiceMutation]);
+  const addService = useCallback(
+    async (s: Omit<Service, 'id' | 'isActive'>) => {
+      try {
+        await addServiceMutation.mutateAsync(s);
+      } catch (e) {
+        console.error('addService API failed:', e);
+      }
+    },
+    [addServiceMutation]
+  );
 
-  const addClient = useCallback(async (c: Omit<Client, 'id'>) => {
-    try {
-      await addClientMutation.mutateAsync(c);
-    } catch (e) {
-      console.error('addClient API failed:', e);
-    }
-  }, [addClientMutation]);
+  const addClient = useCallback(
+    async (c: Omit<Client, 'id'>) => {
+      try {
+        await addClientMutation.mutateAsync(c);
+      } catch (e) {
+        console.error('addClient API failed:', e);
+      }
+    },
+    [addClientMutation]
+  );
 
-  const addAppointment = useCallback(async (a: Omit<Appointment, 'id'>) => {
-    try {
-      await addAppointmentMutation.mutateAsync(a);
-    } catch (e) {
-      console.error('addAppointment API failed:', e);
-      throw e;
-    }
-  }, [addAppointmentMutation]);
+  const addAppointment = useCallback(
+    async (a: Omit<Appointment, 'id'>) => {
+      try {
+        await addAppointmentMutation.mutateAsync(a);
+      } catch (e) {
+        console.error('addAppointment API failed:', e);
+        throw e;
+      }
+    },
+    [addAppointmentMutation]
+  );
 
-  const updateAppointment = useCallback((id: string, updatedFields: Partial<Appointment>) => {
-    queryClient.setQueryData<Appointment[]>(['appointments'], (old) => old?.map((a) => (a.id === id ? { ...a, ...updatedFields } : a)));
-  }, [queryClient]);
+  const updateAppointment = useCallback(
+    (id: string, updatedFields: Partial<Appointment>) => {
+      queryClient.setQueryData<Appointment[]>(['appointments'], (old) =>
+        old?.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
+      );
+    },
+    [queryClient]
+  );
 
-  const updateAppointmentStatus = useCallback((id: string, status: AppointmentStatus) => {
-    queryClient.setQueryData<Appointment[]>(['appointments'], (old) => old?.map((a) => (a.id === id ? { ...a, status } : a)));
-  }, [queryClient]);
+  const updateAppointmentStatus = useCallback(
+    (id: string, status: AppointmentStatus) => {
+      queryClient.setQueryData<Appointment[]>(['appointments'], (old) =>
+        old?.map((a) => (a.id === id ? { ...a, status } : a))
+      );
+    },
+    [queryClient]
+  );
 
   const updateProfile = useCallback((p: BusinessProfile) => {
     setProfile(p);
   }, []);
 
-  const deleteClient = useCallback((id: string) => {
-    queryClient.setQueryData<Client[]>(['clients'], (old) => old?.filter((c) => c.id !== id));
-  }, [queryClient]);
+  const deleteClient = useCallback(
+    (id: string) => {
+      queryClient.setQueryData<Client[]>(['clients'], (old) => old?.filter((c) => c.id !== id));
+    },
+    [queryClient]
+  );
 
-  const deleteService = useCallback((id: string) => {
-    queryClient.setQueryData<Service[]>(['services'], (old) => old?.filter((s) => s.id !== id));
-  }, [queryClient]);
+  const deleteService = useCallback(
+    (id: string) => {
+      queryClient.setQueryData<Service[]>(['services'], (old) => old?.filter((s) => s.id !== id));
+    },
+    [queryClient]
+  );
 
-  const updateClient = useCallback((id: string, updatedFields: Partial<Client>) => {
-    queryClient.setQueryData<Client[]>(['clients'], (old) => old?.map((c) => (c.id === id ? { ...c, ...updatedFields } : c)));
-  }, [queryClient]);
+  const updateClient = useCallback(
+    (id: string, updatedFields: Partial<Client>) => {
+      queryClient.setQueryData<Client[]>(['clients'], (old) =>
+        old?.map((c) => (c.id === id ? { ...c, ...updatedFields } : c))
+      );
+    },
+    [queryClient]
+  );
 
-  const updateService = useCallback((id: string, updatedFields: Partial<Service>) => {
-    queryClient.setQueryData<Service[]>(['services'], (old) => old?.map((s) => (s.id === id ? { ...s, ...updatedFields } : s)));
-  }, [queryClient]);
+  const updateService = useCallback(
+    (id: string, updatedFields: Partial<Service>) => {
+      queryClient.setQueryData<Service[]>(['services'], (old) =>
+        old?.map((s) => (s.id === id ? { ...s, ...updatedFields } : s))
+      );
+    },
+    [queryClient]
+  );
 
-  const toggleServiceStatus = useCallback((id: string) => {
-    queryClient.setQueryData<Service[]>(['services'], (old) => old?.map((s) => (s.id === id ? { ...s, isActive: !s.isActive } : s)));
-  }, [queryClient]);
+  const toggleServiceStatus = useCallback(
+    (id: string) => {
+      queryClient.setQueryData<Service[]>(['services'], (old) =>
+        old?.map((s) => (s.id === id ? { ...s, isActive: !s.isActive } : s))
+      );
+    },
+    [queryClient]
+  );
 
   return (
     <AppContext.Provider

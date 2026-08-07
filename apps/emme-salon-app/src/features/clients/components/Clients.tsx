@@ -148,42 +148,46 @@ export function Clients() {
     };
   };
 
-  const filteredClients = useMemo(() => clients
-    .filter((c) => {
-      const matchesSearch =
-        (c.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
-        (c.phone || '').includes(search);
+  const filteredClients = useMemo(
+    () =>
+      clients
+        .filter((c) => {
+          const matchesSearch =
+            (c.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
+            (c.phone || '').includes(search);
 
-      const matchesVip = !filterVip || c.isVip;
+          const matchesVip = !filterVip || c.isVip;
 
-      const stats = getClientStats(c.id);
-      const isNew = stats.visitsCount <= 1;
-      const isLoyal = stats.visitsCount >= 5;
-      const lastVisitDate = stats.lastVisit ? parseLocalDate(stats.lastVisit) : null;
-      const isInactive = lastVisitDate
-        ? new Date().getTime() - lastVisitDate.getTime() > 1000 * 60 * 60 * 24 * 75
-        : false; // 2.5 months
+          const stats = getClientStats(c.id);
+          const isNew = stats.visitsCount <= 1;
+          const isLoyal = stats.visitsCount >= 5;
+          const lastVisitDate = stats.lastVisit ? parseLocalDate(stats.lastVisit) : null;
+          const isInactive = lastVisitDate
+            ? new Date().getTime() - lastVisitDate.getTime() > 1000 * 60 * 60 * 24 * 75
+            : false; // 2.5 months
 
-      let matchesFilter = true;
-      if (filterType === 'new') matchesFilter = isNew;
-      if (filterType === 'loyal') matchesFilter = isLoyal;
-      if (filterType === 'inactive') matchesFilter = isInactive;
+          let matchesFilter = true;
+          if (filterType === 'new') matchesFilter = isNew;
+          if (filterType === 'loyal') matchesFilter = isLoyal;
+          if (filterType === 'inactive') matchesFilter = isInactive;
 
-      return matchesSearch && matchesVip && matchesFilter;
-    })
-    .sort((a, b) => {
-      const statsA = getClientStats(a.id);
-      const statsB = getClientStats(b.id);
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      if (sortBy === 'spent') return statsB.totalSpent - statsA.totalSpent;
-      if (sortBy === 'visits') return statsB.visitsCount - statsA.visitsCount;
-      if (sortBy === 'recent') {
-        const dateA = statsA.lastVisit || '';
-        const dateB = statsB.lastVisit || '';
-        return dateB.localeCompare(dateA);
-      }
-      return 0;
-    }), [clients, appointments, search, filterVip, filterType, sortBy]);
+          return matchesSearch && matchesVip && matchesFilter;
+        })
+        .sort((a, b) => {
+          const statsA = getClientStats(a.id);
+          const statsB = getClientStats(b.id);
+          if (sortBy === 'name') return a.name.localeCompare(b.name);
+          if (sortBy === 'spent') return statsB.totalSpent - statsA.totalSpent;
+          if (sortBy === 'visits') return statsB.visitsCount - statsA.visitsCount;
+          if (sortBy === 'recent') {
+            const dateA = statsA.lastVisit || '';
+            const dateB = statsB.lastVisit || '';
+            return dateB.localeCompare(dateA);
+          }
+          return 0;
+        }),
+    [clients, appointments, search, filterVip, filterType, sortBy]
+  );
 
   const totalPages = Math.max(1, Math.ceil(filteredClients.length / itemsPerPage));
   const paginatedClients = filteredClients.slice(

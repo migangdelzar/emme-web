@@ -68,27 +68,37 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
   );
 
   const cancelAppointment = useCallback(
-    async (appointmentId: string) => { await cancelMutation.mutateAsync(appointmentId); },
+    async (appointmentId: string) => {
+      await cancelMutation.mutateAsync(appointmentId);
+    },
     [cancelMutation]
   );
 
   const confirmAppointment = useCallback(
-    async (appointmentId: string) => { await confirmMutation.mutateAsync(appointmentId); },
+    async (appointmentId: string) => {
+      await confirmMutation.mutateAsync(appointmentId);
+    },
     [confirmMutation]
   );
 
   const startAppointment = useCallback(
-    async (appointmentId: string) => { await startMutation.mutateAsync(appointmentId); },
+    async (appointmentId: string) => {
+      await startMutation.mutateAsync(appointmentId);
+    },
     [startMutation]
   );
 
   const completeAppointment = useCallback(
-    async (appointmentId: string) => { await completeMutation.mutateAsync(appointmentId); },
+    async (appointmentId: string) => {
+      await completeMutation.mutateAsync(appointmentId);
+    },
     [completeMutation]
   );
 
   const markNoShowAppointment = useCallback(
-    async (appointmentId: string) => { await markNoShowMutation.mutateAsync(appointmentId); },
+    async (appointmentId: string) => {
+      await markNoShowMutation.mutateAsync(appointmentId);
+    },
     [markNoShowMutation]
   );
 

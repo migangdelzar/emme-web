@@ -163,18 +163,19 @@ export function Dashboard() {
 
   const today = new Date();
 
-  const filteredAppointments = useMemo(() =>
-    [...todayAppointments]
-      .sort((a, b) => a.startTime.localeCompare(b.startTime))
-      .slice(0, 8)
-  , [todayAppointments]);
+  const filteredAppointments = useMemo(
+    () => [...todayAppointments].sort((a, b) => a.startTime.localeCompare(b.startTime)).slice(0, 8),
+    [todayAppointments]
+  );
 
   const currentTimeStr = format(new Date(), 'HH:mm');
-  const nextAppointmentId = useMemo(() =>
-    todayAppointments
-      .filter((a) => a.startTime >= currentTimeStr)
-      .sort((a, b) => a.startTime.localeCompare(b.startTime))[0]?.id
-  , [todayAppointments, currentTimeStr]);
+  const nextAppointmentId = useMemo(
+    () =>
+      todayAppointments
+        .filter((a) => a.startTime >= currentTimeStr)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime))[0]?.id,
+    [todayAppointments, currentTimeStr]
+  );
 
   const getGreeting = () => {
     const hours = today.getHours();
@@ -326,10 +327,7 @@ export function Dashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pt-4">
             {/* Main Section: Agenda List */}
-            <section
-              data-testid={els.dashboard.agenda}
-              className="lg:col-span-8 space-y-6"
-            >
+            <section data-testid={els.dashboard.agenda} className="lg:col-span-8 space-y-6">
               <div className="flex items-center justify-between px-0">
                 <h2 className="text-[28px] lg:text-[34px] font-display font-semibold tracking-tight text-foreground">
                   {t('dashboard.agenda')}

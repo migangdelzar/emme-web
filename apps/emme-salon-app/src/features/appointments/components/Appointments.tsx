@@ -423,7 +423,17 @@ const DroppableColumn = ({
 
 export function Appointments() {
   const { clients, profile } = useApp();
-  const { loading, error, appointments, services, cancelAppointment, confirmAppointment, startAppointment, completeAppointment, rescheduleAppointment } = useAppointmentData();
+  const {
+    loading,
+    error,
+    appointments,
+    services,
+    cancelAppointment,
+    confirmAppointment,
+    startAppointment,
+    completeAppointment,
+    rescheduleAppointment,
+  } = useAppointmentData();
   const { t } = useAppTranslation();
   const [detailAppointmentId, setDetailAppointmentId] = useState<string | null>(null);
   const [activeAptId, setActiveAptId] = useState<string | null>(null);
@@ -470,7 +480,11 @@ export function Appointments() {
       }
 
       try {
-        await rescheduleAppointment(apt.id, `${newDateStr}T${newStartTime}:00`, `${newDateStr}T${newEndTime}:00`);
+        await rescheduleAppointment(
+          apt.id,
+          `${newDateStr}T${newStartTime}:00`,
+          `${newDateStr}T${newEndTime}:00`
+        );
         toast.success(t('appointments.rescheduled'));
       } catch (err) {
         toast.error(t('appointments.rescheduleUnavailable'), {

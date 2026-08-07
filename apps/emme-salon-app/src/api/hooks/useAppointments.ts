@@ -141,8 +141,15 @@ export function useRescheduleAppointmentRest() {
     createMutationOptions(
       {
         key: 'appointments',
-        mutationFn: ({ id, newStartsAt, newEndsAt }: { id: string; newStartsAt: string; newEndsAt: string }) =>
-          appointmentsContract.reschedule(id, newStartsAt, newEndsAt),
+        mutationFn: ({
+          id,
+          newStartsAt,
+          newEndsAt,
+        }: {
+          id: string;
+          newStartsAt: string;
+          newEndsAt: string;
+        }) => appointmentsContract.reschedule(id, newStartsAt, newEndsAt),
       },
       queryClient
     )
