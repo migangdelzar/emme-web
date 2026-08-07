@@ -31,6 +31,43 @@ types, default profile data, server queries, mutation orchestration, cache
 writes, and a context API. Removing it safely requires feature hooks to expose
 the same observable behavior before the context is deleted.
 
+## Workspace package boundary review
+
+The extracted packages are already the correct lower-level dependency boundary:
+
+| Package | Current responsibility | Migration rule |
+|---|---|---|
+| `@emme/api-client` | Generic `HttpClient`, auth/tenant/API-version headers, URL resolution, response parsing, and `ApiHttpError` | Keep transport-only; feature code must not instantiate `fetch` or Axios directly |
+| `@emme/contracts` | Shared application contracts, route constants, response normalization, and capability factories such as `createClientApi`, `createServiceApi`, and `createAppointmentApi` | Treat as the canonical backend boundary; do not duplicate its DTOs or endpoint paths inside the app |
+| `@emme/contracts` `HttpClient` | Narrow structural port consumed by capability factories | Inject the app's `@emme/api-client` `HttpClient`; no adapter wrapper is needed because the interfaces are structurally compatible |
+| `DataProvider` contract | E2E/test provider surface implemented by `MockProvider` and `RealProvider` | Keep for browser-test seams, but stop using it as the production application's server-state abstraction |
+
+This means the target request flow is:
+
+```text
+Feature hook
+    ↓
+Feature service (only when orchestration/domain normalization exists)
+    ↓
+Capability factory from @emme/contracts
+    ↓
+HttpClient from @emme/api-client
+    ↓
+Backend API
+```
+
+The current app has a second, transitional path in `src/providers/DataProvider`
+and `src/hooks/useApiQueries`. Those modules call the same contract factories,
+but hide them behind a global provider and duplicate TanStack Query wiring. They
+should be retired after feature hooks take ownership. The E2E `DataProvider`
+interface itself should remain until the browser provider fixtures no longer
+need the direct assertion methods.
+
+The packages currently export source entry points (`src/index.ts`) rather than
+consuming built declarations. That is valid for this Bun workspace and keeps
+local typechecking immediate, but package build output must remain a release
+artifact concern; feature migration should not import from `dist/`.
+
 ## Architecture decisions
 
 - Keep TanStack Query as the only source of truth for remote clients, services,
@@ -81,9 +118,11 @@ typecheck`, focused Vitest tests, and the mock smoke E2E flow.
 - [ ] Add `features/clients/domain/client.types.ts` for application-facing
       client types and mutation inputs.
 - [ ] Move client query/mutation adapters to `features/clients/api/`, keeping
-      `@emme/contracts` and the shared REST client behind that boundary.
-- [ ] Add `features/clients/mappers/client.mapper.ts` only for actual contract
-      to view transformations.
+      the existing `createClientApi` capability from `@emme/contracts` and
+      `HttpClient` from `@emme/api-client` behind that boundary.
+- [ ] Add `features/clients/mappers/client.mapper.ts` only when the feature
+      view model differs from the canonical `Client` contract; do not duplicate
+      the contract's response parser.
 - [ ] Add `features/clients/services/client.service.ts` for normalization and
       operation orchestration that is currently inside the screen/context.
 - [ ] Split `Clients.tsx` into `pages/ClientsPage.tsx` plus focused components
@@ -123,7 +162,8 @@ green in unit and browser tests.
       application defaults to `src/config/app-config.ts` without changing the
       public environment variable contract.
 - [ ] Add explicit `src/infrastructure/http`, `auth`, and `storage` modules by
-      moving existing adapters, not by wrapping the same adapter twice.
+      moving existing adapters, not by wrapping the same `@emme/api-client`
+      transport twice.
 - [ ] Keep only client UI state in `src/state`/the existing Zustand store; move
       onboarding/sidebar ownership behind a public state module.
 - [ ] Move navigation from `src/widgets` into app layout ownership.

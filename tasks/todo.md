@@ -344,6 +344,10 @@ preserving current routes, API contracts, visual behavior, and browser flows.
 - The first implementation slice is intentionally app shell plus clients;
       no mass folder creation or backend domain duplication is planned.
 - Full details and dependency ordering are in [`tasks/plan.md`](plan.md).
+- `@emme/contracts` already owns capability factories and response mapping;
+      feature API modules must delegate to those factories instead of creating
+      duplicate DTOs or endpoint clients. `@emme/api-client` remains transport
+      only.
 
 ### Checklist
 
