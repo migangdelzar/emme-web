@@ -20,7 +20,8 @@ emme-web/
 │   ├── core/                      # auth, tenancy, access-control, runtime
 │   ├── api/                       # contracts, ports, typed API operations
 │   ├── infrastructure/           # fetch, storage, auth and external adapters
-│   ├── business/                  # reusable domain and business capabilities
+│   ├── domain/                    # pure business model and domain ports
+│   ├── application/               # use cases and application services
 │   ├── i18n/                      # typed shared localization resources
 │   └── test-support/              # development/test-only fixtures and helpers
 ├── e2e/
@@ -37,7 +38,9 @@ explicitly out of scope for this architecture migration.
       ↑              ↑
 @emme/core ─────── @emme/api
       ↑              ↑
-@emme/business ─ @emme/infrastructure
+@emme/domain  ← @emme/application
+      ↑                 ↑
+@emme/api  ← @emme/infrastructure
             ↑
           apps
 ```
@@ -49,8 +52,14 @@ explicitly out of scope for this architecture migration.
   but `api` never depends on infrastructure.
 - `@emme/core` owns shared application behavior and providers, not concrete
   browser implementations.
-- `@emme/business` owns reusable domain rules and business capabilities. It
-  does not become a dumping ground for tenant-only screens.
+- `@emme/domain` is the pure business core: entities, value objects, rules,
+  invariants, and repository/service ports. It has no React, HTTP, storage,
+  API DTO, or browser dependency.
+- `@emme/application` orchestrates use cases and application services against
+  domain ports. It is framework-agnostic and receives concrete adapters from
+  an app composition root.
+- Reusable React business UI is extracted only when multiple apps actually
+  need it; it is not forced into either domain or application.
 - Apps own routes, layouts, composition roots, and role-specific experiences.
 - `@emme/test-support` is dev-only and never a runtime dependency.
 
@@ -84,9 +93,11 @@ compile without imports from the old package names.
 
 - [ ] Add `@emme/core` with auth, tenancy, access-control, runtime, config,
       errors, and common types as independently testable modules.
-- [ ] Add `@emme/business` with the first reusable capability modules for
-      clients, services, and appointments; keep UI extraction minimal and
-      behavior-preserving.
+- [ ] Add `@emme/domain` with pure clients, services, and appointments models,
+      rules, and repository ports.
+- [ ] Add `@emme/application` with the first use cases for clients, services,
+      and appointments; inject repository ports rather than creating API
+      clients internally.
 - [ ] Add `@emme/test-support` for shared fakes/factories only when a second
       consumer needs them.
 - [ ] Keep `@emme/ui`, `@emme/i18n`, and `@emme/validation` stable; schemas that
@@ -108,8 +119,9 @@ one provider composition root and one route tree.
 
 ### Phase 3 — Tenant feature vertical slices
 
-- [ ] Migrate clients into explicit `domain`, `api`, `services`, `hooks`,
-      `pages`, `components`, and public-barrel ownership.
+- [ ] Migrate clients into explicit UI `api`, `hooks`, `pages`, `components`,
+      and public-barrel ownership, delegating business behavior to
+      `@emme/application` and `@emme/domain`.
 - [ ] Migrate services using the same tested boundary.
 - [ ] Migrate appointments and scheduling helpers, preserving status behavior.
 - [ ] Migrate remaining tenant-only features only where a boundary earns its

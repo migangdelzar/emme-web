@@ -14,7 +14,8 @@ preserving the current tenant app behavior and package-level compatibility.
 - [ ] Rename `@emme/api-client` to `@emme/infrastructure` and keep transport behavior.
 - [ ] Update all workspace consumers and remove legacy package imports.
 - [ ] Add tested `@emme/core` foundation modules.
-- [ ] Add tested `@emme/business` capability entry points.
+- [ ] Add tested `@emme/domain` rules and models.
+- [ ] Add tested `@emme/application` use cases and ports.
 - [ ] Add `@emme/test-support` only for shared test fixtures that earn extraction.
 - [ ] Migrate the tenant app composition root.
 - [ ] Migrate clients, services, and appointments incrementally.
