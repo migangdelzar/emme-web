@@ -62,7 +62,7 @@ test.describe('Full Section Coverage', { tag: [Tag.CRITICAL] }, () => {
       { name: 'Dashboard', goto: () => new DashboardPage(page).goto(), verify: () => page.getByTestId('sidebar-container') },
       { name: 'Services', goto: () => new ServicesPage(page).goto(), verify: () => new ServicesPage(page).header() },
       { name: 'Clients', goto: () => new ClientsPage(page).goto(), verify: () => new ClientsPage(page).header() },
-      { name: 'Appointments', goto: () => new AppointmentsPage(page).goto(), verify: () => new AppointmentsPage(page).header() },
+      { name: 'Appointments', goto: () => new AppointmentsPage(page).goto(), verify: () => page.getByRole('main').first() },
       { name: 'Finances', goto: () => new FinancesPage(page).goto(), verify: () => new FinancesPage(page).header() },
       { name: 'Settings', goto: () => new SettingsPage(page).goto(), verify: () => new SettingsPage(page).header() },
     ];

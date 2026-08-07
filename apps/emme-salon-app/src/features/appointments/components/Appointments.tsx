@@ -440,7 +440,7 @@ export function Appointments() {
     setActiveAptId(event.active.id as string);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     setActiveAptId(null);
     const { active, over, delta } = event;
 
