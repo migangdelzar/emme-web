@@ -485,7 +485,6 @@ export function Appointments() {
           `${newDateStr}T${newStartTime}:00`,
           `${newDateStr}T${newEndTime}:00`
         );
-        toast.success(t('appointments.rescheduled'));
       } catch (err) {
         toast.error(t('appointments.rescheduleUnavailable'), {
           description: t('appointments.rescheduleRequiresBackend'),
@@ -612,15 +611,16 @@ export function Appointments() {
     try {
       if (newStatus === 'cancelled') {
         setConfirmCancelId(aptId);
-      } else if (newStatus === 'confirmed') {
-        await confirmAppointment(aptId);
-        toast.success(t('appointments.confirmed'));
-      } else if (newStatus === 'completed') {
-        await completeAppointment(aptId);
-        toast.success(t('appointments.completed'));
       } else {
-        await startAppointment(aptId);
-        toast.success(t('appointments.statusChanged'));
+        try {
+          if (newStatus === 'confirmed') await confirmAppointment(aptId);
+          else if (newStatus === 'completed') await completeAppointment(aptId);
+          else await startAppointment(aptId);
+        } catch (err) {
+          toast.error(t('appointments.statusChangeUnavailable'), {
+            description: t('appointments.statusChangeRequiresBackend'),
+          });
+        }
       }
     } catch (err) {
       toast.error(t('appointments.statusChangeUnavailable'), {
