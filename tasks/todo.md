@@ -317,3 +317,39 @@ Vite development and production Nginx to avoid frontend CORS requirements.
   an existing `platformClient` import path mismatch.
 - Docker Compose validation was unavailable because the local Docker CLI has no
   Compose plugin.
+
+## Emme salon app architecture migration — 2026-08-07
+
+### Goal
+
+Apply the feature-oriented application architecture incrementally while
+preserving current routes, API contracts, visual behavior, and browser flows.
+
+### Acceptance criteria
+
+- [ ] App providers, routing, layouts, and error boundaries have explicit app
+      shell ownership.
+- [ ] Clients, services, and appointments own their query hooks, API adapters,
+      application services, types, and focused UI boundaries.
+- [ ] TanStack Query remains the only remote-data source of truth.
+- [ ] `AppContext`, duplicate API hook paths, and `DataProvider` are removed
+      only after all consumers are migrated.
+- [ ] Existing mock E2E flows, tests, typecheck, lint, and build remain green.
+
+### Working notes
+
+- Current branch is `feat/api-version-contract`, clean and synchronized with
+      its remote. The current branch already contains the typed transport and
+      partial feature migration that this plan builds on.
+- The first implementation slice is intentionally app shell plus clients;
+      no mass folder creation or backend domain duplication is planned.
+- Full details and dependency ordering are in [`tasks/plan.md`](plan.md).
+
+### Checklist
+
+- [ ] Confirm delivery branch and first vertical slice.
+- [ ] Complete Phase 1 app-shell foundation.
+- [ ] Complete Phase 2 clients vertical slice.
+- [ ] Complete Phase 3 services and appointments slices.
+- [ ] Complete Phase 4 infrastructure and client-state cleanup.
+- [ ] Run final verification matrix and record results.
