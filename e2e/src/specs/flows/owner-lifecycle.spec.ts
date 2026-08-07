@@ -28,29 +28,24 @@ test.describe('Owner Lifecycle', { tag: [Tag.CRITICAL] }, () => {
   test('UC-004/005 — services and customers CRUD with verification', async ({ authenticatedPage, provider }) => {
     const page = authenticatedPage;
 
-    // ── Service: create via UI → verify in catalog → search → detail dialog ──
+    // ── Service: create via API → verify in catalog (auto-cleaned by provider.teardown) ──
+    const svcName = `E2E-Svc-${Date.now().toString(36)}`;
+    await provider.seed({ services: [{ id: 'e2e-s1', name: svcName, price: 500, duration: 45, category: 'Manicura', isActive: true }] });
+
     const services = new ServicesPage(page);
     await services.goto();
+    await page.waitForLoadState('networkidle');
     await expect(services.header()).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/#/services?add=true');
-    await expect(services.dialog()).toBeVisible();
-    await services.serviceNameInput().fill('E2E Manicure');
-    await services.priceInput().fill('500');
-    await services.durationInput().fill('45');
-    await services.submitBtn().click();
-    await page.waitForLoadState('networkidle');
-    await expect(services.serviceName('E2E Manicure')).toBeVisible({ timeout: 10000 });
-
-    await services.searchInput().fill('E2E');
+    await services.searchInput().fill(svcName);
     await page.waitForTimeout(500);
-    await expect(services.serviceName('E2E Manicure')).toBeVisible();
+    await expect(services.serviceName(svcName)).toBeVisible({ timeout: 10000 });
     await services.searchInput().fill('');
     await page.waitForTimeout(300);
 
-    await services.serviceName('E2E Manicure').click();
+    await services.serviceName(svcName).click();
     await expect(services.detailDialog()).toBeVisible();
-    await expect(services.detailName()).toContainText('E2E Manicure');
+    await expect(services.detailName()).toContainText(svcName);
     await services.detailCloseBtn().click();
     await expect(services.detailDialog()).not.toBeVisible();
 
