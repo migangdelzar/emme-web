@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { Tag } from '../../shared/tags';
 
-test.describe('Smoke', { tag: [Tag.SMOKE, Tag.DASHBOARD, Tag.CRITICAL] }, () => {
+test.describe('Smoke', { tag: [Tag.SMOKE, Tag.CRITICAL] }, () => {
   test('landing page loads', async ({ page }) => {
     await page.goto('/');
-    await page.evaluate(() => localStorage.clear());
-    await page.reload();
+    if (process.env.E2E_MODE === 'real') {
+      await page.evaluate(() => localStorage.clear());
+      await page.reload();
+    }
     await expect(page.getByRole('button', { name: /ingresar|Iniciar/i })).toBeVisible({ timeout: 10000 });
   });
 

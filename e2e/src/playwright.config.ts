@@ -10,7 +10,7 @@ const webServerConfig = useExternalWeb
   : {
       command: 'cd ../../apps/emme-salon-app && bun dev',
       port: 3000,
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
       env: {
         VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
         VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
