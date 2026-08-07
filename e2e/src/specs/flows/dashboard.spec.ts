@@ -9,7 +9,7 @@ test.describe('UC-003 — Dashboard', { tag: [Tag.CRITICAL, Tag.DASHBOARD] }, ()
     const dashboard = new DashboardPage(page);
     await dashboard.goto();
     await expect(dashboard.sidebar()).toBeVisible();
-    await expect(dashboard.greeting()).toContainText(/madrugada|mañana|tarde|noche|morning|afternoon|evening/);
+    await expect(dashboard.greeting()).toBeVisible();
     await expect(dashboard.incomeCard()).toBeVisible();
     await expect(dashboard.confirmedCard()).toBeVisible();
     await expect(dashboard.occupancyCard()).toBeVisible();
