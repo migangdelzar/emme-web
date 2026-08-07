@@ -348,6 +348,9 @@ preserving current routes, API contracts, visual behavior, and browser flows.
       feature API modules must delegate to those factories instead of creating
       duplicate DTOs or endpoint clients. `@emme/api-client` remains transport
       only.
+- Implementation is paused for plan review. The approved target is a
+      capability-folder convention in the libraries, with `clients/api.ts`
+      rather than `client-api.ts`, plus colocated tests and root-barrel exports.
 
 ### Checklist
 

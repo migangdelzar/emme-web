@@ -68,6 +68,160 @@ consuming built declarations. That is valid for this Bun workspace and keeps
 local typechecking immediate, but package build output must remain a release
 artifact concern; feature migration should not import from `dist/`.
 
+## Proposed workspace library architecture
+
+The application architecture should be reflected in the reusable libraries,
+but each package should keep only the layers it owns. The goal is a consistent
+convention, not identical folders in every package.
+
+```text
+packages/
+├── api-client/
+│   └── src/
+│       ├── http/
+│       │   ├── http-client.ts
+│       │   ├── api-error.ts
+│       │   └── index.ts
+│       ├── platform/
+│       │   ├── platform-client.ts
+│       │   └── index.ts
+│       ├── types/
+│       │   └── api-client.types.ts
+│       └── index.ts
+│
+├── contracts/
+│   └── src/
+│       ├── clients/
+│       │   ├── api.ts
+│       │   ├── client.types.ts
+│       │   └── index.ts
+│       ├── services/
+│       │   ├── api.ts
+│       │   ├── service.types.ts
+│       │   └── index.ts
+│       ├── appointments/
+│       │   ├── api.ts
+│       │   ├── appointment.types.ts
+│       │   └── index.ts
+│       ├── integrations/
+│       │   ├── google-oauth/
+│       │   │   ├── api.ts
+│       │   │   └── types.ts
+│       │   ├── google-sheets/
+│       │   │   ├── api.ts
+│       │   │   └── types.ts
+│       │   └── calendar-sync/
+│       │       ├── api.ts
+│       │       └── types.ts
+│       ├── auth/
+│       │   └── auth.types.ts
+│       ├── common/
+│       │   └── common.types.ts
+│       ├── transport/
+│       │   ├── http-client.ts
+│       │   ├── parsers.ts
+│       │   └── index.ts
+│       ├── routes.ts
+│       ├── testing/
+│       │   └── provider.ts
+│       └── index.ts
+│
+├── ui/
+│   └── src/
+│       ├── components/
+│       ├── primitives/
+│       ├── styles/
+│       └── index.ts
+│
+├── validation/
+│   └── src/
+│       ├── schemas/
+│       ├── validators/
+│       └── index.ts
+│
+└── i18n/
+    └── src/
+        ├── data/
+        ├── catalog/
+        ├── validation/
+        └── index.ts
+```
+
+### Naming conventions
+
+- Capability folders use the plural business name: `clients`, `services`,
+  and `appointments`.
+- The capability adapter file is always `api.ts` inside its capability folder;
+  use `clients/api.ts`, never `client-api.ts` or `clients-api.ts`.
+- Capability types use the singular feature name: `client.types.ts`,
+  `service.types.ts`, and `appointment.types.ts`.
+- Each capability folder has an `index.ts` that exposes only its public API.
+- Tests are colocated beside the module they verify: `api.test.ts`,
+  `client.types.test.ts`, or `parsers.test.ts`. Dedicated `__tests__` folders
+  are reserved for cross-module package integration tests.
+- Root package `index.ts` files are the only imports consumers should need;
+  internal file paths are not added as public exports unless a package has a
+  deliberate subpath-export policy.
+
+### Dependency rules
+
+```text
+contracts capability api.ts
+        ↓ depends on
+contracts transport HttpClient port
+        ↑ implemented by
+api-client http client
+```
+
+- `@emme/contracts` must never import `@emme/api-client`.
+- `@emme/api-client` may import shared constants/types from `@emme/contracts`,
+  but must not import application features or React.
+- `@emme/ui`, `@emme/validation`, and `@emme/i18n` remain independent reusable
+  libraries; they must not depend on the salon app or backend capabilities.
+- App features import package root barrels, not `packages/*/src` paths and not
+  generated `dist` files.
+- `testing/provider.ts` is explicitly test support. It must not become the
+  production server-state abstraction.
+
+## Library migration phases
+
+### Library Phase A: Contracts package
+
+- [ ] Move clients, services, and appointments implementations into capability
+      folders with `api.ts`, singular `*.types.ts`, and `index.ts`.
+- [ ] Move contract transport helpers into `transport/` and keep a single
+      `HttpClient` port.
+- [ ] Move integrations under `integrations/<name>/` using the same `api.ts`
+      and `types.ts` convention.
+- [ ] Keep temporary root-level re-export files during the migration, then
+      remove them after all imports use the new internal paths.
+- [ ] Keep `@emme/contracts` root exports backward-compatible while the app and
+      E2E packages migrate.
+
+### Library Phase B: API client package
+
+- [ ] Move generic HTTP implementation into `http/` and platform-specific
+      methods into `platform/`.
+- [ ] Preserve `createHttpClient`, `createApiClient`, `HttpClient`, and
+      `ApiHttpError` from the package root.
+- [ ] Keep this package framework-agnostic and free of React Query hooks.
+
+### Library Phase C: Supporting packages
+
+- [ ] Add `components/` and `primitives/` to `@emme/ui` only as reusable
+      components are extracted from the app.
+- [ ] Add schemas to `@emme/validation` only when a schema is shared by more
+      than one app or feature; feature-only schemas stay in the app feature.
+- [ ] Keep translation data and validation under `@emme/i18n`; expose typed
+      catalog functions from the root barrel.
+
+### Library Phase D: Application adoption
+
+- [ ] Update feature APIs to import capability factories from the new contract
+      folders through the root barrel.
+- [ ] Remove the app's duplicate API hook paths after each feature migrates.
+- [ ] Run package and app typechecks/tests after every library phase.
+
 ## Architecture decisions
 
 - Keep TanStack Query as the only source of truth for remote clients, services,
