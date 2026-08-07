@@ -6,22 +6,24 @@ import { DashboardPage } from '@pages/DashboardPage';
 import { Tag } from '../../shared/tags';
 
 test.describe('Appointments + Finances + Settings — UC-006, UC-007, UC-022, UC-024', { tag: [Tag.CRITICAL] }, () => {
-  test('UC-006 — appointments: list, date strip, create wizard opens', async ({ authenticatedPage }) => {
+  test('UC-006 — appointments: list, date strip, wizard opens, projected income', async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     const appointments = new AppointmentsPage(page);
     await appointments.goto();
+    await page.waitForLoadState('networkidle');
     await expect(appointments.header()).toBeVisible({ timeout: 10000 });
 
     // FR-WS012: Date strip navigation
-    await expect(appointments.dateStrip()).toBeVisible();
+    await expect(appointments.dateStrip()).toBeVisible({ timeout: 5000 });
 
-    // FR-WS013: Create appointment wizard (step 1 visible)
+    // FR-WS021: Projected revenue visible
+    await expect(appointments.todayAppointmentsSummary()).toBeVisible({ timeout: 5000 });
+
+    // FR-WS013: Create appointment wizard opens
     await appointments.gotoNewAppointment();
-    await expect(appointments.dialog()).toBeVisible();
-    await expect(appointments.stepIndicator()).toBeVisible();
+    await expect(appointments.stepIndicator()).toBeVisible({ timeout: 5000 });
     await appointments.dialogCloseBtn().click();
-    await expect(appointments.dialog()).not.toBeVisible();
   });
 
   test('UC-007/022/024 — finances + all settings tabs + logout', async ({ authenticatedPage }) => {

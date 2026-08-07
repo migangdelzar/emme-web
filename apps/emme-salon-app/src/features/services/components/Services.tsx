@@ -628,6 +628,18 @@ export function Services() {
                       >
                         <Power className="size-4.5" />
                       </Button>
+                      <Button
+                        aria-label={`Eliminar ${service.name}`}
+                        variant="ghost"
+                        size="icon"
+                        className="size-10 rounded-full text-muted-foreground/40 hover:bg-red-500/10 hover:text-red-500 transition-all duration-500 active:scale-90"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteConfirmId(service.id);
+                        }}
+                      >
+                        <Trash2 className="size-4.5" />
+                      </Button>
                     </div>
                   </div>
 

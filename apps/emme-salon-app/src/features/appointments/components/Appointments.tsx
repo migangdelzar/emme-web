@@ -423,7 +423,7 @@ const DroppableColumn = ({
 
 export function Appointments() {
   const { clients, profile } = useApp();
-  const { loading, error, appointments, services, cancelAppointment } = useAppointmentData();
+  const { loading, error, appointments, services, cancelAppointment, confirmAppointment, startAppointment, completeAppointment, rescheduleAppointment } = useAppointmentData();
   const { t } = useAppTranslation();
   const [detailAppointmentId, setDetailAppointmentId] = useState<string | null>(null);
   const [activeAptId, setActiveAptId] = useState<string | null>(null);
@@ -469,9 +469,14 @@ export function Appointments() {
         return;
       }
 
-      toast.error(t('appointments.rescheduleUnavailable'), {
-        description: t('appointments.rescheduleRequiresBackend'),
-      });
+      try {
+        await rescheduleAppointment(apt.id, `${newDateStr}T${newStartTime}:00`, `${newDateStr}T${newEndTime}:00`);
+        toast.success(t('appointments.rescheduled'));
+      } catch (err) {
+        toast.error(t('appointments.rescheduleUnavailable'), {
+          description: t('appointments.rescheduleRequiresBackend'),
+        });
+      }
     }
   };
 
@@ -589,17 +594,21 @@ export function Appointments() {
 
   const appointmentDays = appointments.map((apt) => parseLocalDate(apt.date));
 
-  const handleStatusChange = (aptId: string, newStatus: AppointmentStatus) => {
-    if (newStatus === 'cancelled') {
-      setConfirmCancelId(aptId);
-    } else if (newStatus === 'completed') {
-      setAnimatingCompletedId(aptId);
-      toast.error(t('appointments.statusChangeUnavailable'), {
-        description: t('appointments.statusChangeRequiresBackend'),
-        icon: <CheckCircle2 className="size-5 text-[#34C759]" />,
-      });
-      setTimeout(() => setAnimatingCompletedId(null), 2500);
-    } else {
+  const handleStatusChange = async (aptId: string, newStatus: AppointmentStatus) => {
+    try {
+      if (newStatus === 'cancelled') {
+        setConfirmCancelId(aptId);
+      } else if (newStatus === 'confirmed') {
+        await confirmAppointment(aptId);
+        toast.success(t('appointments.confirmed'));
+      } else if (newStatus === 'completed') {
+        await completeAppointment(aptId);
+        toast.success(t('appointments.completed'));
+      } else {
+        await startAppointment(aptId);
+        toast.success(t('appointments.statusChanged'));
+      }
+    } catch (err) {
       toast.error(t('appointments.statusChangeUnavailable'), {
         description: t('appointments.statusChangeRequiresBackend'),
       });

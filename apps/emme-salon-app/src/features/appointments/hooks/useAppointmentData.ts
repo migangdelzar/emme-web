@@ -3,6 +3,11 @@ import {
   useAppointmentsRest,
   useCreateAppointmentRest,
   useCancelAppointmentRest,
+  useConfirmAppointmentRest,
+  useStartAppointmentRest,
+  useCompleteAppointmentRest,
+  useMarkNoShowAppointmentRest,
+  useRescheduleAppointmentRest,
 } from '@/api/hooks/useAppointments';
 import { useNailServicesRest } from '@/api/hooks/useServices';
 import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
@@ -23,6 +28,11 @@ interface AppointmentData {
     endTime: string;
   }) => Promise<void>;
   cancelAppointment: (appointmentId: string) => Promise<void>;
+  confirmAppointment: (appointmentId: string) => Promise<void>;
+  startAppointment: (appointmentId: string) => Promise<void>;
+  completeAppointment: (appointmentId: string) => Promise<void>;
+  markNoShowAppointment: (appointmentId: string) => Promise<void>;
+  rescheduleAppointment: (id: string, newStartsAt: string, newEndsAt: string) => Promise<void>;
 }
 
 export function useAppointmentData(dateFilter?: string): AppointmentData {
@@ -30,6 +40,11 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
   const { data: svcData, isLoading: svcLoading, error: svcError } = useNailServicesRest();
   const createMutation = useCreateAppointmentRest();
   const cancelMutation = useCancelAppointmentRest();
+  const confirmMutation = useConfirmAppointmentRest();
+  const startMutation = useStartAppointmentRest();
+  const completeMutation = useCompleteAppointmentRest();
+  const markNoShowMutation = useMarkNoShowAppointmentRest();
+  const rescheduleMutation = useRescheduleAppointmentRest();
 
   const appointments = useMemo(
     () => (aptData?.appointments || []).map(mapAppointmentView),
@@ -39,17 +54,9 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
   const services = useMemo(() => (svcData?.services || []).map(mapNailServiceView), [svcData]);
 
   const createAppointment = useCallback(
-    async (input: {
-      clientId: string;
-      serviceId: string;
-      customerName: string;
-      date: string;
-      startTime: string;
-      endTime: string;
-    }) => {
+    async (input) => {
       const startDateTime = `${input.date}T${input.startTime}:00`;
       const endDateTime = `${input.date}T${input.endTime}:00`;
-
       await createMutation.mutateAsync({
         clientId: input.clientId,
         serviceId: input.serviceId,
@@ -61,10 +68,35 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
   );
 
   const cancelAppointment = useCallback(
-    async (appointmentId: string) => {
-      await cancelMutation.mutateAsync(appointmentId);
-    },
+    async (appointmentId: string) => { await cancelMutation.mutateAsync(appointmentId); },
     [cancelMutation]
+  );
+
+  const confirmAppointment = useCallback(
+    async (appointmentId: string) => { await confirmMutation.mutateAsync(appointmentId); },
+    [confirmMutation]
+  );
+
+  const startAppointment = useCallback(
+    async (appointmentId: string) => { await startMutation.mutateAsync(appointmentId); },
+    [startMutation]
+  );
+
+  const completeAppointment = useCallback(
+    async (appointmentId: string) => { await completeMutation.mutateAsync(appointmentId); },
+    [completeMutation]
+  );
+
+  const markNoShowAppointment = useCallback(
+    async (appointmentId: string) => { await markNoShowMutation.mutateAsync(appointmentId); },
+    [markNoShowMutation]
+  );
+
+  const rescheduleAppointment = useCallback(
+    async (id: string, newStartsAt: string, newEndsAt: string) => {
+      await rescheduleMutation.mutateAsync({ id, newStartsAt, newEndsAt });
+    },
+    [rescheduleMutation]
   );
 
   const error = aptError?.message || svcError?.message || null;
@@ -76,5 +108,10 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
     services,
     createAppointment,
     cancelAppointment,
+    confirmAppointment,
+    startAppointment,
+    completeAppointment,
+    markNoShowAppointment,
+    rescheduleAppointment,
   };
 }

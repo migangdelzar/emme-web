@@ -40,6 +40,11 @@ export interface AppointmentApi {
   create(data: CreateAppointment): Promise<Appointment>;
   getById(id: string): Promise<Appointment>;
   cancel(id: string): Promise<Appointment>;
+  confirm(id: string): Promise<Appointment>;
+  start(id: string): Promise<Appointment>;
+  complete(id: string): Promise<Appointment>;
+  markNoShow(id: string): Promise<Appointment>;
+  reschedule(id: string, newStartsAt: string, newEndsAt: string): Promise<Appointment>;
 }
 
 export function createAppointmentApi(http: HttpClient): AppointmentApi {
@@ -100,6 +105,26 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
     },
     cancel: async (id) => {
       const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/cancel`);
+      return mapAppointment(raw);
+    },
+    confirm: async (id) => {
+      const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/confirm`);
+      return mapAppointment(raw);
+    },
+    start: async (id) => {
+      const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/start`);
+      return mapAppointment(raw);
+    },
+    complete: async (id) => {
+      const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/complete`);
+      return mapAppointment(raw);
+    },
+    markNoShow: async (id) => {
+      const raw = await http.post<unknown>(`${API.APPOINTMENTS}/${id}/no-show`);
+      return mapAppointment(raw);
+    },
+    reschedule: async (id, newStartsAt, newEndsAt) => {
+      const raw = await http.put<unknown>(`${API.APPOINTMENTS}/${id}/reschedule`, { newStartsAt, newEndsAt });
       return mapAppointment(raw);
     },
   };

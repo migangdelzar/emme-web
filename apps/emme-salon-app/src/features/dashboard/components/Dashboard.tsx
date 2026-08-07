@@ -334,13 +334,29 @@ export function Dashboard() {
                 <h2 className="text-[28px] lg:text-[34px] font-display font-semibold tracking-tight text-foreground">
                   {t('dashboard.agenda')}
                 </h2>
-                <button
-                  onClick={() => navigate('/agenda')}
-                  className="text-[13px] font-semibold text-primary hover:opacity-100 transition-opacity flex items-center gap-1 group"
-                >
-                  {t('dashboard.viewAll')}{' '}
-                  <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsNewClientOpen(true)}
+                    aria-label={t('clients.addButton')}
+                    className="p-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  >
+                    <UserPlus className="size-5" />
+                  </button>
+                  <button
+                    onClick={() => setIsNewAptOpen(true)}
+                    aria-label={t('appointments.addButton')}
+                    className="p-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  >
+                    <Plus className="size-5" />
+                  </button>
+                  <button
+                    onClick={() => navigate('/agenda')}
+                    className="text-[13px] font-semibold text-primary hover:opacity-100 transition-opacity flex items-center gap-1 group"
+                  >
+                    {t('dashboard.viewAll')}{' '}
+                    <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                </div>
               </div>
 
               <div className="px-0">

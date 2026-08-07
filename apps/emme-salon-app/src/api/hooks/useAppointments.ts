@@ -94,3 +94,57 @@ export function useCancelAppointmentRest() {
     )
   );
 }
+
+export function useConfirmAppointmentRest() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    createMutationOptions(
+      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.confirm(id) },
+      queryClient
+    )
+  );
+}
+
+export function useStartAppointmentRest() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    createMutationOptions(
+      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.start(id) },
+      queryClient
+    )
+  );
+}
+
+export function useCompleteAppointmentRest() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    createMutationOptions(
+      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.complete(id) },
+      queryClient
+    )
+  );
+}
+
+export function useMarkNoShowAppointmentRest() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    createMutationOptions(
+      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.markNoShow(id) },
+      queryClient
+    )
+  );
+}
+
+export function useRescheduleAppointmentRest() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    createMutationOptions(
+      {
+        key: 'appointments',
+        mutationFn: ({ id, newStartsAt, newEndsAt }: { id: string; newStartsAt: string; newEndsAt: string }) =>
+          appointmentsContract.reschedule(id, newStartsAt, newEndsAt),
+      },
+      queryClient
+    )
+  );
+}

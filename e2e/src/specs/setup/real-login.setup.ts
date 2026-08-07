@@ -1,5 +1,6 @@
 import { test as setup, chromium } from '@playwright/test';
 import { LoginPage } from '../../pages/LoginPage';
+import { provisionTestData } from '../../setup/seed-data';
 
 const AUTH_STATE = '.auth/auth-state.json';
 
@@ -47,6 +48,10 @@ setup('real E2E login — save auth state for reuse', async () => {
 
   await context.storageState({ path: AUTH_STATE });
   await browser.close();
+
+  // Provision test data for E2E flows (idempotent)
+  const tenantSlug = process.env.E2E_TENANT_SLUG || 'e2e-studio';
+  await provisionTestData(token, tenantSlug);
 
   console.log(`[Setup] Auth state saved to ${AUTH_STATE} (token: ${token.slice(0, 12)}...)`);
 });
