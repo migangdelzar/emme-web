@@ -2,6 +2,13 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import { useApp, type AppointmentStatus, type Appointment } from '@/context/AppContext';
+
+const S = {
+  PENDING: 'pending' as AppointmentStatus,
+  CONFIRMED: 'confirmed' as AppointmentStatus,
+  COMPLETED: 'completed' as AppointmentStatus,
+  CANCELLED: 'cancelled' as AppointmentStatus,
+} as const;
 import { useAppointmentData } from '../hooks/useAppointmentData';
 import { ErrorBanner } from '@/shared/components/ErrorBanner';
 import { Button } from '@/shared/ui/button';
@@ -467,7 +474,7 @@ export function Appointments() {
 
       // Validate availability
       const isAvailable = !appointments.some((a) => {
-        if (a.id === apt.id || a.status === 'cancelled') return false;
+        if (a.id === apt.id || a.status === S.CANCELLED) return false;
         if (!isSameDay(parseLocalDate(a.date), newDate)) return false;
         const aStart = timeToMinutes(a.startTime);
         const aEnd = timeToMinutes(a.endTime);
@@ -608,24 +615,16 @@ export function Appointments() {
   const appointmentDays = appointments.map((apt) => parseLocalDate(apt.date));
 
   const handleStatusChange = async (aptId: string, newStatus: AppointmentStatus) => {
+    if (newStatus === S.CANCELLED) {
+      setConfirmCancelId(aptId);
+      return;
+    }
     try {
-      if (newStatus === 'cancelled') {
-        setConfirmCancelId(aptId);
-      } else {
-        try {
-          if (newStatus === 'confirmed') await confirmAppointment(aptId);
-          else if (newStatus === 'completed') await completeAppointment(aptId);
-          else await startAppointment(aptId);
-        } catch (err) {
-          toast.error(t('appointments.statusChangeUnavailable'), {
-            description: t('appointments.statusChangeRequiresBackend'),
-          });
-        }
-      }
-    } catch (err) {
-      toast.error(t('appointments.statusChangeUnavailable'), {
-        description: t('appointments.statusChangeRequiresBackend'),
-      });
+      if (newStatus === S.CONFIRMED) await confirmAppointment(aptId);
+      else if (newStatus === S.COMPLETED) await completeAppointment(aptId);
+      else await startAppointment(aptId);
+    } catch {
+      // API call failed — the UI will show the error via the mutation state
     }
   };
 
@@ -664,7 +663,7 @@ export function Appointments() {
   const isToday = isSameDay(selectedDate || new Date(), new Date());
   const currentTime = format(new Date(), 'HH:mm');
   const nextUpId = isToday
-    ? filteredAppointments.find((a) => a.startTime >= currentTime && a.status !== 'cancelled')?.id
+    ? filteredAppointments.find((a) => a.startTime >= currentTime && a.status !== S.CANCELLED)?.id
     : null;
 
   // Month Calendar Logic
@@ -901,7 +900,7 @@ export function Appointments() {
                           .filter(
                             (a) =>
                               a.clientId === detailClient.id &&
-                              (a.status === 'completed' || a.status === 'confirmed')
+                              (a.status === S.COMPLETED || a.status === S.CONFIRMED)
                           )
                           .sort((a, b) => b.date.localeCompare(a.date))[0]?.date &&
                         new Date().getTime() -
@@ -910,7 +909,7 @@ export function Appointments() {
                               .filter(
                                 (a) =>
                                   a.clientId === detailClient.id &&
-                                  (a.status === 'completed' || a.status === 'confirmed')
+                                  (a.status === S.COMPLETED || a.status === S.CONFIRMED)
                               )
                               .sort((a, b) => b.date.localeCompare(a.date))[0].date
                           ).getTime() >
@@ -1649,7 +1648,7 @@ export function Appointments() {
                         })
                     ).map((day) => {
                       const dayApts = appointments.filter(
-                        (a) => isSameDay(parseLocalDate(a.date), day) && a.status !== 'cancelled'
+                        (a) => isSameDay(parseLocalDate(a.date), day) && a.status !== S.CANCELLED
                       );
 
                       return (
