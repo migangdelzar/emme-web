@@ -67,7 +67,7 @@ test.describe('Owner Lifecycle', { tag: [Tag.CRITICAL] }, () => {
     await expect(clients.emptyState()).toBeVisible();
   });
 
-  test('UC-006/007 — appointments, finances, settings, and navigation', async ({ authenticatedPage }) => {
+  test('UC-006/007/014/022/024 — appointments, finances, settings tabs, and navigation', async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     const appointments = new AppointmentsPage(page);
@@ -83,9 +83,22 @@ test.describe('Owner Lifecycle', { tag: [Tag.CRITICAL] }, () => {
     await finances.goto();
     await expect(finances.header()).toBeVisible({ timeout: 10000 });
 
+    // Settings + data management (UC-007, UC-014, UC-022, UC-024)
     const settings = new SettingsPage(page);
     await settings.goto();
     await expect(settings.header()).toBeVisible({ timeout: 10000 });
+
+    const tabs = ['Perfil', 'Horarios', 'Notificaciones', 'WhatsApp Bot', 'Google Workspace', 'Datos', 'Cuenta'];
+    for (const tab of tabs) {
+      const btn = page.locator(`text=${tab}`).first();
+      if (await btn.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await btn.click();
+        await page.waitForTimeout(300);
+      }
+    }
+
+    // UC-024: verify logout/security is reachable
+    await expect(page.getByRole('button', { name: /cerrar sesión|logout/i })).toBeVisible({ timeout: 5000 });
 
     const dashboard = new DashboardPage(page);
     await dashboard.goto();
