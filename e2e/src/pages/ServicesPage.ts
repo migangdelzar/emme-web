@@ -22,7 +22,7 @@ export class ServicesPage {
   readonly serviceCard = (name: string) =>
     this.page.locator('.group').filter({ hasText: name }).first();
   readonly serviceName = (name: string) =>
-    this.page.locator('h3').filter({ hasText: name });
+    this.page.locator('h3').filter({ hasText: name }).first();
   readonly servicePrice = (price: string) =>
     this.page.locator('p').filter({ hasText: `$${price}` });
   readonly editBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>

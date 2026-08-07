@@ -133,8 +133,6 @@ export const test = base.extend<Fixtures>({
       } else {
         provider = await realSetupFromStorageState(page, testUser);
 
-        await provider.seed(DEFAULT_SEED);
-        await page.waitForTimeout(1000);
         await page.waitForLoadState('networkidle');
       }
 
