@@ -1,4 +1,4 @@
-import { API } from "./routes.js";
+import { API } from "../common/routes.js";
 import {
   asRecord,
   asRecordArray,
@@ -7,7 +7,7 @@ import {
   optionalStringField,
   stringField,
   type HttpClient,
-} from "./transport.js";
+} from "../ports/http-client.js";
 
 export interface Client {
   id: string;

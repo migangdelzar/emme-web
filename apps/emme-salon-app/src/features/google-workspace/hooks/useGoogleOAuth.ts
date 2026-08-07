@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createGoogleOAuthApi, type GoogleOAuthStatus } from '@emme/contracts';
+import { createGoogleOAuthApi, type GoogleOAuthStatus } from '@emme/api';
 import { api } from '@/api/restClient';
 import { apiErrorMessage } from '@/api/apiErrorMessage';
 import { useAppTranslation } from '@/app/translation';

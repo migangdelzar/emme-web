@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ApiHttpError, createApiClient, createHttpClient } from "./index.js";
+import { ApiHttpError, createApiClient, createHttpClient } from "../index.js";
 
 type FetchCall = [RequestInfo | URL, RequestInit?];
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;

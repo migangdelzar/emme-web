@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createGoogleSheetsApi, type SpreadsheetLink } from '@emme/contracts';
+import { createGoogleSheetsApi, type SpreadsheetLink } from '@emme/api';
 import { api } from '@/api/restClient';
 import { apiErrorMessage } from '@/api/apiErrorMessage';
 import { useAppTranslation } from '@/app/translation';

@@ -1,4 +1,4 @@
-import type { TenantRole, TenantStatus } from "./common.js";
+import type { TenantRole, TenantStatus } from "../common/common.types.js";
 
 export interface TenantMembership {
   tenantId: string;

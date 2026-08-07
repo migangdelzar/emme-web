@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
-import { createServiceApi, type Service as ContractService } from '@emme/contracts';
+import { createServiceApi, type Service as ContractService } from '@emme/api';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
 
 export interface NailService {

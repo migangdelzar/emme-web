@@ -4,9 +4,9 @@ import {
   type HealthResponse,
   type TenantMembership,
   type TenantMembershipsResponse,
-} from "@emme/contracts";
+} from "@emme/api";
 
-import { ApiHttpError } from "./errors.js";
+import { ApiHttpError } from "./api-error.js";
 
 export type AccessTokenProvider = () => Promise<string | null> | string | null;
 export type TenantSlugProvider = () => string | null;

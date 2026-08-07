@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createSessionModel, selectDefaultTenant } from './sessionModel';
-import type { CurrentUser, TenantMembership } from '@emme/contracts';
+import type { CurrentUser, TenantMembership } from '@emme/api';
 
 function createCurrentUser(
   memberships: TenantMembership[],

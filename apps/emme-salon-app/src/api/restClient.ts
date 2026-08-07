@@ -1,5 +1,5 @@
-import { createHttpClient } from '@emme/api-client';
-import type { HttpClient } from '@emme/api-client';
+import { createHttpClient } from '@emme/infrastructure';
+import type { HttpClient } from '@emme/infrastructure';
 
 import { getRuntimeConfig } from '@/app/config/runtimeConfig';
 

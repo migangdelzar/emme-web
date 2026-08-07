@@ -1,4 +1,4 @@
-import type { Client, Service, Appointment } from '@emme/contracts';
+import type { Client, Service, Appointment } from '@emme/api';
 
 // ── Functional in-memory store — simulates a DB table ──
 

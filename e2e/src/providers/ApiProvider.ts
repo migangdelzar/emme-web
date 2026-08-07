@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import type { TestUser } from '@fixtures/userPool';
-import type { Client, Service, Appointment } from '@emme/contracts';
+import type { Client, Service, Appointment } from '@emme/api';
 
 export interface SeedData {
   appointments?: Appointment[];

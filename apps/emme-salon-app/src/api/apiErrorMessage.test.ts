@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ApiHttpError } from '@emme/api-client';
+import { ApiHttpError } from '@emme/infrastructure';
 import { apiErrorMessage } from './apiErrorMessage';
 
 describe('apiErrorMessage', () => {

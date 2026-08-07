@@ -1,4 +1,4 @@
-import type { CreateAppointment, CreateClient, CreateService } from '@emme/contracts';
+import type { CreateAppointment, CreateClient, CreateService } from '@emme/api';
 
 export interface E2eDataFactory {
   customer(): CreateClient;

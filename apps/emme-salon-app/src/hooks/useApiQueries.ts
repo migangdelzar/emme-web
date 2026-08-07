@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { provider } from '@/providers/DataProvider';
 import { useAuth } from '@/app/auth/useAuth';
-import type { CreateClient, CreateService, CreateAppointment } from '@emme/contracts';
+import type { CreateClient, CreateService, CreateAppointment } from '@emme/api';
 
 // -- Read hooks with caching (only fetch when auth is ready) ---
 

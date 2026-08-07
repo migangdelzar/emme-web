@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
-import { createAppointmentApi, type Appointment as ContractAppointment } from '@emme/contracts';
+import { createAppointmentApi, type Appointment as ContractAppointment } from '@emme/api';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
 
 export interface Appointment {

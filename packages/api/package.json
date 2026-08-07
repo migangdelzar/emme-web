@@ -1,5 +1,5 @@
 {
-  "name": "@emme/contracts",
+  "name": "@emme/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",

@@ -1,4 +1,4 @@
-import type { CurrentUser, TenantMembership } from '@emme/contracts';
+import type { CurrentUser, TenantMembership } from '@emme/api';
 
 export type AppSession =
   | { status: 'signedOut' }

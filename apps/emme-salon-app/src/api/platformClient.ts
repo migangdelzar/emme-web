@@ -1,4 +1,4 @@
-import { createApiClient, type ApiClient, type ApiClientOptions } from '@emme/api-client';
+import { createApiClient, type ApiClient, type ApiClientOptions } from '@emme/infrastructure';
 
 import type { RuntimeConfig } from '../../app/config/runtimeConfig';
 

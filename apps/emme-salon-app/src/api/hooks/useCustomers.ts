@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
-import { createClientApi, type Client as ContractClient } from '@emme/contracts';
+import { createClientApi, type Client as ContractClient } from '@emme/api';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
 
 export interface Customer {

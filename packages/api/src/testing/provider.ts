@@ -1,6 +1,6 @@
-import type { Client, CreateClient } from "./clients.js";
-import type { Service, CreateService } from "./services.js";
-import type { Appointment, CreateAppointment } from "./appointments.js";
+import type { Client, CreateClient } from "../clients/api.js";
+import type { Service, CreateService } from "../services/api.js";
+import type { Appointment, CreateAppointment } from "../appointments/api.js";
 
 /** Shared interface between salon-app and Playwright E2E tests. */
 export interface DataProvider {

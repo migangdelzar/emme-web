@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { createAppointmentApi } from './appointments.js';
-import { createClientApi } from './clients.js';
-import { createServiceApi } from './services.js';
+import { createAppointmentApi } from '../appointments/api.js';
+import { createClientApi } from '../clients/api.js';
+import { createServiceApi } from '../services/api.js';
 
 describe('contract API adapters', () => {
   it('maps the canonical appointment response without leaking transport fields', async () => {

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { BusinessProfile, CurrentUser, TenantMembership } from '@emme/contracts';
+import type { BusinessProfile, CurrentUser, TenantMembership } from '@emme/api';
 
 export type AuthStatus = 'loading' | 'signedOut' | 'tenantRequired' | 'ready';
 

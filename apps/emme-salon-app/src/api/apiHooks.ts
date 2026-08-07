@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/app/auth/useAuth';
 import { getApiClient } from './apiClientInstance';
-import type { CurrentUser, HealthResponse } from '@emme/contracts';
+import type { CurrentUser, HealthResponse } from '@emme/api';
 
 export function useHealth() {
   return useQuery<HealthResponse>({

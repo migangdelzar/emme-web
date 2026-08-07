@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { createCalendarSyncApi } from '@emme/contracts';
+import { createCalendarSyncApi } from '@emme/api';
 import { api } from '@/api/restClient';
 import { apiErrorMessage } from '@/api/apiErrorMessage';
 import { useAppTranslation } from '@/app/translation';

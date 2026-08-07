@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './useAuth';
 import type { AuthState, AuthContextValue } from './useAuth';
-import { API_VERSION, type CurrentUser } from '@emme/contracts';
+import { API_VERSION, type CurrentUser } from '@emme/api';
 
 interface Props {
   children: React.ReactNode;

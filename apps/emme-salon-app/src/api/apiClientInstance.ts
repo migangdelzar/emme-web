@@ -1,6 +1,6 @@
 import { createPlatformClient } from './platformClient';
 import { getRuntimeConfig } from '@/app/config/runtimeConfig';
-import type { ApiClient } from '@emme/api-client';
+import type { ApiClient } from '@emme/infrastructure';
 
 let clientInstance: ApiClient | null = null;
 let lastGetAccessToken: unknown = undefined;

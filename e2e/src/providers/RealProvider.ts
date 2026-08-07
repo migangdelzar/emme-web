@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import type { TestUser } from '@fixtures/userPool';
 import type { ApiProvider, SeedData, RouteConfig } from './ApiProvider';
-import { API_VERSION, createAppointmentApi, createClientApi, createServiceApi } from '@emme/contracts';
+import { API_VERSION, createAppointmentApi, createClientApi, createServiceApi } from '@emme/api';
 import { type RouteOverride, matchPattern } from './shared';
 
 interface HttpClient {

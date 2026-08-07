@@ -8,7 +8,7 @@ import type {
   CreateService,
   CreateAppointment,
   DataProvider as DomainDataProvider,
-} from '@emme/contracts';
+} from '@emme/api';
 import type { ApiProvider, SeedData, RouteConfig } from './ApiProvider';
 import { createMockDatabase, type MockDatabase } from './store';
 import { API } from '@routes/routes';

@@ -17,7 +17,7 @@ import type {
   CreateService,
   CreateClient,
   CreateAppointment,
-} from '@emme/contracts';
+} from '@emme/api';
 
 // Re-export for convenience
 export type { Service, Client, Appointment, AppointmentStatus };

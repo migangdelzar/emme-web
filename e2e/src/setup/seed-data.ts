@@ -1,4 +1,4 @@
-import { createClientApi, createServiceApi, createAppointmentApi, type Client, type Service, type Appointment } from '@emme/contracts';
+import { createClientApi, createServiceApi, createAppointmentApi, type Client, type Service, type Appointment } from '@emme/api';
 
 interface HttpClient {
   get<T>(path: string): Promise<T>;

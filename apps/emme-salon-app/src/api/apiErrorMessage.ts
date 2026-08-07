@@ -1,4 +1,4 @@
-import { ApiHttpError } from '@emme/api-client';
+import { ApiHttpError } from '@emme/infrastructure';
 import type { TranslationKey } from '@emme/i18n';
 
 const API_ERROR_TRANSLATIONS: Record<string, TranslationKey> = {

@@ -6,8 +6,8 @@ import type {
   CreateService,
   CreateAppointment,
   DataProvider,
-} from '@emme/contracts';
-import { createClientApi, createServiceApi, createAppointmentApi } from '@emme/contracts';
+} from '@emme/api';
+import { createClientApi, createServiceApi, createAppointmentApi } from '@emme/api';
 import { api } from '@/api/restClient';
 
 /** RealDataProvider — calls the live backend via domain API modules. */

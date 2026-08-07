@@ -1,5 +1,5 @@
-import { API } from "./routes.js";
-import type { HttpClient } from "./transport.js";
+import { API } from "../../common/routes.js";
+import type { HttpClient } from "../../ports/http-client.js";
 
 export interface SheetsExportRequest {
   exportType: "APPOINTMENTS" | "CLIENTS" | "FULL";
