@@ -1,5 +1,4 @@
 import { test as setup, chromium } from '@playwright/test';
-import { execSync } from 'node:child_process';
 import { LoginPage } from '../../pages/LoginPage';
 
 const AUTH_STATE = '.auth/auth-state.json';
@@ -48,12 +47,6 @@ setup('real E2E login — save auth state for reuse', async () => {
 
   await context.storageState({ path: AUTH_STATE });
   await browser.close();
-
-  // Clean leftover DB data from previous UI form creates
-  try {
-    execSync(`docker exec compose-postgres-1 psql -U emme -d emme -c "DELETE FROM e2e_studio.service; DELETE FROM e2e_studio.customer; DELETE FROM e2e_studio.appointment;"`, { timeout: 5000 });
-    console.log('[Setup] DB cleaned');
-  } catch { /* Docker might not be available */ }
 
   console.log(`[Setup] Auth state saved to ${AUTH_STATE} (token: ${token.slice(0, 12)}...)`);
 });
