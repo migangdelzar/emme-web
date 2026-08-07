@@ -3,7 +3,7 @@ import { ServicesPage } from '@pages/ServicesPage';
 import { ClientsPage } from '@pages/ClientsPage';
 import { Tag } from '../../shared/tags';
 
-test.describe('Catalog — UC-004 + UC-005', { tag: [Tag.CRITICAL, Tag.SERVICES, Tag.CLIENTS] }, () => {
+test.describe('UC-004/005 — Catalog', { tag: [Tag.CRITICAL, Tag.SERVICES, Tag.CLIENTS] }, () => {
   test.describe.configure({ mode: 'serial' });
 
   test('UC-004 — service catalog: create via UI, search, detail dialog', async ({ authenticatedPage }) => {
