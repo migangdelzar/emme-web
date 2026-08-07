@@ -29,6 +29,8 @@ export class ServicesPage {
     serviceCardLocator.getByRole('button', { name: new RegExp('^' + 'Editar ') });
   readonly toggleBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>
     serviceCardLocator.locator('button').filter({ has: this.page.locator('svg.lucide-power') });
+  readonly deleteBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>
+    serviceCardLocator.locator('button').filter({ has: this.page.locator('svg.lucide-trash2, svg.lucide-trash') });
   readonly addDialogByRole = () => this.page.locator('[role="dialog"]');
   readonly addDialogHeading = () =>
     this.addDialogByRole().getByRole('heading', { name: /^(Nuevo Servicio|Editar Servicio|Diseñar Tratamiento)$/ });
