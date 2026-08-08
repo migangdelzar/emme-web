@@ -1,5 +1,9 @@
 # Frontend–Backend Integration
 
+> **Status: Updated.** This retained detailed reference uses vertical feature
+> application/API/adapter ownership. References to global business packages are
+> superseded.
+
 ## Purpose
 
 The frontend and backend are independently structured applications joined by
@@ -13,8 +17,10 @@ for backend ownership and release policy.
 ```text
 React feature
    ↓ feature hook
-capability API contract
-   ↓ application use case and API port
+feature public capability
+   ↓ feature application use case and port
+feature API mapper + feature infrastructure adapter
+   ↓ @emme/api protocol + @emme/infrastructure client
 HTTP /api
    ↓ auth + tenant context
 controller
@@ -26,15 +32,17 @@ domain + infrastructure
 sequenceDiagram
     participant UI as React feature
     participant APP_USECASE as Application use case
-    participant FEATURE_API as @emme/api adapter
-    participant CLIENT as @emme/infrastructure HTTP
+    participant FEATURE_API as Feature API mapper
+    participant FEATURE_INFRA as Feature repository adapter
+    participant CLIENT as Global infrastructure client
     participant API as Backend API
     participant APP as Application use case
     participant DB as Module data
 
     UI->>APP_USECASE: Command / query
-    APP_USECASE->>FEATURE_API: Use application port
-    FEATURE_API->>CLIENT: Typed request
+    APP_USECASE->>FEATURE_INFRA: Use application port
+    FEATURE_INFRA->>FEATURE_API: Map feature request
+    FEATURE_API->>CLIENT: @emme/api typed protocol
     CLIENT->>API: Authenticated request
     API->>API: Validate tenant + authorization
     API->>APP: Execute use case
@@ -43,18 +51,19 @@ sequenceDiagram
     APP-->>API: Contract result/error
     API-->>CLIENT: Versioned response
     CLIENT-->>FEATURE_API: Typed response/error
-    FEATURE_API-->>APP_USECASE: Domain result/error
+    FEATURE_API-->>FEATURE_INFRA: Feature type/error
+    FEATURE_INFRA-->>APP_USECASE: Domain result/error
     APP_USECASE-->>UI: View model/state
 ```
 
 ## Consumer rules
 
-- Consume versioned API routes through capability adapters in `@emme/api`
-  backed by `@emme/infrastructure`.
+- Consume versioned routes through feature-owned capability mappers and
+  repositories backed by `@emme/api` protocols and `@emme/infrastructure`.
 - Keep `@emme/api` independent of `@emme/infrastructure`: the API package defines
   transport types, routes, and minimal HTTP ports; infrastructure implements
   HTTP execution, authentication headers, tenant context, and Problem Details.
-- Application features may adapt contract payloads into view models, but must
+- Feature adapters may adapt contract payloads into domain/view models, but must
   not call `fetch` directly from feature components or hooks.
 - Treat backend validation and authorization as authoritative.
 - Define loading, empty, validation, conflict, unauthorized, and unavailable states in the frontend.
@@ -74,9 +83,10 @@ sequenceDiagram
 ### API consumption
 
 - Keep OpenAPI/schema definitions with the backend contract owner.
-- Preserve the dependency direction: feature hook → application use case →
-  application port → `@emme/api` adapter → `@emme/infrastructure` transport.
-  The API package must never import concrete infrastructure.
+- Preserve the dependency direction: app workflow → feature public API →
+  feature application port ← feature repository adapter → `@emme/api` protocol
+  → `@emme/infrastructure` transport. The API package never imports concrete
+  infrastructure.
 - Adapt transport types to feature view models where their lifecycles differ.
 - Detect breaking schema changes in CI before deployment.
 - Define maximum request/response sizes, pagination, timeout, and rate-limit behavior.

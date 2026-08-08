@@ -1,17 +1,135 @@
 # EMME Web Architecture Handbook
 
 This handbook is the normative target architecture for the EMME Bun workspace.
-It implements [Plan 01](../superpowers/plans/2026-08-08-01-workspace-and-architecture-handbook.md) from the approved [complete monorepo design](../superpowers/specs/2026-08-08-complete-monorepo-architecture-and-plan-portfolio-design.md). Existing migration documents remain historical evidence; this handbook governs future business-code ownership.
+It preserves the complete structure approved in the
+[complete monorepo design](../superpowers/specs/2026-08-08-complete-monorepo-architecture-and-plan-portfolio-design.md)
+and is established by
+[Plan 01](../superpowers/plans/2026-08-08-01-workspace-and-architecture-handbook.md).
+The [master plan index](../superpowers/plans/2026-08-08-00-complete-monorepo-index.md)
+maps this structure to implementation plans `01` through `21`.
+
+The handbook governs future ownership. Existing `@emme/domain`,
+`@emme/application`, and `@emme/validation` code is transitional migration
+input; reusable business behavior belongs to vertical modules under
+`@emme/features`. The backend remains authoritative for authorization, tenant
+isolation, validation, persistence, and business invariants.
+
+## Handbook status key
+
+| Status | Meaning |
+| --- | --- |
+| Canonical | Normative target structure or rule. |
+| Updated | A retained reference reconciled with the canonical vertical-feature model. |
+| Retained | Compatible operational detail that remains normative in its stated scope. |
+| Historical / superseded | Preserved decision context only; it must not guide new implementation. |
 
 ## Handbook map
 
-| Area | Pages |
-| --- | --- |
-| Project | [Repository structure](00-project/repository-structure.md), [package ownership](00-project/package-ownership.md), [dependency rules](00-project/dependency-rules.md), [naming](00-project/naming-conventions.md), [feature modules](00-project/feature-module-structure.md), [app shells](00-project/app-shell-structure.md), [testing architecture](00-project/testing-architecture.md), [web/native UI](00-project/web-native-ui-boundary.md), [documentation and decisions](00-project/documentation-and-decisions.md) |
-| Runtime | [Auth and tenancy](01-runtime/auth-and-tenancy.md), [permissions](01-runtime/permissions.md), [configuration](01-runtime/configuration.md), [error handling](01-runtime/error-handling.md) |
-| Frontend | [App](02-frontend/app.md), [feature](02-frontend/feature.md), [module](02-frontend/module.md), [state management](02-frontend/state-management.md), [i18n](02-frontend/i18n.md), [React](02-frontend/react.md), [testing](02-frontend/testing.md), [Vite](02-frontend/vite.md) |
-| Integration | [Contracts](03-integration/contracts.md), [API and infrastructure](03-integration/api-and-infrastructure.md), [feature adapters](03-integration/feature-adapters.md), [end-to-end](03-integration/end-to-end.md) |
-| Delivery | [CI](04-delivery/ci.md), [release](04-delivery/release.md), [quality gates](04-delivery/quality-gates.md) |
-| Operations | [Observability](05-operations/observability.md), [security](05-operations/security.md), [reliability](05-operations/reliability.md) |
+Every retained architecture page is indexed here. A page not marked historical
+is normative within its stated scope.
 
-The implementation sequence and rule ownership are indexed in the [complete monorepo plan portfolio](../superpowers/plans/2026-08-08-00-complete-monorepo-index.md).
+### Project
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [Repository structure](00-project/repository-structure.md) | Canonical | Complete root and package trees. |
+| [Package ownership](00-project/package-ownership.md) | Canonical | Package responsibilities and forbidden ownership. |
+| [Dependency rules](00-project/dependency-rules.md) | Canonical | Allowed dependency graph and boundary checklist. |
+| [Naming conventions](00-project/naming-conventions.md) | Canonical | Directory, file, symbol, schema, test, and barrel names. |
+| [Feature module structure](00-project/feature-module-structure.md) | Canonical | Complete appointments Hexagonal example and exports. |
+| [App shell structure](00-project/app-shell-structure.md) | Canonical | Salon, client, and platform-admin workflow trees. |
+| [Testing architecture](00-project/testing-architecture.md) | Canonical | Test locations, lanes, doubles, and completion checklist. |
+| [Web/native UI boundary](00-project/web-native-ui-boundary.md) | Canonical | Portable UI contract and platform extension points. |
+| [Documentation and decisions](00-project/documentation-and-decisions.md) | Updated | Source hierarchy, ADR lifecycle, and review policy. |
+| [Frontend architecture model](00-project/architecture-model.md) | Updated | Two-repository and vertical-feature overview. |
+| [Bun workspace and toolchain](00-project/frontend-build-bun.md) | Updated | Workspace ownership, hooks, and commands. |
+| [ADR-001: cohesive library ownership](00-project/adr-001-library-ownership.md) | Historical / superseded | The previous global domain/application package decision. |
+| [Shared library architecture](00-project/library-architecture.md) | Historical / superseded | Snapshot of the superseded package topology. |
+
+### Runtime
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [Authentication and tenancy](01-runtime/auth-and-tenancy.md) | Canonical | Session, tenant, request-context, and recovery flow. |
+| [Permissions](01-runtime/permissions.md) | Canonical | Frontend capability checks and backend authority. |
+| [Configuration](01-runtime/configuration.md) | Canonical | `defineAppConfig`, `defineModule`, and public runtime config. |
+| [Error handling](01-runtime/error-handling.md) | Canonical | Typed outcomes, normalization, UI recovery, and redaction. |
+
+### Frontend
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [App](02-frontend/app.md) | Updated | Composition-root responsibilities and app verification. |
+| [Feature](02-frontend/feature.md) | Updated | User-outcome states and feature presentation rules. |
+| [Module](02-frontend/module.md) | Updated | Vertical module boundary and public API contract. |
+| [State management](02-frontend/state-management.md) | Updated | Server, URL, workflow, local, and derived state ownership. |
+| [Internationalization](02-frontend/i18n.md) | Updated | Shared, feature, and app-local message ownership. |
+| [React](02-frontend/react.md) | Updated | React placement, side effects, accessibility, and performance. |
+| [Testing](02-frontend/testing.md) | Updated | Presentation and integration test details. |
+| [Vite](02-frontend/vite.md) | Updated | Build, proxy, public config, and package-boundary rules. |
+
+### Integration
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [Contracts](03-integration/contracts.md) | Updated | Contract ownership, validation layers, and compatibility. |
+| [API and infrastructure](03-integration/api-and-infrastructure.md) | Canonical | Abstract transport versus concrete adapters. |
+| [Feature adapters](03-integration/feature-adapters.md) | Canonical | Feature-owned mappers and repository adapters. |
+| [End-to-end](03-integration/end-to-end.md) | Updated | Mock and real Playwright lanes and evidence policy. |
+| [Frontend–backend](03-integration/frontend-backend.md) | Updated | Detailed request, Problem Details, and service flow. |
+
+### Delivery
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [Continuous integration](04-delivery/ci.md) | Updated | Required CI lanes and workflow responsibilities. |
+| [Container](04-delivery/container.md) | Retained | Static image, proxy, scan, and runtime rules. |
+| [Release](04-delivery/release.md) | Updated | Immutable promotion, compatibility, smoke, and rollback. |
+| [Secrets](04-delivery/secrets.md) | Retained | Frontend secret and browser-safe configuration boundary. |
+| [Quality gates](04-delivery/quality-gates.md) | Canonical | Documentation through production-readiness gates. |
+
+### Operations
+
+| Page | Status | Scope |
+| --- | --- | --- |
+| [Observability](05-operations/observability.md) | Updated | Signals, privacy, correlation, and verification. |
+| [Security](05-operations/security.md) | Canonical | Browser threat boundary and required evidence. |
+| [Reliability](05-operations/reliability.md) | Updated | Timeout, retry, stale work, and recovery behavior. |
+| [Production readiness](05-operations/production-readiness.md) | Retained | Approval matrix and exception policy. |
+| [Dependency risk register](05-operations/dependency-risk-register.md) | Retained | Time-bounded dependency exceptions. |
+
+## Canonical structure checklist
+
+- [ ] The repository tree contains the three app shells and exactly the eight
+      target package boundaries: kernel, UI, core, i18n, API, infrastructure,
+      features, and test support.
+- [ ] Each package matches its complete tree in
+      [repository structure](00-project/repository-structure.md); summaries do
+      not replace those trees.
+- [ ] Reusable business behavior is vertical under
+      `packages/features/src/<feature>`; global domain/application/validation
+      packages are treated only as migration sources.
+- [ ] App routes, navigation, branding, role permissions, forms, filters, and
+      workflow orchestration remain app-owned.
+- [ ] Public imports use package or feature barrels; no consumer deep-imports a
+      private implementation path or another app.
+- [ ] Dependency direction matches the
+      [dependency rules](00-project/dependency-rules.md), with explicit tenant
+      context and protocol-injected adapters.
+- [ ] Files, symbols, schemas, fixtures, and tests match the
+      [naming conventions](00-project/naming-conventions.md).
+- [ ] Every layer has tests in the locations defined by
+      [testing architecture](00-project/testing-architecture.md), and all
+      applicable quality gates pass without skipped tests.
+- [ ] Any retained page that conflicts with this model is labeled historical or
+      is updated before the conflicting rule is relied upon.
+
+## Normative policy links
+
+- [Web principles](../principles.md)
+- [Web security](../security.md)
+- [Web testing](../testing.md)
+- [Git and review](../git.md)
+- [Frontend code splitting](../code-splitting.md)
+- [Frontend feature template](../templates/frontend-feature-template.md)
+- [Secrets and configuration boundary](04-delivery/secrets.md)

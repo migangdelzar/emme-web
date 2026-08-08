@@ -1,8 +1,17 @@
-# Shared Library Architecture
+# Shared Library Architecture (Historical)
 
-The workspace uses Hexagonal Architecture across three application shells.
-The business boundary is deliberately split into pure domain logic and
-application orchestration.
+> **Status: Historical / superseded.** This page preserves the 2026-08-07
+> global technical-layer topology for migration archaeology only. It conflicts
+> with the canonical vertical-feature model and is not normative. Use
+> [repository structure](repository-structure.md),
+> [package ownership](package-ownership.md),
+> [dependency rules](dependency-rules.md), and
+> [feature module structure](feature-module-structure.md).
+
+## Superseded package topology
+
+The previous workspace model split reusable business behavior into global
+technical packages:
 
 ```text
 packages/
@@ -16,28 +25,36 @@ packages/
 └── test-support/    # test-only shared fixtures
 ```
 
-Dependency direction:
+Its dependency direction was:
 
 ```text
 React feature hooks
-        ↓
+        |
+        v
 @emme/application
-        ↓
+        |
+        v
 @emme/domain + application ports
-        ↑
+        ^
+        |
 @emme/api adapters
-        ↓
+        |
+        v
 @emme/infrastructure
-        ↓
+        |
+        v
 Backend API
 ```
 
-`@emme/domain` never imports React, API DTOs, HTTP, storage, Apollo, or browser
-APIs. `@emme/application` never creates concrete dependencies; it receives
-repository and service ports. `@emme/api` maps transport payloads and defines
-the HTTP port. `@emme/infrastructure` implements concrete HTTP and browser
-behavior. Apps wire these pieces in `AppProviders.tsx`.
+## Canonical replacement
 
-The active app is `apps/emme-salon-app`, the tenant-owner/staff application.
-`platform-admin-app` and `client-app` remain future shells until their product
-requirements are implemented.
+The target has eight different boundaries: `@emme/kernel`, `@emme/ui`,
+`@emme/core`, `@emme/i18n`, `@emme/api`, `@emme/infrastructure`,
+`@emme/features`, and `@emme/test-support`. Domain rules, use cases, ports,
+business validation, feature transport mapping, feature adapters, reusable
+presentation, translations, and tests are colocated inside each vertical
+feature. Existing global business packages are migration sources only.
+
+The active physical app remains `apps/emme-salon-app`; `client-app` and
+`platform-admin-app` are target composition roots implemented by their
+portfolio plans.
