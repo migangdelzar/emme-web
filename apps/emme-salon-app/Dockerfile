@@ -10,9 +10,13 @@ SHELL ["/bin/sh", "-c"]
 COPY package.json bun.lock ./
 COPY apps/emme-salon-app/package.json ./apps/emme-salon-app/
 COPY e2e/src/package.json ./e2e/src/
-COPY packages/api-client/package.json ./packages/api-client/
-COPY packages/contracts/package.json ./packages/contracts/
+COPY packages/api/package.json ./packages/api/
+COPY packages/application/package.json ./packages/application/
+COPY packages/core/package.json ./packages/core/
+COPY packages/domain/package.json ./packages/domain/
+COPY packages/infrastructure/package.json ./packages/infrastructure/
 COPY packages/i18n/package.json ./packages/i18n/
+COPY packages/test-support/package.json ./packages/test-support/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/validation/package.json ./packages/validation/
 

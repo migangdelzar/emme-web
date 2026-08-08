@@ -6,8 +6,11 @@
 | ------------------------- | --------------------- |
 | Root scripts and lockfile | Repository root       |
 | Application composition   | `apps/emme-salon-app` |
-| HTTP transport            | `packages/api-client` |
-| Typed boundary models     | `packages/contracts`  |
+| Typed backend boundary    | `packages/api`        |
+| HTTP and browser adapters | `packages/infrastructure` |
+| Business rules            | `packages/domain`     |
+| Application use cases     | `packages/application` |
+| Runtime providers         | `packages/core`       |
 | Reusable UI               | `packages/ui`         |
 | Validation                | `packages/validation` |
 | Browser journeys          | `e2e/src`             |

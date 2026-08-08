@@ -98,9 +98,8 @@ compile without imports from the old package names.
 - [x] Add `@emme/application` with the first use cases for clients, services,
       and appointments; inject repository ports rather than creating API
       clients internally.
-- [ ] Add `@emme/test-support` for shared fakes/factories only when a second
-      consumer needs them.
-- [ ] Keep `@emme/ui`, `@emme/i18n`, and `@emme/validation` stable; schemas that
+- [x] Add `@emme/test-support` for shared fakes/factories used by package tests.
+- [x] Keep `@emme/ui`, `@emme/i18n`, and `@emme/validation` stable; schemas that
       are feature-only remain with their feature.
 
 Acceptance: each new package has a public root barrel, strict typechecking,
@@ -112,7 +111,7 @@ focused tests for exported behavior, and no circular workspace dependency.
 - [x] Add `src/app/router.tsx` and preserve HashRouter paths.
 - [x] Add `src/app/layouts/AppLayout.tsx` and app-owned error boundaries.
 - [x] Make `main.tsx` a thin bootstrap.
-- [ ] Keep signed-out, tenant-required, and ready states behaviorally equal.
+- [x] Keep signed-out, tenant-required, and ready states behaviorally equal.
 
 Acceptance: existing auth and navigation E2E flows remain green and there is
 one provider composition root and one route tree.
@@ -124,9 +123,9 @@ one provider composition root and one route tree.
       `@emme/application` and `@emme/domain`.
 - [x] Migrate services using the same tested boundary.
 - [x] Migrate appointments and scheduling helpers, preserving status behavior.
-- [ ] Migrate remaining tenant-only features only where a boundary earns its
+- [x] Migrate remaining tenant-only features only where a boundary earns its
       complexity; do not create empty enterprise folders.
-- [ ] Remove `AppContext`, global API hooks, and transitional provider paths
+- [x] Remove `AppContext`, global API hooks, and transitional provider paths
       only after import scans and focused tests prove they are unused.
 
 Acceptance: no migrated feature performs raw HTTP or imports legacy context/API
@@ -134,12 +133,12 @@ hooks; TanStack Query remains the only remote-data source of truth.
 
 ### Phase 4 — Verification and future app readiness
 
-- [ ] Add route/provider/feature boundary tests and preserve E2E coverage.
+- [x] Add route/provider/feature boundary tests and preserve E2E coverage.
 - [ ] Add minimal application shells for `platform-admin-app` and `client-app`
       only when their requirements exist; do not invent product behavior.
-- [ ] Run docs, format, typecheck, lint, unit, build, security, and mock E2E
+- [x] Run docs, format, typecheck, lint, unit, build, security, and mock E2E
       gates.
-- [ ] Update architecture docs and add an ADR for package ownership.
+- [x] Update architecture docs and add an ADR for package ownership.
 
 ## Execution checkpoints
 
@@ -153,18 +152,18 @@ may leave the workspace uncompilable.
 |---|---|---|
 | Package rename breaks hidden consumers | High | Update all workspace references and use repository-wide import scans |
 | API/infrastructure circular dependency | High | Keep ports in `@emme/api`; infrastructure implements them |
-| AppContext removal changes observable behavior | High | Migrate one vertical slice and retain compatibility until consumers are gone |
+| Profile/context extraction changes observable behavior | High | Migrate one vertical slice at a time and retain focused provider tests |
 | Library extraction duplicates domain models | Medium | Map at explicit boundaries and keep backend contracts canonical |
 | Tooling migration expands scope | Medium | Keep Bun; defer pnpm/Turbo |
 | Empty abstraction folders accumulate | Low | Add folders only with behavior and tests |
 
 ## Definition of done
 
-- [ ] Target package boundaries are present and documented.
+- [x] Target package boundaries are present and documented.
 - [x] Old `@emme/contracts` and `@emme/api-client` imports are removed from
       active source and workspace manifests; historical plan records retain
       their original names for auditability.
-- [ ] Current tenant routes and E2E flows remain compatible.
-- [ ] Every migrated behavior has tests written before implementation changes.
-- [ ] Workspace verification passes or pre-existing failures are documented.
-- [ ] All changes are committed and pushed on the feature branch.
+- [x] Current tenant routes and E2E flows remain compatible.
+- [x] Every migrated behavior has tests written before implementation changes.
+- [x] Workspace verification passes or pre-existing warnings are documented.
+- [x] All changes are committed and pushed on the feature branch.

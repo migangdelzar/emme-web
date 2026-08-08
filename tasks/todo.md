@@ -16,10 +16,10 @@ preserving the current tenant app behavior and package-level compatibility.
 - [x] Add tested `@emme/core` foundation modules.
 - [x] Add tested `@emme/domain` rules and models.
 - [x] Add tested `@emme/application` use cases and ports.
-- [ ] Add `@emme/test-support` only for shared test fixtures that earn extraction.
+- [x] Add `@emme/test-support` for shared test fixtures and factories.
 - [x] Migrate the tenant app composition root.
 - [x] Migrate clients, services, and appointments incrementally.
-- [ ] Run focused and full verification; document unrelated baseline failures.
+- [x] Run focused and full verification; document unrelated lint warnings.
 
 ### Working notes
 
@@ -357,14 +357,14 @@ preserving current routes, API contracts, visual behavior, and browser flows.
 
 ### Acceptance criteria
 
-- [ ] App providers, routing, layouts, and error boundaries have explicit app
+- [x] App providers, routing, layouts, and error boundaries have explicit app
       shell ownership.
-- [ ] Clients, services, and appointments own their query hooks, API adapters,
+- [x] Clients, services, and appointments own their query hooks, API adapters,
       application services, types, and focused UI boundaries.
-- [ ] TanStack Query remains the only remote-data source of truth.
-- [ ] `AppContext`, duplicate API hook paths, and `DataProvider` are removed
+- [x] TanStack Query remains the only remote-data source of truth.
+- [x] `AppContext`, duplicate API hook paths, and `DataProvider` are removed
       only after all consumers are migrated.
-- [ ] Existing mock E2E flows, tests, typecheck, lint, and build remain green.
+- [x] Existing mock E2E flows, tests, typecheck, lint, and build remain green.
 
 ### Working notes
 
@@ -378,15 +378,15 @@ preserving current routes, API contracts, visual behavior, and browser flows.
       feature API modules must delegate to those factories instead of creating
       duplicate DTOs or endpoint clients. `@emme/api-client` remains transport
       only.
-- Implementation is paused for plan review. The approved target is a
-      capability-folder convention in the libraries, with `clients/api.ts`
-      rather than `client-api.ts`, plus colocated tests and root-barrel exports.
+- Implementation is complete for the current tenant-owner/staff application.
+  Future platform-admin and client/customer shells remain intentionally
+  unimplemented until their product requirements exist.
 
 ### Checklist
 
-- [ ] Confirm delivery branch and first vertical slice.
-- [ ] Complete Phase 1 app-shell foundation.
-- [ ] Complete Phase 2 clients vertical slice.
-- [ ] Complete Phase 3 services and appointments slices.
+- [x] Confirm delivery branch and first vertical slice.
+- [x] Complete Phase 1 app-shell foundation.
+- [x] Complete Phase 2 clients vertical slice.
+- [x] Complete Phase 3 services and appointments slices.
 - [ ] Complete Phase 4 infrastructure and client-state cleanup.
 - [ ] Run final verification matrix and record results.

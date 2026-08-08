@@ -64,11 +64,15 @@ browser configuration. Never put private provider keys in `VITE_*` variables.
 
 ```text
 apps/emme-salon-app/  Main React/Vite/PWA application
-packages/api-client/  HTTP transport and client boundary
-packages/contracts/   Typed API/domain transport contracts
+packages/infrastructure/ Concrete HTTP, auth, storage, and external adapters
+packages/api/          Typed backend contracts and API boundary
+packages/core/         Auth, tenancy, permissions, and runtime providers
+packages/domain/       Pure business rules and models
+packages/application/  Use cases and application ports
 packages/i18n/        Locale catalogs and translation helpers
 packages/ui/          Reusable presentational primitives
 packages/validation/  Shared boundary validation
+packages/test-support/ Shared test fixtures and factories
 e2e/src/              Playwright journeys and test providers
 docs/                 Frontend and integration architecture
 ```
