@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hasPermission } from "./permissions.js";
+import { can, hasPermission } from "./permissions.js";
 
 describe("hasPermission", () => {
   it("returns true when the permission is granted", () => {
@@ -9,5 +9,9 @@ describe("hasPermission", () => {
 
   it("returns false when the permission is missing", () => {
     expect(hasPermission(["clients:read"], "clients:delete")).toBe(false);
+  });
+
+  it("provides the application-facing can alias", () => {
+    expect(can(["clients:read"], "clients:read")).toBe(true);
   });
 });
