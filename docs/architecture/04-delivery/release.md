@@ -1,25 +1,5 @@
-# Web Release
+# Release
 
-## Release flow
+Release artifacts identify immutable source revision, lockfile, build output/image digest, target environment, and service contract compatibility. Applications may release independently only while contracts remain compatible; breaking contracts require a coordinated compatibility window and migration.
 
-```mermaid
-flowchart TD
-    Commit["Web commit"] --> Verify["Typecheck + lint + tests + build"]
-    Verify --> Image["Build and scan image"]
-    Image --> Sign["Sign / attest"]
-    Sign --> Promote["Promote immutable digest"]
-    Promote --> Smoke["Browser + health smoke"]
-    Smoke -->|pass| Release
-    Smoke -->|fail| Rollback["Redeploy previous digest"]
-    Rollback --> Incident["Record incident evidence"]
-```
-
-## Rules
-
-- Record web commit, image digest, service compatibility window, and target.
-- Promote the same immutable digest between environments.
-- Do not use `latest` as production release evidence.
-- Validate cache invalidation and service-worker upgrade behavior.
-- Rollback means redeploying a known-good digest; it does not undo backend data
-  migrations.
-- Breaking service contracts require coordinated release evidence.
+Promotion requires all [quality gates](quality-gates.md), protected environment approval where configured, smoke evidence, telemetry readiness, and a rollback target. Release notes state user-facing changes, migration requirements, and known bounded risks.

@@ -1,62 +1,17 @@
 # EMME Web Architecture Handbook
 
-This handbook is the web repository's normative guide. It describes the React
-application shell, frontend capabilities, typed service boundary, browser tests,
-static image delivery, and operational evidence.
-
-The backend repository owns business truth and canonical HTTP/event contracts:
-[emme-service architecture](https://github.com/migangdelzar/emme-service/tree/main/docs/architecture).
-
-## The two-repository model
-
-```mermaid
-flowchart LR
-    User --> Web["emme-web\nReact + Vite / Nginx"]
-    Web -->|typed /api contract| Service["emme-service\nSpring Modulith"]
-    Service --> Data[(PostgreSQL / Redis)]
-    Web --> Telemetry["Browser + frontend telemetry"]
-    Service --> ServiceTelemetry["Backend telemetry"]
-```
-
-The repositories release independently when contracts remain compatible. A
-breaking contract requires a coordinated compatibility window and migration.
+This handbook is the normative target architecture for the EMME Bun workspace.
+It implements [Plan 01](../superpowers/plans/2026-08-08-01-workspace-and-architecture-handbook.md) from the approved [complete monorepo design](../superpowers/specs/2026-08-08-complete-monorepo-architecture-and-plan-portfolio-design.md). Existing migration documents remain historical evidence; this handbook governs future business-code ownership.
 
 ## Handbook map
 
-| Area                                                     | Contents                                                               |
-| -------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [00 — Project](00-project/architecture-model.md)         | Frontend lens, Bun workspace, and documentation ownership              |
-| [02 — Frontend](02-frontend/app.md)                      | App shell, modules, features, React, Vite, state, i18n, testing        |
-| [03 — Integration](03-integration/frontend-backend.md)   | Typed HTTP boundary, contract consumption, E2E topology, compatibility |
-| [04 — Delivery](04-delivery/container.md)                | Web image, CI, release promotion, and secret boundaries               |
-| [05 — Operations](05-operations/production-readiness.md) | Browser reliability, telemetry, and approval evidence                  |
+| Area | Pages |
+| --- | --- |
+| Project | [Repository structure](00-project/repository-structure.md), [package ownership](00-project/package-ownership.md), [dependency rules](00-project/dependency-rules.md), [naming](00-project/naming-conventions.md), [feature modules](00-project/feature-module-structure.md), [app shells](00-project/app-shell-structure.md), [testing architecture](00-project/testing-architecture.md), [web/native UI](00-project/web-native-ui-boundary.md), [documentation and decisions](00-project/documentation-and-decisions.md) |
+| Runtime | [Auth and tenancy](01-runtime/auth-and-tenancy.md), [permissions](01-runtime/permissions.md), [configuration](01-runtime/configuration.md), [error handling](01-runtime/error-handling.md) |
+| Frontend | [App](02-frontend/app.md), [feature](02-frontend/feature.md), [module](02-frontend/module.md), [state management](02-frontend/state-management.md), [i18n](02-frontend/i18n.md), [React](02-frontend/react.md), [testing](02-frontend/testing.md), [Vite](02-frontend/vite.md) |
+| Integration | [Contracts](03-integration/contracts.md), [API and infrastructure](03-integration/api-and-infrastructure.md), [feature adapters](03-integration/feature-adapters.md), [end-to-end](03-integration/end-to-end.md) |
+| Delivery | [CI](04-delivery/ci.md), [release](04-delivery/release.md), [quality gates](04-delivery/quality-gates.md) |
+| Operations | [Observability](05-operations/observability.md), [security](05-operations/security.md), [reliability](05-operations/reliability.md) |
 
-## Normative policy links
-
-- [Web principles](../principles.md)
-- [Web security](../security.md)
-- [Web testing](../testing.md)
-- [Git and review](../git.md)
-- [Frontend code splitting](../code-splitting.md)
-- [Frontend feature template](../templates/frontend-feature-template.md)
-- [Secrets and configuration boundary](04-delivery/secrets.md)
-
-## Architecture lenses
-
-- Frontend capability organization groups code by user outcome and ownership.
-- Hexagonal thinking protects domain/application boundaries and the runtime
-  infrastructure boundary from UI code.
-- The service's DDD model is consumed through contracts; it is not copied into
-  browser packages.
-- Build behavior is expressed by Bun workspace scripts and CI capabilities, not
-  by a backend Gradle package tree.
-
-## Definition of done
-
-- [ ] Feature ownership and dependency direction are explicit.
-- [ ] Loading, empty, error, offline, and authorization states are defined.
-- [ ] API contract and runtime configuration are typed and validated.
-- [ ] Unit/component and applicable browser evidence exist.
-- [ ] Accessibility and security checks pass.
-- [ ] Image, CI, deployment, and rollback evidence are available.
-- [ ] No credentials, tokens, HAR recordings, or local paths are committed.
+The implementation sequence and rule ownership are indexed in the [complete monorepo plan portfolio](../superpowers/plans/2026-08-08-00-complete-monorepo-index.md).

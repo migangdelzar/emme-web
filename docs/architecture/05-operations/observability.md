@@ -1,25 +1,5 @@
-# Frontend Observability
+# Observability
 
-## Signals
+`@emme/infrastructure` owns telemetry adapters; `@emme/core` owns normalized presentation-error context; apps configure providers; features emit only documented user-outcome signals. Telemetry records error category, route/workflow, client version, and safe correlation data without secrets, tokens, message content, or unnecessary personal data.
 
-- route and feature load timing;
-- API request outcome and bounded latency by endpoint category;
-- JavaScript error and unhandled rejection rate;
-- Web Vitals where they inform a user-facing objective;
-- PWA update, offline-shell, and service-worker failures;
-- authentication/session-expiry and authorization-denial outcomes.
-
-## Privacy rules
-
-- Never send tokens, cookies, health answers, payment data, or free-form user
-  input to telemetry.
-- Use correlation IDs supplied by the service; do not encode customer identity in
-  metric labels.
-- Capture URL path templates, not query strings containing sensitive data.
-- Error reports MUST identify the feature and release without shipping secrets.
-
-## Verification
-
-- [ ] A failed API journey has a correlation ID and actionable browser evidence.
-- [ ] Sensitive browser state is absent from logs and telemetry.
-- [ ] Release/version metadata is visible in diagnostics.
+Observe startup/configuration failure, session/tenant transition, contract error, unavailable/retry exhaustion, and error-boundary fallback. Tests verify event shape and redaction; operational review verifies dashboards and alert ownership.
