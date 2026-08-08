@@ -102,7 +102,7 @@ authorization are resolved and enforced by the backend.
 |---|---|---|
 | `@emme/ui` | Generic visual components, accessibility behavior, design tokens, and generic UI hooks | React and visual/accessibility libraries |
 | `@emme/validation` | Shared Zod schemas, schema helpers, common validation errors, and reusable boundary validation | Zod |
-| `@emme/i18n` | Translation provider, typed catalogs, locale selection, date/time/currency formatting, and pluralization | React and formatting libraries |
+| `@emme/i18n` | Translation provider, typed catalogs, locale selection, locale-aware presentation formatting, and pluralization | React and formatting libraries |
 | `@emme/test-support` | Test providers, fakes, factories, fixtures, handlers, and reusable test setup | Test libraries and selected workspace packages as development dependencies |
 | `@emme/domain` | Pure business models, entities, value objects, statuses, rules, and invariants | No workspace dependencies |
 | `@emme/application` | Framework-independent use cases, orchestration, and outbound ports | `@emme/domain` |
@@ -120,7 +120,7 @@ library may import an application's internal files.
 ```text
 @emme/ui              → React and visual dependencies
 @emme/validation      → Zod and shared validation types
-@emme/i18n            → locale data, provider, and formatters
+@emme/i18n            → locale data, provider, presentation formatters, and localized messages
 @emme/test-support    → test-only adapters and fixtures
 
 @emme/domain          → no workspace dependencies
@@ -223,15 +223,81 @@ packages/i18n/src/
 ├── use-translation.ts
 ├── locale-context.tsx
 ├── formatters/
-│   ├── format-date.ts
-│   ├── format-time.ts
-│   ├── format-currency.ts
-│   └── format-number.ts
+│   ├── date/
+│   │   ├── format-date.ts
+│   │   ├── format-time.ts
+│   │   ├── format-relative-time.ts
+│   │   └── index.ts
+│   ├── number/
+│   │   ├── format-number.ts
+│   │   ├── format-currency.ts
+│   │   └── index.ts
+│   ├── messages/
+│   │   ├── format-validation-message.ts
+│   │   └── index.ts
+│   ├── formatters.types.ts
+│   └── index.ts
 ├── locales/
 ├── data/
+├── testing/
+│   └── i18n-test-provider.tsx
 └── index.ts
 ```
 
+`@emme/i18n` owns locale-aware presentation concerns: translation lookup,
+pluralization, date and time display, relative time, numbers, currencies, and
+localized validation messages. The formatter API accepts an explicit
+`FormatContext` containing the locale and optional time zone or currency, so
+formatting remains deterministic in tests and does not silently read browser
+globals.
+
+The shared formatter contract is intentionally small and framework-independent:
+
+```ts
+export interface FormatContext {
+  locale: string;
+  timeZone?: string;
+  currency?: string;
+}
+
+export function formatDate(
+  value: Date | string | number,
+  context: FormatContext,
+  options?: Intl.DateTimeFormatOptions,
+): string;
+
+export function formatCurrency(
+  value: number,
+  context: FormatContext,
+  options?: Intl.NumberFormatOptions,
+): string;
+```
+
+The concrete formatter functions may add capability-specific options, but they
+must preserve explicit locale and time-zone inputs. React hooks are thin
+adapters over these functions, not a second formatting implementation.
+
+The package may also expose provider-backed hooks for normal UI usage. The
+provider supplies the current locale and display defaults; callers may still
+override them for a specific value. Formatter modules are grouped by concern
+so date/time and number/currency behavior can grow without creating a flat
+directory of unrelated helpers.
+
+The boundaries are deliberate:
+
+- `@emme/i18n` formats values for people; it does not decide what a value
+  means in the business domain.
+- `@emme/domain` owns business calculations and rules such as appointment
+  duration, availability, cancellation windows, and service eligibility.
+- `@emme/infrastructure` or `@emme/core` detects browser locale/time zone and
+  supplies those runtime values to the i18n provider; i18n does not read
+  `navigator`, `Intl.DateTimeFormat().resolvedOptions()`, storage, or APIs.
+- `@emme/validation` and feature schemas own structural validation. i18n owns
+  the localized message catalog and presentation of validation issues.
+
+The existing JSON catalogs under `data/translations/` remain the migration
+source of truth. If catalogs become too large, they can be split into the
+typed `locales/` modules shown above without changing formatter consumers.
 Tenant time zone, currency, and locale are runtime values. They do not create
 tenant-specific frontend branches.
 
@@ -571,7 +637,9 @@ Package test responsibilities:
 
 - `ui`: interaction, accessibility, keyboard, loading, and disabled states.
 - `validation`: schema acceptance/rejection and error mapping.
-- `i18n`: key parity, fallback, locale, time-zone, and currency behavior.
+- `i18n`: key parity, fallback, locale, time-zone, currency, number, relative
+  time, and localized validation-message behavior. Formatter tests pass an
+  explicit context and do not depend on the host machine's locale.
 - `domain`: deterministic business rules and edge cases.
 - `application`: use cases with fake ports.
 - `api`: request paths, payloads, DTO parsing, and error mapping.
