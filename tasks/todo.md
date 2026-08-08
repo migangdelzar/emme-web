@@ -491,3 +491,24 @@ preserving current routes, API contracts, visual behavior, and browser flows.
 - [x] Complete Phase 3 services and appointments slices.
 - [ ] Complete Phase 4 infrastructure and client-state cleanup.
 - [ ] Run final verification matrix and record results.
+
+## Modular package architecture migration — 2026-08-08
+
+### Results
+
+- [x] Added and wired `@emme/ui`, `@emme/validation`, `@emme/i18n`,
+      `@emme/test-support`, `@emme/domain`, `@emme/application`, `@emme/api`,
+      `@emme/infrastructure`, `@emme/core`, and `@emme/features`.
+- [x] Consolidated extracted API contracts under `packages/api/src/contracts`
+      and removed runtime `api-client`/`client-api` naming.
+- [x] Migrated salon feature API hooks to the injected `@emme/core` API context;
+      only the app composition root owns the concrete HTTP transport.
+- [x] Replaced the salon rendering path's `react-i18next` runtime with the
+      shared `@emme/i18n` provider and deterministic E2E locale configuration.
+- [x] Verified docs, i18n parity, formatting, typecheck, unit tests, package
+      builds, security audit, and the salon production build.
+- [x] Mock E2E locale/auth/dashboard failures were resolved by configuring the
+      browser locale to `es-MX`, matching the typed E2E catalog.
+- [ ] One existing client-wizard E2E flow still reports its visible footer
+      button outside the viewport; this is an app dialog layout issue isolated
+      from the package migration and belongs in the UI/E2E follow-up.
