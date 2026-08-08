@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/restClient';
 import { createClientApi, type Client as ContractClient } from '@emme/api';
+import { createClient } from '@emme/application';
+import { createClientRepository } from '@emme/infrastructure';
 import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
 
 export interface Customer {
@@ -21,6 +23,8 @@ interface CustomerListResponse {
 }
 
 const customersContract = createClientApi(api);
+const clientRepository = createClientRepository(api);
+const createClientUseCase = createClient({ clients: clientRepository });
 
 function mapContractCustomer(raw: ContractClient): Customer {
   return raw;
@@ -62,7 +66,16 @@ export function useCreateCustomer() {
       {
         key: 'customers',
         mutationFn: (input: CreateCustomerInput) =>
-          customersContract.create({ ...input, phone: input.phone ?? '' }),
+          createClientUseCase({
+            name: input.name,
+            phone: input.phone ?? '',
+            email: input.email ?? undefined,
+            notes: input.notes ?? undefined,
+            allergies: input.allergies ?? undefined,
+            preferences: input.preferences ?? undefined,
+            isVip: input.isVip,
+            birthday: input.birthday ?? undefined,
+          }),
       },
       queryClient
     )

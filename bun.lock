@@ -21,6 +21,8 @@
         "@dnd-kit/core": "^6.3.1",
         "@dnd-kit/modifiers": "^9.0.0",
         "@emme/api": "workspace:*",
+        "@emme/application": "workspace:*",
+        "@emme/domain": "workspace:*",
         "@emme/i18n": "workspace:*",
         "@emme/infrastructure": "workspace:*",
         "@fontsource-variable/geist": "^5.2.8",
@@ -146,6 +148,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@emme/api": "workspace:*",
+        "@emme/application": "workspace:*",
       },
       "devDependencies": {
         "typescript": "^5.8.0",

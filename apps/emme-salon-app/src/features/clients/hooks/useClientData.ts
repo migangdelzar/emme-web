@@ -5,8 +5,8 @@ import {
   useUpdateCustomer,
   useDeleteCustomer,
   type Customer,
-} from '@/api/hooks/useCustomers';
-import type { Client } from '@/context/AppContext';
+} from '@/features/clients/api/clients.queries';
+import type { Client } from '@emme/domain';
 
 function mapClientView(raw: Customer): Client {
   return {

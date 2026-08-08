@@ -16,7 +16,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@emme/api": "workspace:*"
+    "@emme/api": "workspace:*",
+    "@emme/application": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

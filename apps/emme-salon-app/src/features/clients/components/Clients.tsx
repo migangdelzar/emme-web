@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
-import { useApp, Appointment, Service } from '@/context/AppContext';
+import { useApp } from '@/context/AppContext';
+import type { Appointment, Service } from '@emme/api';
 import { useClientData } from '@/features/clients/hooks/useClientData';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';

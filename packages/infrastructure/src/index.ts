@@ -12,3 +12,4 @@ export type {
 } from "./http/fetch-http-client.js";
 export { createApiClient, createHttpClient } from "./http/fetch-http-client.js";
 export { ApiHttpError, type ApiProblem } from "./http/api-error.js";
+export { createClientRepository } from "./api/client-repository.adapter.js";

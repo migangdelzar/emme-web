@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AppProvider, useApp } from './AppContext';
 import { AuthContext, type AuthContextValue } from '@/app/auth/useAuth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const authContext: AuthContextValue = {
   status: 'signedOut',
@@ -17,10 +18,16 @@ const authContext: AuthContextValue = {
 };
 
 function AppContextTestProviders({ children }: { children: ReactNode }) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
   return (
-    <AuthContext.Provider value={authContext}>
-      <AppProvider>{children}</AppProvider>
-    </AuthContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={authContext}>
+        <AppProvider>{children}</AppProvider>
+      </AuthContext.Provider>
+    </QueryClientProvider>
   );
 }
 
