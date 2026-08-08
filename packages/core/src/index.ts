@@ -14,3 +14,4 @@ export type { AuthActions, AuthContextValue, AuthState, AuthStatus } from "./aut
 export { AuthContext } from "./auth/auth-context.js";
 export { AuthProvider, type AuthProviderProps } from "./auth/auth-provider.js";
 export { useAuth } from "./auth/use-auth.js";
+export { ApplicationError, AuthorizationError, type ErrorCode } from './errors/index.js';
