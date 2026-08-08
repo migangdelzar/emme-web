@@ -47,6 +47,7 @@ bun run --filter @emme/i18n validate
 - `packages/i18n/package.json`
 - `packages/i18n/tsconfig.json`
 - `bun.lock`
+- `e2e/src/tsconfig.json`
 
 ## Self-review
 
@@ -58,6 +59,8 @@ bun run --filter @emme/i18n validate
   no i18n runtime dependency was added.
 - Public exports include the provider, context, hook, lookup factory, and
   associated types. React is declared as a runtime peer; React DOM is test-only.
+- The E2E TypeScript project resolves `@emme/i18n` directly to source, so it
+  also enables JSX module resolution for the new public `.tsx` modules.
 
 ## Concerns
 
