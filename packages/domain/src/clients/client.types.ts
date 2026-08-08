@@ -9,3 +9,6 @@ export interface Client {
   preferences?: string;
   allergies?: string;
 }
+
+export type CreateClientInput = Omit<Client, 'id'>;
+export type UpdateClientInput = Partial<Omit<Client, 'id'>>;
