@@ -80,6 +80,32 @@ modules, validated i18n resources, and reproducible quality gates.
 
 ## Working notes
 
+## Task 7 — @emme/i18n typed provider boundary
+
+### Goal
+
+Implement Task 1 from `.superpowers/sdd/task-7-brief.md`: expose a typed React
+provider, locale context, and translation hook over the existing catalogs.
+
+### Acceptance criteria
+
+- [x] Typed lookup resolves the active locale, then the configured fallback.
+- [x] A missing translation returns its key.
+- [x] Provider configuration is observable through the hook.
+- [x] Public contracts are exported and package tests/typecheck pass.
+
+### Execution checklist
+
+- [x] Read task brief, current catalogs, existing lookup API, architecture plan, and lessons.
+- [x] Write focused failing boundary tests.
+- [x] Implement the minimum provider/context/hook boundary.
+- [x] Run focused and package verification; self-review the diff.
+- [x] Write the Task 7 report, commit the scoped changes, and push the current branch.
+
+### Working notes
+
+- The package must not add an i18n runtime dependency. React is the required rendering primitive for this provider boundary.
+
 ## Task 3 — @emme/ui salon consumer migration
 
 ### Goal

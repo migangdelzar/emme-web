@@ -4,8 +4,9 @@ import esMX from './data/translations/es-MX.json' with { type: 'json' };
 
 export type Locale = 'en-US' | 'es-MX';
 export type TranslationCatalog = typeof enUS;
+export type TranslationCatalogs = Record<Locale, TranslationCatalog>;
 
-export const translations: Record<Locale, TranslationCatalog> = {
+export const translations: TranslationCatalogs = {
   'en-US': enUS,
   'es-MX': esMX,
 };
@@ -52,6 +53,30 @@ export function t(key: TranslationKey, locale: Locale = 'es-MX'): string {
   return typeof value === 'string' ? value : key;
 }
 
+export interface TranslationLookupOptions {
+  readonly catalogs?: TranslationCatalogs;
+  readonly fallbackLocale?: Locale;
+  readonly locale: Locale;
+}
+
+/**
+ * Creates a typed translation lookup that resolves the active locale first,
+ * then its configured fallback, and finally returns the key when unavailable.
+ */
+export function createTranslationLookup({
+  catalogs = translations,
+  fallbackLocale = 'es-MX',
+  locale,
+}: TranslationLookupOptions): (key: TranslationKey) => string {
+  return (key) => {
+    const activeValue = readPath(catalogs[locale], key);
+    if (typeof activeValue === 'string') return activeValue;
+
+    const fallbackValue = readPath(catalogs[fallbackLocale], key);
+    return typeof fallbackValue === 'string' ? fallbackValue : key;
+  };
+}
+
 export function tid(key: ElementKey): string {
   const value = readPath(els, key);
   return typeof value === 'string'
@@ -87,3 +112,7 @@ export function findTestId(i18nKey: string): string | undefined {
   }
   return search(els);
 }
+
+export { I18nProvider, type I18nProviderProps } from './i18n-provider';
+export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context';
+export { useTranslation } from './use-translation';
