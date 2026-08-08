@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Draft — design approved in brainstorming; pending written-spec review |
+| Status | Approved — corrected to preserve the canonical detailed structure |
 | Date | 2026-08-08 |
 | Branch | `feat/api-version-contract` |
 | Repository | `emme-web` |
@@ -115,6 +115,105 @@ emme-web/
 The physical salon application remains `apps/emme-salon-app` and its package
 name remains `@emme/emme-salon-app`. `salon-app` is the conceptual role name in
 architecture documents.
+
+The root tree is only the index. The architecture handbook must preserve the
+canonical detailed structures below rather than replacing them with summaries.
+Those structures are normative checklists for implementation and review.
+
+### Canonical package structures
+
+```text
+packages/kernel/src/
+├── result/{Result,Ok,Err,index}.ts
+├── errors/{DomainError,ValidationError,index}.ts
+├── types/{Brand,EntityId,Nullable}.ts
+├── time/{Clock,SystemClock,index}.ts
+└── index.ts
+
+packages/ui/src/
+├── primitives/{Button,Input,Textarea,Select,Checkbox,Radio,Switch,Badge,Avatar,Spinner}/
+├── layout/{Stack,Grid,Container,Page,SplitPane}/
+├── forms/{Form,FormField,FormLabel,FormError,FormActions}/
+├── data-display/{Table,DataGrid,EmptyState,StatCard,Pagination}/
+├── feedback/{Alert,Toast,Skeleton,ErrorState,LoadingState}/
+├── navigation/{Tabs,Breadcrumbs,Sidebar,Menu,Stepper}/
+├── overlays/{Modal,Drawer,ConfirmDialog,Popover}/
+├── date-time/{DatePicker,DateRangePicker,TimePicker,Calendar}/
+├── hooks/{useMediaQuery,useDisclosure,useControllableState}.ts
+├── theme/{tokens,colors,typography,spacing}.ts
+├── icons/
+├── styles/
+├── web/
+├── native/
+├── ui.types.ts
+└── index.ts
+
+packages/core/src/
+├── auth/{AuthProvider,AuthContext,useAuth,auth.types,index}.ts[x]
+├── tenant/{TenantProvider,TenantContext,useTenant,tenant.types,index}.ts[x]
+├── permissions/{PermissionProvider,useCan,PermissionGuard,permissions.types,index}.ts[x]
+├── configuration/{AppConfig,ModuleConfig,defineAppConfig,defineModule,index}.ts
+├── errors/{ErrorBoundary,ErrorProvider,normalizeError}.ts[x]
+├── feature-flags/{FeatureFlagProvider,useFeatureFlag,feature-flags.types}.ts[x]
+├── routing/
+├── logging/
+└── index.ts
+
+packages/i18n/src/
+├── setup/{createI18n,I18nProvider,language-detector}.ts[x]
+├── locales/{en,es}/{common,navigation,errors}.json
+├── formatters/{formatCurrency,formatDate,formatTime,formatPhone}.ts
+├── types/translation.types.ts
+└── index.ts
+
+packages/api/src/
+├── client/{ApiClient,ApiRequest,ApiResponse,index}.ts
+├── graphql/{generated/{graphql,schema-types,operations},scalars,pagination,graphql.types}.ts
+├── contracts/{ApiError,PageInfo,Cursor,index}.ts
+├── auth/{AuthToken,AuthSession}.ts
+├── tenant/TenantRequestContext.ts
+└── index.ts
+
+packages/infrastructure/src/
+├── apollo/{createApolloClient,cache,index}.ts
+├── apollo/links/{authLink,tenantLink,errorLink,retryLink}.ts
+├── auth/{AuthTokenStorage,AuthService,index}.ts
+├── tenant/{TenantResolver,TenantStorage,index}.ts
+├── storage/{LocalStorageAdapter,SecureStorageAdapter,index}.ts
+├── telemetry/{AnalyticsAdapter,ErrorTrackingAdapter,index}.ts
+└── index.ts
+```
+
+Each component directory uses `Component.tsx`, `Component.test.tsx`, optional
+`Component.types.ts`, and `index.ts`. The handbook must show the complete
+appointment module, including `domain/entities`, `domain/value-objects`,
+`domain/policies`, `domain/services`, `domain/errors`, application
+`commands/queries/ports/dto`, API `queries/mutations/fragments/mappers`,
+feature infrastructure, validation schemas, presentation components and view
+models, feature translations, and test fixtures.
+
+### Canonical app workflow structures
+
+The handbook must show the role-specific trees exactly as ownership examples:
+
+```text
+apps/emme-salon-app/src/features/appointments/{calendar,manage,availability}/
+apps/emme-salon-app/src/features/{catalog,customers,staff,settings,onboarding,analytics,integrations}/
+
+apps/client-app/src/features/
+├── booking/{BookAppointmentPage,ServiceSelectionStep,DateSelectionStep,TimeSelectionStep,BookingConfirmation,useBookingFlow,booking.schema}.tsx
+├── my-appointments/{MyAppointmentsPage,AppointmentDetailsPage,useMyAppointments,appointmentFilters.schema}.tsx
+└── cancellation/{CancelAppointmentDialog,useCancelOwnAppointment}.tsx
+
+apps/platform-admin-app/src/features/
+├── search/{PlatformAppointmentsPage,TenantAppointmentFilters,usePlatformAppointments}.tsx
+└── audit/{AppointmentAuditPage,AppointmentAuditTimeline,useAppointmentAudit}.tsx
+```
+
+Every app feature also documents `routes.tsx`, `navigation.ts`,
+`permissions.ts`, `module.ts`, and its composition-root registration. The
+handbook must include `defineAppConfig`/`defineModule` examples, dependency
+diagrams, validation-layer diagrams, and test-location checklists.
 
 ## 5. Package ownership
 

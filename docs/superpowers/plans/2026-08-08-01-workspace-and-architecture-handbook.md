@@ -15,6 +15,7 @@
 - Public imports use package and feature barrels.
 - No package imports an app or another app's internals.
 - Every boundary rule has a source-level test.
+- The handbook preserves the canonical detailed package trees, feature trees, app workflow trees, diagrams, and checklists from the approved architecture proposal; summary-only pages are insufficient.
 
 ## Files
 
@@ -24,10 +25,12 @@
 
 ### Task 1: Add architecture handbook structure
 
-- [ ] **Step 1:** Write `docs/architecture/README.md` with links to every handbook page and the plan index.
-- [ ] **Step 2:** Write `docs/architecture/00-project/repository-structure.md`, `package-ownership.md`, `dependency-rules.md`, `naming-conventions.md`, `feature-module-structure.md`, `app-shell-structure.md`, `testing-architecture.md`, `web-native-ui-boundary.md`, and `documentation-and-decisions.md` using the approved design as their source.
-- [ ] **Step 3:** Write runtime, frontend, integration, delivery, and operations pages with exact package ownership, data flow, errors, tests, and quality gates.
-- [ ] **Step 4:** Run `bun run docs:check`; expected result is zero Markdown validation errors.
+- [ ] **Step 1:** Write `docs/architecture/README.md` with links to every retained and new handbook page, an explicit historical/superseded label for legacy pages, the master plan index, and a canonical-structure checklist.
+- [ ] **Step 2:** Write the project pages with the exact root/package trees, package-specific trees for kernel/ui/core/i18n/api/infrastructure/features/test-support, naming tables, public-export rules, and a Mermaid dependency diagram.
+- [ ] **Step 3:** Write the feature pages with the complete appointments example (`domain`, `application`, `api`, `infrastructure`, `validation`, `presentation`, `i18n`, `test`) and app workflow trees for salon, client, and platform-admin modules.
+- [ ] **Step 4:** Write runtime, frontend, integration, delivery, and operations pages with `defineAppConfig`/`defineModule` examples, validation-layer diagrams, test-location checklists, error flows, and quality gates.
+- [ ] **Step 5:** Update or explicitly mark every retained page that conflicts with vertical ownership, including `docs/architecture/00-project/library-architecture.md`; the handbook must not leave competing normative guidance in place.
+- [ ] **Step 6:** Run `bun run docs:check`; expected result is zero Markdown validation errors, and run a link scan proving every handbook page is indexed.
 
 ### Task 2: Add machine-checkable dependency rules
 
