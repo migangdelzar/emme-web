@@ -74,3 +74,8 @@ export function findTestId(i18nKey: string): string | undefined {
 export { I18nProvider, type I18nProviderProps } from './i18n-provider.js';
 export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context.js';
 export { useTranslation } from './use-translation.js';
+
+export { formatDate, type DateFormatOptions } from './formatters/format-date.js';
+export { formatTime, type TimeFormatOptions } from './formatters/format-time.js';
+export { formatCurrency, type CurrencyFormatOptions } from './formatters/format-currency.js';
+export { formatNumber, type NumberFormatOptions } from './formatters/format-number.js';

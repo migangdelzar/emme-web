@@ -106,6 +106,30 @@ provider, locale context, and translation hook over the existing catalogs.
 
 - The package must not add an i18n runtime dependency. React is the required rendering primitive for this provider boundary.
 
+## Task 8 — @emme/i18n locale-aware formatters
+
+### Goal
+
+Implement Task 2 from `.superpowers/sdd/task-8-brief.md`: publish deterministic
+date, time, currency, and number presentation formatters without migrating any
+application consumers.
+
+### Execution checklist
+
+- [x] Confirm the current branch is `feat/api-version-contract`; inspect the task brief, provider/types, and existing formatting usage.
+- [x] Write colocated formatter tests and record the expected RED result.
+- [x] Implement the smallest public formatter API using NodeNext-safe `.js` imports.
+- [x] Run formatter/package tests and typecheck; self-review the diff.
+- [x] Write the Task 8 report, commit, and push the current branch.
+
+### Working notes
+
+- Formatter options own runtime locale, time zone, currency, and decimal precision; the package must not infer these from the browser or tenant configuration.
+- Invalid dates and invalid decimal configurations need deterministic outcomes covered by tests.
+- RED: `bun run --filter @emme/i18n test` failed with 6 formatter failures because the four
+  formatter exports were absent.
+- GREEN: package test completed with 3 files and 15 tests passing; package typecheck exited 0.
+
 ## Task 3 — @emme/ui salon consumer migration
 
 ### Goal
