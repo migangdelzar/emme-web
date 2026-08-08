@@ -25,12 +25,12 @@
 
 ### Task 1: Add architecture handbook structure
 
-- [ ] **Step 1:** Write `docs/architecture/README.md` with links to every retained and new handbook page, an explicit historical/superseded label for legacy pages, the master plan index, and a canonical-structure checklist.
-- [ ] **Step 2:** Write the project pages with the exact root/package trees, package-specific trees for kernel/ui/core/i18n/api/infrastructure/features/test-support, naming tables, public-export rules, and a Mermaid dependency diagram.
-- [ ] **Step 3:** Write the feature pages with the complete appointments example (`domain`, `application`, `api`, `infrastructure`, `validation`, `presentation`, `i18n`, `test`) and app workflow trees for salon, client, and platform-admin modules.
-- [ ] **Step 4:** Write runtime, frontend, integration, delivery, and operations pages with `defineAppConfig`/`defineModule` examples, validation-layer diagrams, test-location checklists, error flows, and quality gates.
-- [ ] **Step 5:** Update or explicitly mark every retained page that conflicts with vertical ownership, including `docs/architecture/00-project/library-architecture.md`; the handbook must not leave competing normative guidance in place.
-- [ ] **Step 6:** Run `bun run docs:check`; expected result is zero Markdown validation errors, and run a link scan proving every handbook page is indexed.
+- [x] **Step 1:** Write `docs/architecture/README.md` with links to every retained and new handbook page, an explicit historical/superseded label for legacy pages, the master plan index, and a canonical-structure checklist.
+- [x] **Step 2:** Write the project pages with the exact root/package trees, package-specific trees for kernel/ui/core/i18n/api/infrastructure/features/test-support, naming tables, public-export rules, and a Mermaid dependency diagram.
+- [x] **Step 3:** Write the feature pages with the complete appointments example (`domain`, `application`, `api`, `infrastructure`, `validation`, `presentation`, `i18n`, `test`) and app workflow trees for salon, client, and platform-admin modules.
+- [x] **Step 4:** Write runtime, frontend, integration, delivery, and operations pages with `defineAppConfig`/`defineModule` examples, validation-layer diagrams, test-location checklists, error flows, and quality gates.
+- [x] **Step 5:** Update or explicitly mark every retained page that conflicts with vertical ownership, including `docs/architecture/00-project/library-architecture.md`; the handbook must not leave competing normative guidance in place.
+- [x] **Step 6:** Run `bun run docs:check`; expected result is zero Markdown validation errors, and run a link scan proving every handbook page is indexed.
 
 ### Task 2: Add machine-checkable dependency rules
 
@@ -46,17 +46,17 @@ test('rejects imports from applications into packages', async () => {
 });
 ```
 
-- [ ] **Step 1:** Run `bunx vitest run scripts/validate-architecture.test.mjs`; expected result is FAIL because the validator does not exist.
-- [ ] **Step 2:** Implement `scripts/validate-architecture.mjs` to scan package source files and report package-to-app imports, `@/` aliases outside apps, UI business imports, and feature private-path imports.
-- [ ] **Step 3:** Run the focused test and `bun run typecheck`; expected result is PASS.
-- [ ] **Step 4:** Add `architecture:check` to the root `package.json` and include it in `quality`.
+- [x] **Step 1:** Run `bunx vitest run scripts/validate-architecture.test.mjs`; expected result is FAIL because the validator does not exist.
+- [x] **Step 2:** Implement `scripts/validate-architecture.mjs` to scan package source files and report package-to-app imports, `@/` aliases outside apps, UI business imports, and feature private-path imports.
+- [x] **Step 3:** Run the focused test and `bun run typecheck`; expected result is PASS.
+- [x] **Step 4:** Add `architecture:check` to the root `package.json` and include it in `quality`.
 
 ### Task 3: Normalize workspace exports and configs
 
-- [ ] **Step 1:** Add explicit `exports` entries for public package roots and feature subpaths.
-- [ ] **Step 2:** Add shared strict TypeScript, ESLint, Prettier, and Vite config files under `configs/` without changing Bun workspace behavior.
-- [ ] **Step 3:** Add boundary tests that import only public barrels and reject private paths.
-- [ ] **Step 4:** Run `bun run architecture:check`, `bun run typecheck`, and `bun run build`; expected result is PASS.
+- [x] **Step 1:** Add explicit `exports` entries for public package roots and feature subpaths.
+- [x] **Step 2:** Add shared strict TypeScript, ESLint, Prettier, and Vite config files under `configs/` without changing Bun workspace behavior.
+- [x] **Step 3:** Add boundary tests that import only public barrels and reject private paths.
+- [x] **Step 4:** Run `bun run architecture:check`, `bun run typecheck`, and `bun run build`; expected result is PASS.
 
 ### Task 4: Commit the governance slice
 
@@ -67,7 +67,7 @@ git commit -m "chore(architecture): enforce workspace boundaries and handbook"
 
 ## Definition of Done
 
-- [ ] Handbook pages exist and cross-link correctly.
-- [ ] Architecture checks run from the root.
-- [ ] Package exports and forbidden imports are enforced.
-- [ ] Existing app behavior remains unchanged.
+- [x] Handbook pages exist and cross-link correctly.
+- [x] Architecture checks run from the root.
+- [x] Package exports and forbidden imports are enforced.
+- [x] Existing app behavior remains unchanged.
