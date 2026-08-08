@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { els } from '@emme/i18n';
-import { useApp, type BusinessProfile } from '@/context/AppContext';
+import {
+  useBusinessProfileContext,
+  type BusinessProfile,
+} from '@/features/settings/context/BusinessProfileContext';
+import { useClientData } from '@/features/clients/hooks/useClientData';
+import { useAppointmentData } from '@/features/appointments/hooks/useAppointmentData';
 import { useSettingsData } from '@/features/settings/hooks/useSettingsData';
 import { useAuth } from '@/app/auth/useAuth';
 import { Button } from '@/shared/ui/button';
@@ -206,7 +211,9 @@ function WorkspaceContent() {
 
 export function Settings() {
   const { loading: settingsLoading, services } = useSettingsData();
-  const { profile, updateProfile, clients, appointments } = useApp();
+  const { profile, updateProfile } = useBusinessProfileContext();
+  const { clients } = useClientData();
+  const { appointments } = useAppointmentData();
   const { logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [formData, setFormData] = useState<SettingsBusinessProfile>(profile);

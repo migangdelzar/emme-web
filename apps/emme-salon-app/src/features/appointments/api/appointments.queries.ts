@@ -28,6 +28,8 @@ export interface CreateAppointmentInput {
   artistId?: string;
   startTime: string;
   endTime: string;
+  status?: ContractAppointment['status'];
+  notes?: string;
 }
 
 const appointmentsContract = createAppointmentApi(api);
@@ -73,7 +75,8 @@ export function useCreateAppointmentRest() {
             date,
             startTime: startTimeWithSeconds?.slice(0, 5) ?? input.startTime,
             endTime: endTimeWithSeconds?.slice(0, 5) ?? input.endTime,
-            status: 'pending',
+            status: input.status ?? 'pending',
+            notes: input.notes,
           });
         },
       },

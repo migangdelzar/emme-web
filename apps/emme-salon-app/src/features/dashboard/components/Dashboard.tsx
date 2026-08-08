@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { els } from '@emme/i18n';
-import { useApp } from '@/context/AppContext';
+import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
+import { useClientData } from '@/features/clients/hooks/useClientData';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { ErrorBanner } from '@/shared/components/ErrorBanner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
@@ -64,7 +65,7 @@ import { es } from 'date-fns/locale';
 import { cn, parseLocalDate } from '@/shared/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Appointment, Client, Service, AppointmentStatus } from '@/context/AppContext';
+import type { Appointment, Client, Service, AppointmentStatus } from '@emme/api';
 import { AppointmentForm } from '@/features/appointments/components/AppointmentForm';
 import { ClientForm } from '@/features/clients/components/ClientForm';
 import { useAppTranslation } from '@/app/translation';
@@ -113,7 +114,8 @@ const item = {
 export function Dashboard() {
   const navigate = useNavigate();
   const { t } = useAppTranslation();
-  const { clients, profile, addClient, updateProfile } = useApp();
+  const { profile, updateProfile } = useBusinessProfileContext();
+  const { clients, addClient } = useClientData();
   const {
     loading,
     error,

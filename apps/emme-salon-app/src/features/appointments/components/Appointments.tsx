@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
-import { useApp, type AppointmentStatus, type Appointment } from '@/context/AppContext';
+import type { AppointmentStatus, Appointment } from '@emme/api';
+import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
+import { useClientData } from '@/features/clients/hooks/useClientData';
 
 const S = {
   PENDING: 'pending' as AppointmentStatus,
@@ -429,7 +431,8 @@ const DroppableColumn = ({
 };
 
 export function Appointments() {
-  const { clients, profile } = useApp();
+  const { profile } = useBusinessProfileContext();
+  const { clients } = useClientData();
   const {
     loading,
     error,

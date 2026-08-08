@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
-import { useApp } from '@/context/AppContext';
 import { useServiceData } from '@/features/services/hooks/useServiceData';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -99,8 +98,8 @@ export function Services() {
     addService,
     updateService,
     deleteService,
+    toggleServiceStatus,
   } = useServiceData();
-  const { toggleServiceStatus } = useApp();
   const { t } = useAppTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 

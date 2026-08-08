@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
-import { useApp } from '@/context/AppContext';
 import { useClientData } from '@/features/clients/hooks/useClientData';
+import { useAppointmentData } from '@/features/appointments/hooks/useAppointmentData';
+import { useServiceData } from '@/features/services/hooks/useServiceData';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
@@ -79,7 +80,8 @@ export function Clients() {
     updateClient,
     deleteClient,
   } = useClientData();
-  const { appointments, services } = useApp();
+  const { appointments } = useAppointmentData();
+  const { services } = useServiceData();
   const serviceMap = useMemo(() => {
     const map = new Map();
     for (const s of services) map.set(s.id, s);

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 
 import { AuthProvider } from './auth/AuthProvider';
-import { AppProvider } from '@/context/AppContext';
+import { BusinessProfileProvider } from '@/features/settings/context/BusinessProfileContext';
 import { ErrorBoundary } from './error-boundary/AppErrorBoundary';
 import { TooltipProvider } from '@/shared/ui/tooltip';
 import { Toaster } from '@/shared/ui/sonner';
@@ -14,7 +14,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AppProvider>
+        <BusinessProfileProvider>
           <ErrorBoundary>
             <ThemeProvider
               attribute="class"
@@ -28,7 +28,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
               </TooltipProvider>
             </ThemeProvider>
           </ErrorBoundary>
-        </AppProvider>
+        </BusinessProfileProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

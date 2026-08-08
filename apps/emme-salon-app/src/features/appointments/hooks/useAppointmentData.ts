@@ -22,10 +22,12 @@ interface AppointmentData {
   createAppointment: (input: {
     clientId: string;
     serviceId: string;
-    customerName: string;
+    customerName?: string;
     date: string;
     startTime: string;
     endTime: string;
+    status?: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+    notes?: string;
   }) => Promise<void>;
   cancelAppointment: (appointmentId: string) => Promise<void>;
   confirmAppointment: (appointmentId: string) => Promise<void>;
@@ -62,6 +64,8 @@ export function useAppointmentData(dateFilter?: string): AppointmentData {
         serviceId: input.serviceId,
         startTime: startDateTime,
         endTime: endDateTime,
+        status: input.status,
+        notes: input.notes,
       });
     },
     [createMutation]

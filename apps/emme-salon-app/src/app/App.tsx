@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useApp } from '@/context/AppContext';
+import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
 import { useUiStore } from '@/stores/uiStore';
 import { useAuth } from '@/app/auth/useAuth';
 import { useAppTranslation } from './translation';
@@ -20,7 +20,7 @@ const TenantSelector = React.lazy(() =>
 );
 
 function AppContent() {
-  const { profile } = useApp();
+  const { profile } = useBusinessProfileContext();
   const isFirstTime = useUiStore((state) => state.isFirstTime);
   const { status } = useAuth();
   const location = useLocation();

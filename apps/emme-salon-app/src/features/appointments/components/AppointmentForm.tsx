@@ -26,7 +26,11 @@ import { Textarea } from '@/shared/ui/textarea';
 import { Badge } from '@/shared/ui/badge';
 import { Label } from '@/shared/ui/label';
 import { cn } from '@/shared/lib/utils';
-import { useApp, type Service, type Client } from '@/context/AppContext';
+import type { Service, Client } from '@emme/api';
+import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
+import { useClientData } from '@/features/clients/hooks/useClientData';
+import { useServiceData } from '@/features/services/hooks/useServiceData';
+import { useAppointmentData } from '@/features/appointments/hooks/useAppointmentData';
 import { toast } from 'sonner';
 import { useAppTranslation } from '@/app/translation';
 
@@ -43,7 +47,10 @@ export function AppointmentForm({
   initialDate,
   initialStartTime,
 }: AppointmentFormProps) {
-  const { clients, services, addAppointment, appointments, profile } = useApp();
+  const { profile } = useBusinessProfileContext();
+  const { clients } = useClientData();
+  const { services } = useServiceData();
+  const { appointments, createAppointment: addAppointment } = useAppointmentData();
   const { t } = useAppTranslation();
 
   const [step, setStep] = useState(1);

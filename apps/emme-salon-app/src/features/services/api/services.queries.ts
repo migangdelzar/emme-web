@@ -56,6 +56,7 @@ export interface CreateServiceInput {
 
 export interface UpdateServiceInput extends CreateServiceInput {
   id: string;
+  isActive?: boolean;
 }
 
 export function useNailServicesRest(category?: string) {
@@ -95,6 +96,7 @@ export function useUpdateService() {
             description: data.description,
             duration: data.durationMinutes,
             price: Number(data.priceRange ?? 0),
+            isActive: data.isActive,
           }),
       },
       queryClient

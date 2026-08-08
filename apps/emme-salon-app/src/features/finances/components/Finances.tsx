@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { els } from '@emme/i18n';
-import { useApp } from '@/context/AppContext';
+import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
+import { useClientData } from '@/features/clients/hooks/useClientData';
 import { useFinanceData } from '@/features/finances/hooks/useFinanceData';
 import { Loader2 } from 'lucide-react';
 import {
@@ -66,7 +67,8 @@ export function Finances() {
     averageTicket,
     completedCount,
   } = useFinanceData();
-  const { clients, profile, updateProfile } = useApp();
+  const { profile, updateProfile } = useBusinessProfileContext();
+  const { clients } = useClientData();
   const { t } = useAppTranslation();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);

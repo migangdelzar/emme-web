@@ -6,6 +6,7 @@ import {
   useDeleteService,
 } from '@/features/services/api/services.queries';
 import type { Service } from '@emme/api';
+import { toggleServiceStatusInput } from '@/features/services/domain/service.rules';
 
 function mapNailServiceView(raw: {
   id: string;
@@ -84,6 +85,16 @@ export function useServiceData() {
     [deleteMutation]
   );
 
+  const toggleServiceStatus = useCallback(
+    async (id: string) => {
+      const service = services.find((candidate) => candidate.id === id);
+      if (!service) return;
+
+      await updateMutation.mutateAsync(toggleServiceStatusInput(service));
+    },
+    [services, updateMutation]
+  );
+
   return {
     loading: isLoading,
     error: error?.message || null,
@@ -91,5 +102,6 @@ export function useServiceData() {
     addService,
     updateService,
     deleteService,
+    toggleServiceStatus,
   };
 }
