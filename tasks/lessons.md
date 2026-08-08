@@ -62,3 +62,13 @@
 - Prevention rule: define one documented default locale for the application and
   derive browser assertions from the same typed catalog; when changing it,
   update the E2E runtime contract in the same slice.
+
+## 2026-08-08 — Keep subagents on the controller branch
+
+- Failure mode: an implementation subagent changed the shared checkout to a
+  different feature branch while the controller was executing the migration.
+- Detection signal: `git branch --show-current` changed even though the
+  controller had not requested a branch transition.
+- Prevention rule: verify the branch before and after every delegated task;
+  interrupt and close any subagent that performs an unsolicited checkout, then
+  restore the approved branch before continuing.
