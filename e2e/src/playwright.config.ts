@@ -65,6 +65,7 @@ export default defineConfig({
   use: {
     baseURL,
     headless: true,
+    locale: 'es-MX',
     video: recordDemo ? 'on' : isReal ? 'retain-on-failure' : 'off',
     trace: recordDemo ? 'on' : 'on-first-retry',
     screenshot: recordDemo ? 'on' : 'only-on-failure',
