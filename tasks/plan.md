@@ -54,42 +54,42 @@ packages/features/src/
 
 ## Task List
 
-### Phase 1: Inventory and package boundaries
+### Phase 1: Inventory and package boundaries — ✅ Complete
 
-- [ ] Classify every app source file as composition, reusable feature, shared platform, or tenant-only behavior.
-- [ ] Define package dependencies and public exports for the moved modules.
-- [ ] Add migration boundary tests that prohibit reusable feature code from importing app aliases.
+- [x] Classify every app source file as composition, reusable feature, shared platform, or tenant-only behavior.
+- [x] Define package dependencies and public exports for the moved modules.
+- [x] Add migration boundary tests that prohibit reusable feature code from importing app aliases.
 
-### Phase 2: Move shared app utilities and platform adapters
+### Phase 2: Move shared app utilities and platform adapters — ✅ Complete
 
-- [ ] Move query factory and API error presentation helpers to reusable packages.
-- [ ] Move shared error UI, phone input, toaster adapter, and generic utilities to `@emme/ui` or `@emme/features/shared`.
-- [ ] Move locale, translation composition, and persistence behavior to `@emme/i18n` where reusable.
+- [x] Move query factory and API error presentation helpers to reusable packages.
+- [x] Move shared error UI, phone input, toaster adapter, and generic utilities to `@emme/ui` or `@emme/features/shared`.
+- [x] Move locale, translation composition, and persistence behavior to `@emme/i18n` where reusable.
 
-### Phase 3: Move feature modules
+### Phase 3: Move feature modules — ✅ Complete
 
-- [ ] Move appointments and services, including domain, API query adapters, hooks, mappers, components, and tests.
-- [ ] Move clients, including forms, list views, query adapters, hooks, and tests.
-- [ ] Move dashboard, finances, onboarding, settings, and Google Workspace modules.
-- [ ] Move auth feature UI and reusable auth session adapters while keeping app composition in `AppProviders`.
-- [ ] Update all package exports and eliminate `@/features/*` imports.
+- [x] Move appointments and services, including domain, API query adapters, hooks, mappers, components, and tests.
+- [x] Move clients, including forms, list views, query adapters, hooks, and tests.
+- [x] Move dashboard, finances, onboarding, settings, and Google Workspace modules.
+- [x] Move auth feature UI and reusable auth session adapters while keeping app composition in `AppProviders`.
+- [x] Update all package exports and eliminate `@/features/*` imports.
 
-### Phase 4: Reduce the application shell
+### Phase 4: Reduce the application shell — ✅ Complete
 
-- [ ] Update routes and providers to import features only through package public APIs.
-- [ ] Keep only app-specific navigation configuration, branding, runtime configuration, theme entrypoint, and route composition in the app.
-- [ ] Remove migrated app directories and obsolete app-only tests.
-- [ ] Update package manifests and TypeScript/Vite aliases.
+- [x] Update routes and providers to import features only through package public APIs.
+- [x] Keep only app-specific navigation configuration, branding, runtime configuration, theme entrypoint, and route composition in the app.
+- [x] Remove migrated app directories and obsolete app-only tests.
+- [x] Update package manifests and TypeScript/Vite aliases.
 
-### Phase 5: Verification
+### Phase 5: Verification — ✅ Complete (real E2E environment pending)
 
-- [ ] Run package and application typechecks.
-- [ ] Run all unit and integration tests.
-- [ ] Run build and lint checks.
-- [ ] Run mock E2E.
+- [x] Run package and application typechecks.
+- [x] Run all unit and integration tests.
+- [x] Run build and lint checks.
+- [x] Run mock E2E.
 - [ ] Run real E2E when backend and Keycloak variables are available.
-- [ ] Verify no reusable package imports app paths or app aliases.
-- [ ] Commit and push each verified migration increment.
+- [x] Verify no reusable package imports app paths or app aliases.
+- [ ] Commit and push the completed migration increment.
 
 ## Risks and Mitigations
 
@@ -100,3 +100,7 @@ packages/features/src/
 | Package dependency cycles | High | Keep dependency direction domain → application ports → infrastructure adapters; features consume public package APIs only |
 | Vite package source resolution differences | Medium | Typecheck and build after each package migration slice |
 | Real E2E unavailable locally | Medium | Preserve the real-mode guardrail and run it when required environment variables are supplied |
+
+## Final verification
+
+The completed migration was verified with `bun run typecheck`, `bun run test`, `bun run docs:check`, `bun run i18n:check`, `bun run format:check`, `bun run lint`, `bun run security:check`, `bun run build`, and `bun run --filter @emme/e2e test`. The mock browser suite passed 36 tests with 3 intentional skips. Real E2E is still blocked by missing environment credentials, not by a code failure.

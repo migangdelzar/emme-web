@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@source '../../../../packages/features/src';
+@source '../../../../packages/ui/src';
 
 /* ─── shadcn/ui compatible CSS variables ─── */
 :root {

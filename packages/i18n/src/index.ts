@@ -74,6 +74,21 @@ export function findTestId(i18nKey: string): string | undefined {
 export { I18nProvider, type I18nProviderProps } from './i18n-provider.js';
 export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context.js';
 export { useTranslation } from './use-translation.js';
+export { useAppTranslation } from './use-app-translation.js';
+export {
+  changeLanguage,
+  getAvailableLocales,
+  getResources as getApplicationResources,
+  setApplicationLocale,
+} from './application-i18n.js';
+export {
+  detectLocale,
+  getInitialLocale,
+  normalizeLocale,
+  persistLocale,
+  type LocaleStorage,
+} from './locale.js';
+export { default as i18n } from './application-i18n.js';
 export { I18nTestProvider, type I18nTestProviderProps } from './testing/i18n-test-provider.js';
 
 export {

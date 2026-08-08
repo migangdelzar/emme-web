@@ -1,22 +1,21 @@
 import React, { Suspense, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';
-import { useUiStore } from '@/stores/uiStore';
-import { useAuth } from '@/app/auth/useAuth';
-import { useAppTranslation } from './translation';
+import { useBusinessProfileContext, useUiStore } from '@emme/features';
+import { useAuth } from '@emme/core';
+import { useAppTranslation } from '@emme/i18n';
 import { AppLayout } from './layouts/AppLayout';
 import { PageLoader, SalonRoutes } from './router';
 
 const Login = React.lazy(() =>
-  import('@/features/auth/components/Login').then((module) => ({ default: module.Login }))
+  import('@emme/features').then((module) => ({ default: module.Login }))
 );
 const Onboarding = React.lazy(() =>
-  import('@/features/onboarding/components/Onboarding').then((module) => ({
+  import('@emme/features').then((module) => ({
     default: module.Onboarding,
   }))
 );
 const TenantSelector = React.lazy(() =>
-  import('@/app/auth/TenantSelector').then((m) => ({ default: m.TenantSelector }))
+  import('@emme/features').then((m) => ({ default: m.TenantSelector }))
 );
 
 function AppContent() {

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { Sparkles } from 'lucide-react';
 
-import { Sidebar, MobileNav } from '@/widgets/Navigation';
+import { Sidebar, MobileNav } from '@emme/features';
 import { els } from '@emme/i18n';
-import { useAppTranslation } from '../translation';
+import { useAppTranslation } from '@emme/i18n';
 
 export function AppLayout({ activeTab, children }: { activeTab: string; children: ReactNode }) {
   const { t } = useAppTranslation();

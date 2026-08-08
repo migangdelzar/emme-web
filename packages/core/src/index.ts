@@ -13,5 +13,13 @@ export { useApi } from "./runtime/use-api.js";
 export type { AuthActions, AuthContextValue, AuthState, AuthStatus } from "./auth/auth.types.js";
 export { AuthContext } from "./auth/auth-context.js";
 export { AuthProvider, type AuthProviderProps } from "./auth/auth-provider.js";
+export {
+  SessionProvider,
+  type SessionProviderProps,
+  type SessionTenantStorage,
+  type SessionTokenStorage,
+} from './auth/session-provider.js';
+export { createSessionModel, selectDefaultTenant, type AppSession, type SessionModelInput } from './auth/session-model.js';
+export { resolveTenantFromHost } from './tenancy/tenant-resolver.js';
 export { useAuth } from "./auth/use-auth.js";
 export { ApplicationError, AuthorizationError, type ErrorCode } from './errors/index.js';

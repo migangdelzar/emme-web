@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const authProviderSource = readFileSync(
-  join(process.cwd(), 'src/app/auth/AuthProvider.tsx'),
+  join(process.cwd(), '../../packages/core/src/auth/session-provider.tsx'),
   'utf8'
 );
 const appProvidersSource = readFileSync(join(process.cwd(), 'src/app/AppProviders.tsx'), 'utf8');

@@ -3,16 +3,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { createApi } from '@emme/api';
 import { ApiProvider } from '@emme/core';
-import { I18nProvider, type Locale } from '@emme/i18n';
+import { I18nProvider, i18n, getInitialLocale, normalizeLocale, type Locale } from '@emme/i18n';
 import { createBrowserStorage, createHttpClient, createTokenStorage } from '@emme/infrastructure';
-import i18n from '@/i18n';
-
-import { AuthProvider } from './auth/AuthProvider';
-import { BusinessProfileProvider } from '@/features/settings/context/BusinessProfileContext';
+import { SessionProvider as AuthProvider } from '@emme/core';
+import { BusinessProfileProvider } from '@emme/features';
 import { ErrorBoundary } from './error-boundary/AppErrorBoundary';
 import { TooltipProvider } from '@emme/ui';
-import { Toaster } from '@/shared/ui/sonner';
-import { getInitialLocale, normalizeLocale } from './locale';
+import { Toaster } from '@emme/ui';
 import { getRuntimeConfig } from './config/runtimeConfig';
 
 const queryClient = new QueryClient();
