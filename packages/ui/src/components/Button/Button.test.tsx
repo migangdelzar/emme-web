@@ -24,6 +24,16 @@ describe('Button', () => {
     expect(onClick).toHaveBeenCalledTimes(2);
   });
 
+  it('preserves the production button slot and variant contract', () => {
+    render(<Button variant="outline">Save changes</Button>);
+
+    const button = screen.getByRole('button', { name: 'Save changes' });
+
+    expect(button.getAttribute('data-slot')).toBe('button');
+    expect(button.getAttribute('data-variant')).toBe('outline');
+    expect(button.className).toContain('border');
+  });
+
   it('does not activate when disabled', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
