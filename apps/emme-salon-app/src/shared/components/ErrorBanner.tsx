@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@emme/ui';
 
 interface Props {
   error: string;

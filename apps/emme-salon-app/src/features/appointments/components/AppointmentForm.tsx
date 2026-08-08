@@ -19,12 +19,12 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Textarea } from '@/shared/ui/textarea';
-import { Badge } from '@/shared/ui/badge';
-import { Label } from '@/shared/ui/label';
+import { Avatar, AvatarFallback } from '@emme/ui';
+import { Button } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Badge } from '@emme/ui';
+import { Label } from '@emme/ui';
 import { cn } from '@/shared/lib/utils';
 import type { Service, Client } from '@emme/api';
 import { useBusinessProfileContext } from '@/features/settings/context/BusinessProfileContext';

@@ -53,6 +53,30 @@ modules, validated i18n resources, and reproducible quality gates.
 
 ## Working notes
 
+## Task 3 — @emme/ui salon consumer migration
+
+### Goal
+
+Move every salon-app consumer of generic `src/shared/ui` primitives to the
+`@emme/ui` public barrel, while retaining only `PhoneInput` and `sonner` as
+app-owned UI.
+
+### Execution checklist
+
+- [x] Inspect Task 3 brief, migration plan, prior-task report, UI public barrel, and current consumers.
+- [x] Add and run a failing import-boundary guard; record every consumer import.
+- [x] Add the workspace package dependency and migrate generic UI imports without changing props, selectors, or behavior.
+- [x] Run the import guard and focused app/package verification.
+- [x] Delete only generic app-local UI duplicates after no consumer references remain.
+- [x] Run the required final verification, self-review the diff, write the Task 3 report, and commit.
+
+### Working notes
+
+- The prior task deliberately established behavior-compatible public exports for all generic source files.
+- `PhoneInput` has salon-specific Mexican LADA/10-digit formatting; `sonner` configures app toast behavior. Both remain local.
+- `widgets/Navigation` and `shared/components/ErrorBanner` are app consumers of generic Button, so their import-only changes are required before the duplicate Button source can be removed.
+- The final source audit retained only five `PhoneInput` consumer imports and the app-level `sonner` import.
+
 ## Unified CI regression and deployment selection — 2026-08-04
 
 ### Goal

@@ -1,5 +1,5 @@
 import { ExternalLink, FileSpreadsheet, Loader2 } from 'lucide-react';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Card, CardContent } from '@emme/ui';
 import { useSheetsExport } from '@/features/google-workspace/hooks/useSheetsExport';
 import { cn } from '@/shared/lib/utils';
 

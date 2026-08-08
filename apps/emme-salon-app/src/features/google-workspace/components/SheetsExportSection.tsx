@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Loader2, FileSpreadsheet } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { Label } from '@/shared/ui/label';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Card, CardContent } from '@emme/ui';
 import { useSheetsExport } from '@/features/google-workspace/hooks/useSheetsExport';
 
 const EXPORT_OPTIONS = [

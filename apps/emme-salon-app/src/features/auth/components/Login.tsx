@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/app/auth/useAuth';
 import { els } from '@emme/i18n';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@emme/ui';
 import { ArrowRight, Lock, User, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppTranslation } from '@/app/translation';

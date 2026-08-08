@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input } from './input';
+import { Input } from '@emme/ui';
 import { cn } from '@/shared/lib/utils';
 
 interface PhoneInputProps {

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Loader2, RefreshCw } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Switch } from '@/shared/ui/switch';
-import { Label } from '@/shared/ui/label';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Switch } from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Card, CardContent } from '@emme/ui';
 import { useCalendarSync } from '@/features/google-workspace/hooks/useCalendarSync';
 
 export function CalendarSyncToggle() {

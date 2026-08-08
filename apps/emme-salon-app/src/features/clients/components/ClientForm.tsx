@@ -14,11 +14,11 @@ import {
   Heart,
   X,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Label } from '@/shared/ui/label';
-import { Input } from '@/shared/ui/input';
-import { Textarea } from '@/shared/ui/textarea';
-import { Switch } from '@/shared/ui/switch';
+import { Button } from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Switch } from '@emme/ui';
 import { PhoneInput } from '@/shared/ui/PhoneInput';
 import { cn } from '@/shared/lib/utils';
 import { useClientData } from '@/features/clients/hooks/useClientData';

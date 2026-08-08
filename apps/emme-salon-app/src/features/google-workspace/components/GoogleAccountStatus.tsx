@@ -1,6 +1,6 @@
 import { Loader2, CheckCircle2 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Card, CardContent } from '@emme/ui';
 import { useGoogleOAuth } from '@/features/google-workspace/hooks/useGoogleOAuth';
 
 export function GoogleAccountStatus() {

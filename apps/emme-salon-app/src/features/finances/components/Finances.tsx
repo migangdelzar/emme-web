@@ -48,12 +48,12 @@ import {
 } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn, parseLocalDate } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/shared/ui/dialog';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+import { Button } from '@emme/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@emme/ui';
+import { Badge } from '@emme/ui';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Label } from '@emme/ui';
 import { toast } from 'sonner';
 import { useAppTranslation } from '@/app/translation';
 

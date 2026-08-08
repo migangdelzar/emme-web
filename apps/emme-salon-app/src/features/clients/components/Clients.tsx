@@ -5,7 +5,7 @@ import { useClientData } from '@/features/clients/hooks/useClientData';
 import { useAppointmentData } from '@/features/appointments/hooks/useAppointmentData';
 import { useServiceData } from '@/features/services/hooks/useServiceData';
 import { Loader2 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@emme/ui';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/shared/ui/alert-dialog';
+} from '@emme/ui';
 import {
   Plus,
   Search,
@@ -48,9 +48,9 @@ import {
   Sparkle,
   Sparkles,
 } from 'lucide-react';
-import { Input } from '@/shared/ui/input';
+import { Input } from '@emme/ui';
 import { PhoneInput } from '@/shared/ui/PhoneInput';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@emme/ui';
 import {
   Dialog,
   DialogContent,
@@ -59,13 +59,13 @@ import {
   DialogTrigger,
   DialogDescription,
   DialogClose,
-} from '@/shared/ui/dialog';
-import { Label } from '@/shared/ui/label';
-import { Textarea } from '@/shared/ui/textarea';
-import { Switch } from '@/shared/ui/switch';
+} from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Switch } from '@emme/ui';
 import { toast } from 'sonner';
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
-import { Badge } from '@/shared/ui/badge';
+import { Avatar, AvatarFallback } from '@emme/ui';
+import { Badge } from '@emme/ui';
 import { ClientForm } from '@/features/clients/components/ClientForm';
 import { cn, parseLocalDate } from '@/shared/lib/utils';
 import { useAppTranslation } from '@/app/translation';

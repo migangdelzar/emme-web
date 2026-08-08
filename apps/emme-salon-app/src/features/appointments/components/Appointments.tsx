@@ -13,8 +13,8 @@ const S = {
 } as const;
 import { useAppointmentData } from '../hooks/useAppointmentData';
 import { ErrorBanner } from '@/shared/components/ErrorBanner';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Card, CardContent } from '@emme/ui';
 import { cn, parseLocalDate } from '@/shared/lib/utils';
 import {
   Plus,
@@ -53,19 +53,14 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
-} from '@/shared/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import { Badge } from '@/shared/ui/badge';
-import { Calendar } from '@/shared/ui/calendar';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+} from '@emme/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@emme/ui';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Badge } from '@emme/ui';
+import { Calendar } from '@emme/ui';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@emme/ui';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   format,

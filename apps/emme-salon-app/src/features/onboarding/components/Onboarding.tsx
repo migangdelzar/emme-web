@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   ArrowRight,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@emme/ui';
 import { useUiStore } from '@/stores/uiStore';
 import { useAppTranslation } from '@/app/translation';
 

@@ -11,7 +11,7 @@ import {
   UserPlus,
   Sparkles,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@emme/ui';
 import { cn } from '@/shared/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';

@@ -9,12 +9,12 @@ import { useClientData } from '@/features/clients/hooks/useClientData';
 import { useAppointmentData } from '@/features/appointments/hooks/useAppointmentData';
 import { useSettingsData } from '@/features/settings/hooks/useSettingsData';
 import { useAuth } from '@/app/auth/useAuth';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
+import { Button } from '@emme/ui';
+import { Input } from '@emme/ui';
 import { PhoneInput } from '@/shared/ui/PhoneInput';
-import { Label } from '@/shared/ui/label';
-import { Textarea } from '@/shared/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Label } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@emme/ui';
 import {
   Briefcase,
   Palette,
@@ -65,14 +65,14 @@ import {
   CalendarDays,
   Loader2,
 } from 'lucide-react';
-import { Badge } from '@/shared/ui/badge';
-import { Switch } from '@/shared/ui/switch';
+import { Badge } from '@emme/ui';
+import { Switch } from '@emme/ui';
 import { toast } from 'sonner';
 import { cacheService } from '@/services/cacheService';
 import { cn } from '@/shared/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@emme/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@emme/ui';
 import { ConnectGoogleButton } from '@/features/google-workspace/components/ConnectGoogleButton';
 import { GoogleAccountStatus } from '@/features/google-workspace/components/GoogleAccountStatus';
 import { CalendarSyncToggle } from '@/features/google-workspace/components/CalendarSyncToggle';

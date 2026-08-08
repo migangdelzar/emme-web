@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import { useServiceData } from '@/features/services/hooks/useServiceData';
 import { Loader2 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@emme/ui';
 import { cn } from '@/shared/lib/utils';
 import {
   AlertDialog,
@@ -14,7 +14,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/shared/ui/alert-dialog';
+} from '@emme/ui';
 import {
   Plus,
   Briefcase,
@@ -43,7 +43,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu';
+} from '@emme/ui';
 import {
   Dialog,
   DialogContent,
@@ -51,13 +51,13 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
-} from '@/shared/ui/dialog';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import { Textarea } from '@/shared/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+} from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Label } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@emme/ui';
 import { toast } from 'sonner';
-import { Badge } from '@/shared/ui/badge';
+import { Badge } from '@emme/ui';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppTranslation } from '@/app/translation';
 

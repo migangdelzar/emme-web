@@ -4,7 +4,7 @@ import { useBusinessProfileContext } from '@/features/settings/context/BusinessP
 import { useClientData } from '@/features/clients/hooks/useClientData';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { ErrorBanner } from '@/shared/components/ErrorBanner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@emme/ui';
 import {
   Calendar,
   X,
@@ -41,14 +41,14 @@ import {
   Ghost,
   Trash2,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Badge } from '@/shared/ui/badge';
-import { Input } from '@/shared/ui/input';
-import { Textarea } from '@/shared/ui/textarea';
-import { Label } from '@/shared/ui/label';
+import { Button } from '@emme/ui';
+import { Badge } from '@emme/ui';
+import { Input } from '@emme/ui';
+import { Textarea } from '@emme/ui';
+import { Label } from '@emme/ui';
 import { PhoneInput } from '@/shared/ui/PhoneInput';
-import { Switch } from '@/shared/ui/switch';
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import { Switch } from '@emme/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@emme/ui';
 import {
   Dialog,
   DialogContent,
@@ -57,8 +57,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '@/shared/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+} from '@emme/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@emme/ui';
 import { toast } from 'sonner';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';

@@ -1,6 +1,6 @@
 import { useAuth } from './useAuth';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Button } from '@emme/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@emme/ui';
 import { motion } from 'motion/react';
 import { Building2, ChevronRight } from 'lucide-react';
 import { useAppTranslation } from '@/app/translation';

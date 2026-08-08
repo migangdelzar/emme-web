@@ -5,7 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from './auth/AuthProvider';
 import { BusinessProfileProvider } from '@/features/settings/context/BusinessProfileContext';
 import { ErrorBoundary } from './error-boundary/AppErrorBoundary';
-import { TooltipProvider } from '@/shared/ui/tooltip';
+import { TooltipProvider } from '@emme/ui';
 import { Toaster } from '@/shared/ui/sonner';
 
 const queryClient = new QueryClient();
