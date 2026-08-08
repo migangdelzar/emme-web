@@ -113,37 +113,37 @@ Domain rules such as appointment duration, availability, cancellation windows, o
 
 **Files:** Create `packages/i18n/src/formatters/date/*`, `formatters/number/*`, `formatters/formatters.types.ts`, and `formatters/index.ts`; update `packages/i18n/src/index.ts`; migrate existing formatter tests.
 
-- [ ] Red: add import-path tests that expect `formatDate`, `formatTime`, `formatCurrency`, and `formatNumber` from the package root and grouped barrels.
-- [ ] Run `bun run --filter @emme/i18n test`; expect missing export/path failures.
-- [ ] Green: move or re-export existing implementations into the grouped directories while preserving current en-US and es-MX output.
-- [ ] Run the focused tests and expect PASS.
-- [ ] Refactor: remove duplicate flat formatter implementations and expose only the package root plus documented grouped barrels.
-- [ ] Run `bun run --filter @emme/i18n typecheck && bun run --filter @emme/i18n test`.
-- [ ] Commit with `refactor(i18n): group locale formatters by presentation concern`.
+- [x] Red: add import-path tests that expect `formatDate`, `formatTime`, `formatCurrency`, and `formatNumber` from the package root and grouped barrels.
+- [x] Run `bun run --filter @emme/i18n test`; expect missing export/path failures.
+- [x] Green: move or re-export existing implementations into the grouped directories while preserving current en-US and es-MX output.
+- [x] Run the focused tests and expect PASS.
+- [x] Refactor: remove duplicate flat formatter implementations and expose only the package root plus documented grouped barrels.
+- [x] Run `bun run --filter @emme/i18n typecheck && bun run --filter @emme/i18n test`.
+- [x] Commit with `refactor(i18n): group locale formatters by presentation concern`.
 
 ### Task 2: Make formatting explicit and deterministic
 
 **Files:** `packages/i18n/src/formatters/formatters.types.ts`, date and number formatter modules, colocated formatter tests.
 
-- [ ] Red: add tests for a fixed date rendered in two time zones, currency rendered in USD and MXN, number grouping in en-US and es-MX, invalid date handling, and relative-time output with a fixed `now` value.
-- [ ] Run `bun run --filter @emme/i18n test`; confirm failures before implementation.
-- [ ] Green: implement `FormatContext` and pass `locale`, `timeZone`, and `currency` explicitly to `Intl` formatters. Throw or return the package’s documented invalid-value result consistently for malformed dates.
-- [ ] Run the formatter tests and expect PASS on every host locale.
-- [ ] Refactor: keep React hooks as thin adapters over pure formatter functions and remove hidden reads of `navigator` or `Intl.DateTimeFormat().resolvedOptions()`.
-- [ ] Run `bun run --filter @emme/i18n typecheck && bun run --filter @emme/i18n test`.
-- [ ] Commit with `feat(i18n): add deterministic formatter context`.
+- [x] Red: add tests for a fixed date rendered in two time zones, currency rendered in USD and MXN, number grouping in en-US and es-MX, invalid date handling, and relative-time output with a fixed `now` value.
+- [x] Run `bun run --filter @emme/i18n test`; confirm failures before implementation.
+- [x] Green: implement `FormatContext` and pass `locale`, `timeZone`, and `currency` explicitly to `Intl` formatters. Throw or return the package’s documented invalid-value result consistently for malformed dates.
+- [x] Run the formatter tests and expect PASS on every host locale.
+- [x] Refactor: keep React hooks as thin adapters over pure formatter functions and remove hidden reads of `navigator` or `Intl.DateTimeFormat().resolvedOptions()`.
+- [x] Run `bun run --filter @emme/i18n typecheck && bun run --filter @emme/i18n test`.
+- [x] Commit with `feat(i18n): add deterministic formatter context`.
 
 ### Task 3: Add localized validation messages and test provider
 
 **Files:** Create `packages/i18n/src/formatters/messages/format-validation-message.ts`, `packages/i18n/src/testing/i18n-test-provider.tsx`, colocated tests, and catalog entries when required.
 
-- [ ] Red: add tests mapping stable validation codes such as `required`, `invalid_email`, and `too_small` to en-US/es-MX messages, with a fallback for unknown codes; add a test provider that renders a translated test string.
-- [ ] Run the focused tests and expect failures for missing mappings/provider exports.
-- [ ] Green: implement typed message lookup and a provider with explicit locale/time-zone/currency defaults.
-- [ ] Run `bun run --filter @emme/i18n test` and expect PASS.
-- [ ] Refactor: keep catalog keys typed and prevent validation modules from importing React or API code.
-- [ ] Run `bun run --filter @emme/i18n validate && bun run --filter @emme/i18n typecheck`.
-- [ ] Commit with `feat(i18n): add localized validation messages and test provider`.
+- [x] Red: add tests mapping stable validation codes such as `required`, `invalid_email`, and `too_small` to en-US/es-MX messages, with a fallback for unknown codes; add a test provider that renders a translated test string.
+- [x] Run the focused tests and expect failures for missing mappings/provider exports.
+- [x] Green: implement typed message lookup and a provider with explicit locale/time-zone/currency defaults.
+- [x] Run `bun run --filter @emme/i18n test` and expect PASS.
+- [x] Refactor: keep catalog keys typed and prevent validation modules from importing React or API code.
+- [x] Run `bun run --filter @emme/i18n validate && bun run --filter @emme/i18n typecheck`.
+- [x] Commit with `feat(i18n): add localized validation messages and test provider`.
 
 ### Task 4: Integrate the existing salon translation setup
 
@@ -178,4 +178,3 @@ bun run i18n:check
 - [ ] No flat formatter consumer imports remain outside the package.
 - [ ] No formatter uses host locale or browser globals implicitly.
 - [ ] All changes are committed and pushed.
-

@@ -230,5 +230,10 @@
     "instructive": "Instructivo",
     "start": "Comenzar",
     "welcome": "¡Bienvenida a EmmeNails!"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "invalid_email": "Ingresa un correo electrónico válido.",
+    "too_small": "El valor es demasiado corto."
   }
 }
