@@ -1,12 +1,10 @@
-import { createContext, useContext } from 'react';
+import { AuthContext as CoreAuthContext, useAuth as useCoreAuth } from '@emme/core';
 import type { AuthContextValue } from '@emme/core';
 
 export type { AuthContextValue, AuthState, AuthStatus } from '@emme/core';
 
-export const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = CoreAuthContext;
 
 export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
+  return useCoreAuth();
 }

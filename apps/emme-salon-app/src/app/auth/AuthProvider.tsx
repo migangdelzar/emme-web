@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AuthContext } from './useAuth';
 import type { AuthState, AuthContextValue } from './useAuth';
 import { API_VERSION, type CurrentUser } from '@emme/api';
 import { createBrowserTokenStorage } from '@emme/infrastructure';
+import { AuthProvider as CoreAuthProvider } from '@emme/core';
 
 interface Props {
   children: React.ReactNode;
@@ -136,5 +136,5 @@ export function AuthProvider({ children }: Props) {
     [state, login, selectTenant, logout]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <CoreAuthProvider value={value}>{children}</CoreAuthProvider>;
 }

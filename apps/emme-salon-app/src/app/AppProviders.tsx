@@ -1,6 +1,9 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
+import { createApi } from '@emme/api';
+import { ApiProvider } from '@emme/core';
+import { api as httpApi } from '@/api/restClient';
 
 import { AuthProvider } from './auth/AuthProvider';
 import { BusinessProfileProvider } from '@/features/settings/context/BusinessProfileContext';
@@ -11,25 +14,29 @@ import { Toaster } from '@/shared/ui/sonner';
 const queryClient = new QueryClient();
 
 export function AppProviders({ children }: { children: ReactNode }) {
+  const typedApi = useMemo(() => createApi(httpApi), []);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BusinessProfileProvider>
-          <ErrorBoundary>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <TooltipProvider>
-                {children}
-                <Toaster position="top-center" richColors />
-              </TooltipProvider>
-            </ThemeProvider>
-          </ErrorBoundary>
-        </BusinessProfileProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ApiProvider api={typedApi}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BusinessProfileProvider>
+            <ErrorBoundary>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <TooltipProvider>
+                  {children}
+                  <Toaster position="top-center" richColors />
+                </TooltipProvider>
+              </ThemeProvider>
+            </ErrorBoundary>
+          </BusinessProfileProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ApiProvider>
   );
 }
