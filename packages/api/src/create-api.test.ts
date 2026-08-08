@@ -8,6 +8,10 @@ describe('createApi', () => {
     await expect(api.clients.list()).resolves.toEqual([]);
     await expect(api.appointments.list()).resolves.toEqual([]);
     await expect(api.services.list()).resolves.toEqual([]);
+    expect(api.calendarSync).toBeDefined();
+    expect(api.googleOAuth).toBeDefined();
+    expect(api.googleSheets).toBeDefined();
+    expect(api.businessConfig).toBeDefined();
   });
 });
 
