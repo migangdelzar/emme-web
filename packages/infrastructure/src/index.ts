@@ -13,6 +13,7 @@ export type {
 export { createApiClient, createHttpClient } from "./http/fetch-http-client.js";
 export { ApiHttpError, type ApiProblem } from "./http/api-error.js";
 export { createClientRepository } from "./api/client-repository.adapter.js";
+export { createAppointmentRepository } from "./api/appointment-repository.adapter.js";
 export {
   createBrowserTokenStorage,
   createTokenStorage,

@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@emme/api": "workspace:*",
-    "@emme/application": "workspace:*"
+    "@emme/application": "workspace:*",
+    "@emme/domain": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

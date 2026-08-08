@@ -128,8 +128,15 @@
         "@emme/api": "workspace:*",
       },
       "devDependencies": {
+        "@types/react": "^19.2.0",
+        "@types/react-dom": "^19.2.0",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
         "typescript": "^5.8.0",
         "vitest": "^4.1.8",
+      },
+      "peerDependencies": {
+        "react": "^19.2.0",
       },
     },
     "packages/domain": {
@@ -161,6 +168,7 @@
       "dependencies": {
         "@emme/api": "workspace:*",
         "@emme/application": "workspace:*",
+        "@emme/domain": "workspace:*",
       },
       "devDependencies": {
         "typescript": "^5.8.0",
