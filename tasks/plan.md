@@ -1,169 +1,102 @@
-# Implementation Plan: Emme Monorepo Architecture Migration
+# Implementation Plan: Package-First Application Migration
 
-## Goal
+## Overview
 
-Move the current tenant application and reusable packages toward a modular
-monorepo with three application shells and seven cohesive libraries. The
-migration is compatibility-first: existing routes, API paths, query behavior,
-E2E provider seams, and package tooling remain stable while ownership moves.
+Move reusable salon capabilities out of `apps/emme-salon-app` into workspace packages. The salon app becomes a composition shell containing providers, routing, layouts, runtime configuration, theme entrypoints, and only behavior that is genuinely unique to this application.
 
-## Target workspace
+## Architecture Decisions
 
-```text
-emme-web/
-├── apps/
-│   ├── platform-admin-app/       # future application shell
-│   ├── emme-salon-app/            # current tenant-owner/staff app
-│   └── client-app/                # future customer application
-├── packages/
-│   ├── ui/                        # reusable visual components
-│   ├── core/                      # auth, tenancy, access-control, runtime
-│   ├── api/                       # contracts, ports, typed API operations
-│   ├── infrastructure/           # fetch, storage, auth and external adapters
-│   ├── domain/                    # pure business model and domain ports
-│   ├── application/               # use cases and application services
-│   ├── i18n/                      # typed shared localization resources
-│   └── test-support/              # development/test-only fixtures and helpers
-├── e2e/
-└── docs/architecture/
-```
+- `@emme/ui` owns reusable visual primitives and shared UI adapters.
+- `@emme/validation` owns reusable runtime schemas and validation helpers.
+- `@emme/i18n` owns translations, locale behavior, and shared formatters.
+- `@emme/domain` owns pure business types and rules.
+- `@emme/application` owns use cases and ports.
+- `@emme/api` owns typed contracts and backend operations.
+- `@emme/infrastructure` owns concrete HTTP, auth, storage, and integration adapters.
+- `@emme/core` owns shared providers and application runtime behavior.
+- `@emme/features` owns reusable feature modules, including feature components, hooks, query adapters, mappers, contexts, and feature tests.
+- The app owns composition only: providers, routes, layouts, runtime configuration, app theme, branding, navigation configuration, and app-specific orchestration.
+- Tests remain colocated with the code they exercise; package-level `src/__tests__` is reserved for cross-module package contracts.
 
-The repository currently uses Bun workspaces. A future pnpm/Turbo migration is
-explicitly out of scope for this architecture migration.
-
-## Dependency direction
+## Target Application Shape
 
 ```text
-@emme/ui       @emme/i18n
-      ↑              ↑
-@emme/core ─────── @emme/api
-      ↑              ↑
-@emme/domain  ← @emme/application
-      ↑                 ↑
-@emme/api  ← @emme/infrastructure
-            ↑
-          apps
+apps/emme-salon-app/src/
+├── app/
+│   ├── App.tsx
+│   ├── AppProviders.tsx
+│   ├── router.tsx
+│   ├── layouts/
+│   ├── config/
+│   └── error-boundary/
+├── config/
+├── theme/
+├── main.tsx
+└── vite-env.d.ts
 ```
 
-- `@emme/api` is framework-agnostic and owns DTOs, domain-facing contracts,
-  endpoint adapters, route constants, response parsers, and HTTP ports.
-- `@emme/infrastructure` implements concrete HTTP, auth-token, storage,
-  analytics, feature-flag, and browser integrations. It may depend on `api`,
-  but `api` never depends on infrastructure.
-- `@emme/core` owns shared application behavior and providers, not concrete
-  browser implementations.
-- `@emme/domain` is the pure business core: entities, value objects, rules,
-  invariants, and repository/service ports. It has no React, HTTP, storage,
-  API DTO, or browser dependency.
-- `@emme/application` orchestrates use cases and application services against
-  domain ports. It is framework-agnostic and receives concrete adapters from
-  an app composition root.
-- Reusable React business UI is extracted only when multiple apps actually
-  need it; it is not forced into either domain or application.
-- Apps own routes, layouts, composition roots, and role-specific experiences.
-- `@emme/test-support` is dev-only and never a runtime dependency.
+## Target Feature Package Shape
 
-## Conventions
+```text
+packages/features/src/
+├── appointments/
+├── auth/
+├── clients/
+├── dashboard/
+├── finances/
+├── google-workspace/
+├── onboarding/
+├── services/
+├── settings/
+├── shared/
+└── index.ts
+```
 
-- Capability folders are plural: `clients/`, `services/`, `appointments/`.
-- Public capability adapters are named `api.ts`; never `client-api.ts`.
-- Domain contracts use singular names: `client.types.ts`.
-- Tests are colocated beside their module by default (`*.test.ts(x)`).
-- `__tests__/` is reserved for cross-module package integration tests.
-- Public consumers import package root barrels; internal paths are private.
-- TanStack Query owns server state. Zustand owns client-only UI state.
-- Backend authorization and business invariants remain authoritative.
+## Task List
 
-## Phases
+### Phase 1: Inventory and package boundaries
 
-### Phase 0 — Package boundary migration
+- [ ] Classify every app source file as composition, reusable feature, shared platform, or tenant-only behavior.
+- [ ] Define package dependencies and public exports for the moved modules.
+- [ ] Add migration boundary tests that prohibit reusable feature code from importing app aliases.
 
-- [x] Rename `@emme/api-client` to `@emme/infrastructure`.
-- [x] Rename and reorganize `@emme/contracts` as `@emme/api`.
-- [x] Preserve public behavior and tests while moving files into capability,
-      port, integration, and testing folders.
-- [x] Update app, E2E, package scripts, and TypeScript references to the new
-      package names.
-- [x] Add compatibility notes to architecture documentation.
+### Phase 2: Move shared app utilities and platform adapters
 
-Acceptance: package tests, workspace typecheck, app tests, and E2E TypeScript
-compile without imports from the old package names.
+- [ ] Move query factory and API error presentation helpers to reusable packages.
+- [ ] Move shared error UI, phone input, toaster adapter, and generic utilities to `@emme/ui` or `@emme/features/shared`.
+- [ ] Move locale, translation composition, and persistence behavior to `@emme/i18n` where reusable.
 
-### Phase 1 — Shared library foundations
+### Phase 3: Move feature modules
 
-- [x] Add `@emme/core` with auth, tenancy, access-control, runtime, config,
-      errors, and common types as independently testable modules.
-- [x] Add `@emme/domain` with pure clients, services, and appointments models,
-      rules, and repository ports.
-- [x] Add `@emme/application` with the first use cases for clients, services,
-      and appointments; inject repository ports rather than creating API
-      clients internally.
-- [x] Add `@emme/test-support` for shared fakes/factories used by package tests.
-- [x] Keep `@emme/ui`, `@emme/i18n`, and `@emme/validation` stable; schemas that
-      are feature-only remain with their feature.
+- [ ] Move appointments and services, including domain, API query adapters, hooks, mappers, components, and tests.
+- [ ] Move clients, including forms, list views, query adapters, hooks, and tests.
+- [ ] Move dashboard, finances, onboarding, settings, and Google Workspace modules.
+- [ ] Move auth feature UI and reusable auth session adapters while keeping app composition in `AppProviders`.
+- [ ] Update all package exports and eliminate `@/features/*` imports.
 
-Acceptance: each new package has a public root barrel, strict typechecking,
-focused tests for exported behavior, and no circular workspace dependency.
+### Phase 4: Reduce the application shell
 
-### Phase 2 — Tenant app composition root
+- [ ] Update routes and providers to import features only through package public APIs.
+- [ ] Keep only app-specific navigation configuration, branding, runtime configuration, theme entrypoint, and route composition in the app.
+- [ ] Remove migrated app directories and obsolete app-only tests.
+- [ ] Update package manifests and TypeScript/Vite aliases.
 
-- [x] Add `src/app/AppProviders.tsx`.
-- [x] Add `src/app/router.tsx` and preserve HashRouter paths.
-- [x] Add `src/app/layouts/AppLayout.tsx` and app-owned error boundaries.
-- [x] Make `main.tsx` a thin bootstrap.
-- [x] Keep signed-out, tenant-required, and ready states behaviorally equal.
+### Phase 5: Verification
 
-Acceptance: existing auth and navigation E2E flows remain green and there is
-one provider composition root and one route tree.
+- [ ] Run package and application typechecks.
+- [ ] Run all unit and integration tests.
+- [ ] Run build and lint checks.
+- [ ] Run mock E2E.
+- [ ] Run real E2E when backend and Keycloak variables are available.
+- [ ] Verify no reusable package imports app paths or app aliases.
+- [ ] Commit and push each verified migration increment.
 
-### Phase 3 — Tenant feature vertical slices
-
-- [x] Migrate clients into explicit UI `api`, `hooks`, `pages`, `components`,
-      and public-barrel ownership, delegating business behavior to
-      `@emme/application` and `@emme/domain`.
-- [x] Migrate services using the same tested boundary.
-- [x] Migrate appointments and scheduling helpers, preserving status behavior.
-- [x] Migrate remaining tenant-only features only where a boundary earns its
-      complexity; do not create empty enterprise folders.
-- [x] Remove `AppContext`, global API hooks, and transitional provider paths
-      only after import scans and focused tests prove they are unused.
-
-Acceptance: no migrated feature performs raw HTTP or imports legacy context/API
-hooks; TanStack Query remains the only remote-data source of truth.
-
-### Phase 4 — Verification and future app readiness
-
-- [x] Add route/provider/feature boundary tests and preserve E2E coverage.
-- [ ] Add minimal application shells for `platform-admin-app` and `client-app`
-      only when their requirements exist; do not invent product behavior.
-- [x] Run docs, format, typecheck, lint, unit, build, security, and mock E2E
-      gates.
-- [x] Update architecture docs and add an ADR for package ownership.
-
-## Execution checkpoints
-
-After each phase: run focused tests, typecheck affected packages, inspect the
-dependency graph, commit one logical increment, and push the branch. No phase
-may leave the workspace uncompilable.
-
-## Risks
+## Risks and Mitigations
 
 | Risk | Impact | Mitigation |
-|---|---|---|
-| Package rename breaks hidden consumers | High | Update all workspace references and use repository-wide import scans |
-| API/infrastructure circular dependency | High | Keep ports in `@emme/api`; infrastructure implements them |
-| Profile/context extraction changes observable behavior | High | Migrate one vertical slice at a time and retain focused provider tests |
-| Library extraction duplicates domain models | Medium | Map at explicit boundaries and keep backend contracts canonical |
-| Tooling migration expands scope | Medium | Keep Bun; defer pnpm/Turbo |
-| Empty abstraction folders accumulate | Low | Add folders only with behavior and tests |
-
-## Definition of done
-
-- [x] Target package boundaries are present and documented.
-- [x] Old `@emme/contracts` and `@emme/api-client` imports are removed from
-      active source and workspace manifests; historical plan records retain
-      their original names for auditability.
-- [x] Current tenant routes and E2E flows remain compatible.
-- [x] Every migrated behavior has tests written before implementation changes.
-- [x] Workspace verification passes or pre-existing warnings are documented.
-- [x] All changes are committed and pushed on the feature branch.
+|------|--------|------------|
+| Feature modules currently import app aliases | High | Rewrite imports to package public APIs and add boundary tests before deleting app copies |
+| Feature components depend on app-specific translation/auth helpers | High | Move generic behavior to `@emme/i18n`/`@emme/core`; inject app-specific behavior at composition boundaries |
+| Package dependency cycles | High | Keep dependency direction domain → application ports → infrastructure adapters; features consume public package APIs only |
+| Vite package source resolution differences | Medium | Typecheck and build after each package migration slice |
+| Real E2E unavailable locally | Medium | Preserve the real-mode guardrail and run it when required environment variables are supplied |
