@@ -56,4 +56,26 @@ describe('Dialog', () => {
     expect(trigger).toHaveProperty('disabled', true);
     expect(screen.queryByRole('dialog', { name: 'Edit profile' })).toBeNull();
   });
+
+  it('uses stable viewport-centering utilities for dialog content', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog>
+        <DialogTrigger>Open profile</DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Edit profile</DialogTitle>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Open profile' }));
+
+    const dialog = await screen.findByRole('dialog', { name: 'Edit profile' });
+
+    expect(dialog.classList.contains('top-1/2')).toBe(true);
+    expect(dialog.classList.contains('left-1/2')).toBe(true);
+    expect(dialog.classList.contains('-translate-x-1/2')).toBe(true);
+    expect(dialog.classList.contains('-translate-y-1/2')).toBe(true);
+  });
 });

@@ -509,6 +509,6 @@ preserving current routes, API contracts, visual behavior, and browser flows.
       builds, security audit, and the salon production build.
 - [x] Mock E2E locale/auth/dashboard failures were resolved by configuring the
       browser locale to `es-MX`, matching the typed E2E catalog.
-- [ ] One existing client-wizard E2E flow still reports its visible footer
-      button outside the viewport; this is an app dialog layout issue isolated
-      from the package migration and belongs in the UI/E2E follow-up.
+- [x] Fixed the shared `@emme/ui` dialog centering utilities and added a
+      regression test; client and appointment wizard E2E flows now pass.
+- [x] Full mock E2E suite passes: 36 passed, 3 intentionally skipped.

@@ -82,3 +82,15 @@
 - Prevention rule: verify the branch before and after every delegated task;
   interrupt and close any subagent that performs an unsolicited checkout, then
   restore the approved branch before continuing.
+
+## 2026-08-08 — Keep shared dialog positioning on canonical utilities
+
+- Failure mode: dialog primitives used arbitrary percentage utility classes
+  that were not emitted in the application stylesheet, leaving tall dialogs
+  below the viewport and making their controls unclickable.
+- Detection signal: Playwright reported a visible dialog control as outside
+  the viewport; measured geometry showed `top: 720px` and `transform: none`.
+- Prevention rule: use canonical Tailwind positioning utilities in shared UI
+  primitives (`top-1/2`, `left-1/2`, `-translate-x-1/2`, and
+  `-translate-y-1/2`) and protect them with a component regression test plus
+  an end-to-end dialog flow.
