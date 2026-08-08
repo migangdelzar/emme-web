@@ -2,7 +2,7 @@
 
 ## Status
 
-DONE_WITH_CONCERNS
+DONE
 
 ## Implementation summary
 
@@ -75,9 +75,9 @@ Ran `git diff --check` successfully. The final focused test and typecheck remain
 
 ## Concerns
 
-- `Button` is intentionally a minimal boundary stub for Task 1. It is not the migrated production Button primitive; Task 2 must replace this export with the real component and behavior tests.
+None blocking. `Button` is intentionally a minimal boundary export for Task 1; its production behavior and behavior tests are explicitly scoped to Task 2.
 
 ## Commits
 
 - `1840525 test(ui): establish shared UI package boundary`
-
+- `73c4039 docs(sdd): add task 1 migration report`
