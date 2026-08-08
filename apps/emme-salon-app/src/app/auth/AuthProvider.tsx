@@ -1,15 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { AuthState, AuthContextValue } from './useAuth';
-import { API_VERSION, type CurrentUser } from '@emme/api';
-import { createBrowserTokenStorage } from '@emme/infrastructure';
-import { AuthProvider as CoreAuthProvider } from '@emme/core';
+import type { CurrentUser } from '@emme/api';
+import { AuthProvider as CoreAuthProvider, useApi } from '@emme/core';
+import type { StorageAdapter, TokenStorage } from '@emme/infrastructure';
 
 interface Props {
   children: React.ReactNode;
+  tokenStorage: TokenStorage;
+  tenantStorage: StorageAdapter;
 }
 
-export function AuthProvider({ children }: Props) {
-  const tokenStorage = useMemo(() => createBrowserTokenStorage(), []);
+export function AuthProvider({ children, tokenStorage, tenantStorage }: Props) {
+  const api = useApi();
   const [state, setState] = useState<AuthState>({
     status: 'loading',
     user: null,
@@ -31,24 +33,11 @@ export function AuthProvider({ children }: Props) {
           if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
           return;
         }
-        const headers: Record<string, string> = {
-          Authorization: `Bearer ${token}`,
-          'API-Version': API_VERSION,
-        };
-
-        const res = await fetch('/api/me', { headers });
-        if (!res.ok) {
-          if (token) {
-            tokenStorage.clear();
-          }
-          if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
-          return;
-        }
-        const user: CurrentUser = await res.json();
+        const user: CurrentUser = await api.auth.currentUser();
         if (!cancelled) {
           const firstMembership = user.memberships?.[0];
           if (firstMembership) {
-            localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
+            tenantStorage.set('tenant_slug', firstMembership.tenantSlug);
           }
           setState((s) => ({
             ...s,
@@ -59,6 +48,7 @@ export function AuthProvider({ children }: Props) {
           }));
         }
       } catch {
+        tokenStorage.clear();
         if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
       }
     }
@@ -67,23 +57,13 @@ export function AuthProvider({ children }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [tokenStorage]);
+  }, [api, tenantStorage, tokenStorage]);
 
   const login = useCallback(
     async (email: string, password: string) => {
       setState((s) => ({ ...s, error: null }));
       try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'API-Version': API_VERSION },
-          body: JSON.stringify({ email, password }),
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: 'Credenciales inválidas' }));
-          setState((s) => ({ ...s, status: 'signedOut', error: err.error }));
-          return;
-        }
-        const data = await res.json();
+        const data = await api.auth.login({ email, password });
         const token = data.accessToken;
         const user: CurrentUser = data.user; // login response already has full user data
 
@@ -91,7 +71,7 @@ export function AuthProvider({ children }: Props) {
         tokenStorage.set({ accessToken: token, refreshToken: data.refreshToken });
         const firstMembership = user.memberships?.[0];
         if (firstMembership) {
-          localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
+          tenantStorage.set('tenant_slug', firstMembership.tenantSlug);
         }
 
         setState((s) => ({
@@ -106,25 +86,28 @@ export function AuthProvider({ children }: Props) {
         setState((s) => ({ ...s, status: 'signedOut', error: 'Error de conexión' }));
       }
     },
-    [tokenStorage]
+    [api, tenantStorage, tokenStorage]
   );
 
-  const selectTenant = useCallback((slug: string) => {
-    setState((s) => {
-      const tenant = s.allTenants.find((t) => t.tenantSlug === slug) ?? null;
-      if (tenant) {
-        localStorage.setItem('tenant_slug', slug);
-      }
-      return { ...s, tenant, status: 'ready', error: null };
-    });
-  }, []);
+  const selectTenant = useCallback(
+    (slug: string) => {
+      setState((s) => {
+        const tenant = s.allTenants.find((t) => t.tenantSlug === slug) ?? null;
+        if (tenant) {
+          tenantStorage.set('tenant_slug', slug);
+        }
+        return { ...s, tenant, status: 'ready', error: null };
+      });
+    },
+    [tenantStorage]
+  );
 
   const logout = useCallback(() => {
     tokenStorage.clear();
-    localStorage.removeItem('tenant_slug');
+    tenantStorage.remove('tenant_slug');
     setState((s) => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
     window.location.href = '/';
-  }, [tokenStorage]);
+  }, [tenantStorage, tokenStorage]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

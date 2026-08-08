@@ -94,3 +94,12 @@
   primitives (`top-1/2`, `left-1/2`, `-translate-x-1/2`, and
   `-translate-y-1/2`) and protect them with a component regression test plus
   an end-to-end dialog flow.
+
+## 2026-08-08 — Audit composition roots for legacy transport seams
+
+- Failure mode: feature hooks had been migrated, but authentication and the
+  app composition root still retained direct fetch and legacy client wrappers.
+- Detection signal: source scans found `fetch('/api/...')`, `restClient`, and
+  unused `platformClient`/`apiClientInstance` files despite green feature tests.
+- Prevention rule: audit composition roots and auth/session code separately from
+  feature consumers; enforce the public API boundary with source-level tests.

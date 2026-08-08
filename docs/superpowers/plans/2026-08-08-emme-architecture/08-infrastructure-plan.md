@@ -10,7 +10,7 @@
 
 ## Current State
 
-`packages/infrastructure` already contains a fetch HTTP client, API error, client repository adapter, token storage, appointment/client adapters, and colocated tests. The salon app still owns `src/api/restClient.ts`, `apiClientInstance.ts`, `platformClient.ts`, and authentication/session wiring. The infrastructure plan moves concrete behavior without moving app-specific composition.
+`packages/infrastructure` contains the fetch HTTP client, API error, client and appointment repository adapters, token storage, browser storage, and colocated tests. The final migration also wires the concrete HTTP and storage adapters directly in the salon app composition root; authentication/session behavior consumes the injected `@emme/api` capability rather than owning fetch or legacy client wrappers.
 
 ## Target Tree
 
@@ -168,4 +168,3 @@ bun run --filter @emme/infrastructure build
 - [ ] Timeout, retry, auth expiry, tenant header, conflict, and malformed-response tests pass.
 - [ ] No token or sensitive response data appears in test snapshots or logs.
 - [ ] All changes are committed and pushed.
-

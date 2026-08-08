@@ -10,7 +10,7 @@
 
 ## Current State
 
-The workspace already has `packages/api` under the desired final name, with common routes/types, capability adapters for clients, appointments, services, integrations, an HTTP port, and package-level contract tests. The API package was previously referred to as `api-client`; no new package with that name may be introduced. The extracted typings from `/Users/miguelangeldelgadillozarate/Development/emme-web/packages/api-client` and `/Users/miguelangeldelgadillozarate/Development/emme-web/packages/contracts` must be audited against the checked-in package before finalizing contracts.
+The workspace has `packages/api` under the desired final name, with auth, common routes/types, capability adapters for clients, appointments, services, integrations, an HTTP port, extracted contracts, and package-level contract tests. The API package was previously referred to as `api-client`; no new package with that name is introduced. The extracted typings were reconciled into `packages/api/src/contracts/` and are consumed through the public `@emme/api` entry point.
 
 ## Target Tree
 

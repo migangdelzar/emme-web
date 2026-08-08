@@ -5,6 +5,7 @@ describe('createApi', () => {
   it('composes capability APIs over one injected HTTP port', async () => {
     const api = createApi(new FakeHttpClient());
 
+    expect(api.auth).toBeDefined();
     await expect(api.clients.list()).resolves.toEqual([]);
     await expect(api.appointments.list()).resolves.toEqual([]);
     await expect(api.services.list()).resolves.toEqual([]);

@@ -10,7 +10,7 @@
 
 ## Current State
 
-The current app is `apps/emme-salon-app` with package name `@emme/emme-salon-app`. It already has `src/app/App.tsx`, `AppProviders.tsx`, `router.tsx`, auth, layout, error boundary, app-local API clients, i18n setup, feature folders, shared UI, services, and stores. Routes currently include `/dashboard`, `/agenda`, `/clients`, `/services`, `/finances`, and `/settings`, with `HashRouter` and lazy-loaded screens. Existing tests are colocated as `*.test.ts`/`*.test.tsx`; keep that convention.
+The current app is `apps/emme-salon-app` with package name `@emme/emme-salon-app`. It has `src/app/App.tsx`, `AppProviders.tsx`, `router.tsx`, auth, layout, error boundary, shared i18n setup, feature folders, shared UI, services, and stores. Routes currently include `/dashboard`, `/agenda`, `/clients`, `/services`, `/finances`, and `/settings`, with `HashRouter` and lazy-loaded screens. Authentication and feature API access now use the injected public package boundaries; concrete HTTP/storage construction is limited to `AppProviders`. Existing tests are colocated as `*.test.ts`/`*.test.tsx`; keep that convention.
 
 ## Target App Tree
 
@@ -247,4 +247,3 @@ bun run quality
 - [ ] No active `api-client` naming or app-local direct HTTP boundary remains.
 - [ ] Coverage does not introduce skipped tests or unverified migration paths.
 - [ ] All migration commits are pushed and the app is ready to be copied as the basis for future platform-admin and client app shells.
-

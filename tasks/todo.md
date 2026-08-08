@@ -512,3 +512,7 @@ preserving current routes, API contracts, visual behavior, and browser flows.
 - [x] Fixed the shared `@emme/ui` dialog centering utilities and added a
       regression test; client and appointment wizard E2E flows now pass.
 - [x] Full mock E2E suite passes: 36 passed, 3 intentionally skipped.
+- [x] Migrated authentication session/login operations to `@emme/api` and
+      removed app-local transport wrappers and the unused Axios dependency.
+- [x] Moved tenant persistence behind the `@emme/infrastructure` storage
+      adapter and added transport-boundary regression coverage.

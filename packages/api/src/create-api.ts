@@ -1,4 +1,5 @@
 import { createAppointmentApi, type AppointmentApi } from './appointments/api.js';
+import { createAuthApi, type AuthApi } from './auth/api.js';
 import { createClientApi, type ClientApi } from './clients/api.js';
 import { createServiceApi, type ServiceApi } from './services/api.js';
 import { createBusinessConfigApi, type BusinessConfigApi } from './configuration/api.js';
@@ -8,6 +9,7 @@ import { createGoogleSheetsApi, type GoogleSheetsApi } from './integrations/goog
 import type { HttpClient } from './ports/http-client.js';
 
 export interface Api {
+  readonly auth: AuthApi;
   readonly clients: ClientApi;
   readonly appointments: AppointmentApi;
   readonly services: ServiceApi;
@@ -19,6 +21,7 @@ export interface Api {
 
 export function createApi(http: HttpClient): Api {
   return {
+    auth: createAuthApi(http),
     clients: createClientApi(http),
     appointments: createAppointmentApi(http),
     services: createServiceApi(http),

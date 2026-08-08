@@ -1,3 +1,5 @@
+import { createBrowserStorage } from '../storage/local-storage.js';
+
 export interface Tokens {
   accessToken: string | null;
   refreshToken: string | null;
@@ -9,10 +11,12 @@ export interface TokenStorage {
   clear(): void;
 }
 
-const ACCESS_TOKEN_KEY = "access_token";
-const REFRESH_TOKEN_KEY = "refresh_token";
+const ACCESS_TOKEN_KEY = 'access_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
 
-export function createTokenStorage(storage: Pick<Storage, "getItem" | "setItem" | "removeItem">): TokenStorage {
+export function createTokenStorage(
+  storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
+): TokenStorage {
   return {
     get: () => ({
       accessToken: storage.getItem(ACCESS_TOKEN_KEY),
@@ -32,5 +36,10 @@ export function createTokenStorage(storage: Pick<Storage, "getItem" | "setItem" 
 }
 
 export function createBrowserTokenStorage(): TokenStorage {
-  return createTokenStorage(window.localStorage);
+  const storage = createBrowserStorage();
+  return createTokenStorage({
+    getItem: storage.get,
+    setItem: storage.set,
+    removeItem: storage.remove,
+  });
 }
