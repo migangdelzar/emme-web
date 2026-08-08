@@ -117,8 +117,68 @@ Exited with code 0
 
 The final `rg -n --glob '*.{ts,tsx}' "@/shared/ui" apps/emme-salon-app/src`
 audit reported only the five `PhoneInput` consumer imports and the one
-app-level `sonner` import. A file-count assertion confirmed that
-`src/shared/ui` contains only `PhoneInput.tsx` and `sonner.tsx`.
+app-level `sonner` import. A separate shell file-count assertion, not the
+Vitest import guard, confirmed that `src/shared/ui` contains only
+`PhoneInput.tsx` and `sonner.tsx`.
+
+## Review Fix Evidence
+
+### Strengthened retained-source import guard — RED
+
+The review identified that the initial retained-source check only rejected a
+narrow extensionless relative-import pattern. I wrote a scanner contract that
+requires exact approved dependency lists and supplies alias, explicit extension,
+re-export, and dynamic-import examples. Before implementing the scanner helper:
+
+```text
+bun run --filter @emme/emme-salon-app test -- src/app/ui-import-boundary.test.ts src/shared/ui/PhoneInput.test.tsx src/shared/ui/sonner.test.tsx
+Test Files  1 failed | 2 passed (3)
+Tests       2 failed | 3 passed (5)
+Error: Not implemented: PhoneInput.tsx ...
+```
+
+### Strengthened retained-source import guard — GREEN
+
+`PhoneInput.tsx` now permits only `react`, `@emme/ui`, and
+`@/shared/lib/utils`; `sonner.tsx` permits only `sonner`. The scanner extracts
+each static, re-export, and dynamic import specifier, so aliases and explicit
+extensions cannot bypass the allowlist.
+
+```text
+bun run --filter @emme/emme-salon-app test -- src/app/ui-import-boundary.test.ts src/shared/ui/PhoneInput.test.tsx src/shared/ui/sonner.test.tsx
+Test Files  3 passed (3)
+Tests       5 passed (5)
+Exited with code 0
+```
+
+### Retained interactive component behavior coverage
+
+- `PhoneInput.test.tsx` proves that non-digit input is removed, the local
+  number is capped at ten digits, and the emitted value retains its LADA.
+- `sonner.test.tsx` proves the exported `Toaster` renders a dismissible
+  notification at the app's top-right default position.
+
+These tests add regression coverage only; neither app-specific component's
+behavior or configuration changed.
+
+### Review fix verification
+
+```text
+bun run --filter @emme/emme-salon-app test:ui-imports
+1 test file passed; 3 tests passed
+
+bun run --filter @emme/emme-salon-app test
+18 test files passed; 38 tests passed
+
+bun run --filter @emme/emme-salon-app typecheck
+Exited with code 0
+
+bun run --filter @emme/emme-salon-app build
+Exited with code 0; Vite build and PWA generation completed
+
+git diff --check
+Exited with code 0
+```
 
 ## Self-Review
 
