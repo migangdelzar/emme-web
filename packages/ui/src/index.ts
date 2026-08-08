@@ -3,6 +3,9 @@
  */
 export const PACKAGE_VERSION = "0.0.0";
 
+export { useDisclosure, type DisclosureState } from './hooks/use-disclosure.js';
+export { useMediaQuery } from './hooks/use-media-query.js';
+
 export * from './components/Avatar/index.js';
 export * from './components/Badge/index.js';
 export * from './components/Button/index.js';

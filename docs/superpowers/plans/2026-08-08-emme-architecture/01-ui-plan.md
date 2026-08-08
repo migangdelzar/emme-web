@@ -90,13 +90,13 @@ Allowed runtime dependencies are React and visual/accessibility libraries alread
 
 **Files:** Modify `packages/ui/src/index.ts` and `packages/ui/src/__tests__/package-boundary.test.ts`; test with `bun run --filter @emme/ui test`.
 
-- [ ] Red: add an import test that imports `Button`, `Input`, `Modal`, `Table`, and `ConfirmDialog` only from `@emme/ui`, and assert the module does not expose application-specific names.
-- [ ] Run `bun run --filter @emme/ui test`; expect the test to fail for any missing public export.
-- [ ] Green: export each supported component from its nearest component barrel and from `src/index.ts`.
-- [ ] Run the focused test again; expect all assertions to pass.
-- [ ] Refactor: remove duplicate or deep-path exports and keep one canonical public export per symbol.
-- [ ] Run `bun run --filter @emme/ui typecheck && bun run --filter @emme/ui test`.
-- [ ] Commit with `refactor(ui): stabilize public component exports`.
+- [x] Red: add an import test that imports `Button`, `Input`, `Modal`, `Table`, and `ConfirmDialog` only from `@emme/ui`, and assert the module does not expose application-specific names.
+- [x] Run `bun run --filter @emme/ui test`; expect the test to fail for any missing public export.
+- [x] Green: export each supported component from its nearest component barrel and from `src/index.ts`.
+- [x] Run the focused test again; expect all assertions to pass.
+- [x] Refactor: remove duplicate or deep-path exports and keep one canonical public export per symbol.
+- [x] Run `bun run --filter @emme/ui typecheck && bun run --filter @emme/ui test`.
+- [x] Commit with `refactor(ui): stabilize public component exports`.
 
 ### Task 2: Harden interactive component contracts
 
@@ -141,4 +141,3 @@ bun run --filter @emme/emme-salon-app test:ui-imports
 - [ ] All commands pass with zero skipped tests.
 - [ ] `packages/ui/src/index.ts` is the only supported package entry point.
 - [ ] Plan tasks and package migration commits are complete and pushed.
-
