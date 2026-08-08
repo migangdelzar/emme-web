@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from './useAuth';
 import type { AuthState, AuthContextValue } from './useAuth';
 import { API_VERSION, type CurrentUser } from '@emme/api';
+import { createBrowserTokenStorage } from '@emme/infrastructure';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: Props) {
+  const tokenStorage = createBrowserTokenStorage();
   const [state, setState] = useState<AuthState>({
     status: 'loading',
     user: null,
@@ -23,7 +25,7 @@ export function AuthProvider({ children }: Props) {
 
     async function loadSession() {
       try {
-        const token = localStorage.getItem('access_token');
+        const token = tokenStorage.get().accessToken;
         // No token → user is not authenticated; skip /api/me call
         if (!token) {
           if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
@@ -37,8 +39,7 @@ export function AuthProvider({ children }: Props) {
         const res = await fetch('/api/me', { headers });
         if (!res.ok) {
           if (token) {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            tokenStorage.clear();
           }
           if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
           return;
@@ -86,10 +87,7 @@ export function AuthProvider({ children }: Props) {
       const user: CurrentUser = data.user; // login response already has full user data
 
       // Store token and tenant for subsequent API calls
-      localStorage.setItem('access_token', token);
-      if (data.refreshToken) {
-        localStorage.setItem('refresh_token', data.refreshToken);
-      }
+      tokenStorage.set({ accessToken: token, refreshToken: data.refreshToken });
       const firstMembership = user.memberships?.[0];
       if (firstMembership) {
         localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
@@ -119,8 +117,7 @@ export function AuthProvider({ children }: Props) {
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    tokenStorage.clear();
     localStorage.removeItem('tenant_slug');
     setState((s) => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
     window.location.href = '/';

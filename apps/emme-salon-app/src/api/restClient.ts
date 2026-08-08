@@ -1,11 +1,11 @@
-import { createHttpClient } from '@emme/infrastructure';
+import { createBrowserTokenStorage, createHttpClient } from '@emme/infrastructure';
 import type { HttpClient } from '@emme/infrastructure';
 
 import { getRuntimeConfig } from '@/app/config/runtimeConfig';
 
 async function getToken(): Promise<string | null> {
   try {
-    return typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token');
+    return typeof window === 'undefined' ? null : createBrowserTokenStorage().get().accessToken;
   } catch {
     return null;
   }
