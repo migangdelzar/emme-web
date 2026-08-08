@@ -3,6 +3,5 @@
  */
 export const PACKAGE_VERSION = "0.0.0";
 
-export function Button(): null {
-  return null;
-}
+export { Button } from './components/Button/index.js';
+export type { ButtonProps } from './components/Button/index.js';
