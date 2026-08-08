@@ -11,6 +11,14 @@ describe("createClientRepository", () => {
       repository.create({ name: "Ana López", phone: "555-0100" }),
     ).resolves.toMatchObject({ id: "client-1", name: "Ana López" });
   });
+
+  it("adapts the application update port to the typed API capability", async () => {
+    const repository = createClientRepository(new FakeHttpClient());
+
+    await expect(
+      repository.update("client-1", { name: "Ana López" }),
+    ).resolves.toMatchObject({ id: "client-1", name: "Ana López" });
+  });
 });
 
 class FakeHttpClient implements HttpClient {
@@ -27,7 +35,11 @@ class FakeHttpClient implements HttpClient {
   }
 
   async put<T>(): Promise<T> {
-    throw new Error("Not used");
+    return {
+      id: "client-1",
+      name: "Ana López",
+      phone: "555-0100",
+    } as T;
   }
 
   async patch<T>(): Promise<T> {
