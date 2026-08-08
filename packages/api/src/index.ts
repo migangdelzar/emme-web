@@ -6,6 +6,7 @@
  */
 export * from "./common/common.types.js";
 export * from "./common/routes.js";
+export * from "./contracts/index.js";
 export * from "./auth/auth.types.js";
 export * from "./clients/api.js";
 export * from "./services/api.js";
