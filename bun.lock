@@ -117,6 +117,14 @@
         "vitest": "^4.1.8",
       },
     },
+    "packages/core": {
+      "name": "@emme/core",
+      "version": "0.0.0",
+      "devDependencies": {
+        "typescript": "^5.8.0",
+        "vitest": "^4.1.8",
+      },
+    },
     "packages/domain": {
       "name": "@emme/domain",
       "version": "0.0.0",
@@ -426,6 +434,8 @@
     "@emme/api": ["@emme/api@workspace:packages/api"],
 
     "@emme/application": ["@emme/application@workspace:packages/application"],
+
+    "@emme/core": ["@emme/core@workspace:packages/core"],
 
     "@emme/domain": ["@emme/domain@workspace:packages/domain"],
 
