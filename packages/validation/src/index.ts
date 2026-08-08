@@ -3,11 +3,17 @@
  */
 export const PACKAGE_VERSION = "0.0.0";
 
-export { dateSchema } from "./common/date.schema.js";
-export { emailSchema } from "./common/email.schema.js";
-export { idSchema } from "./common/id.schema.js";
-export { paginationSchema } from "./common/pagination.schema.js";
-export { phoneSchema } from "./common/phone.schema.js";
-export { formatIssues } from "./helpers/format-issues.js";
-export { parseWithSchema } from "./helpers/create-schema.js";
-export type { FieldErrors, ValidationResult } from "./types/validation.types.js";
+export {
+  dateSchema,
+  emailSchema,
+  idSchema,
+  paginationSchema,
+  phoneSchema,
+} from "./common/index.js";
+export { formatIssues, parseWithSchema } from "./helpers/index.js";
+export {
+  ROOT_ERROR_KEY,
+  ValidationError,
+  type ValidationIssue,
+} from "./errors/index.js";
+export type { FieldErrors, ValidationResult } from "./types/index.js";

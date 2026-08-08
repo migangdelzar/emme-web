@@ -84,37 +84,37 @@ Schemas must reject malformed input and return structured issues. Human-readable
 
 **Files:** `packages/validation/src/index.ts`, nearest `index.ts` files, `packages/validation/src/__tests__/validation-boundary.test.ts`.
 
-- [ ] Red: add imports through `@emme/validation` and assert common schemas and `ValidationError` are available without deep paths.
-- [ ] Run `bun run --filter @emme/validation test`; expect missing-export failures if the barrel is incomplete.
-- [ ] Green: export the existing common schemas, helpers, types, and error mapper through package and capability barrels.
-- [ ] Run the focused test and expect PASS.
-- [ ] Refactor: remove duplicate exports and ensure the package has no React, API, infrastructure, or i18n import.
-- [ ] Run `bun run --filter @emme/validation typecheck && bun run --filter @emme/validation test`.
-- [ ] Commit with `refactor(validation): normalize public schema exports`.
+- [x] Red: add imports through `@emme/validation` and assert common schemas and `ValidationError` are available without deep paths.
+- [x] Run `bun run --filter @emme/validation test`; expect missing-export failures if the barrel is incomplete.
+- [x] Green: export the existing common schemas, helpers, types, and error mapper through package and capability barrels.
+- [x] Run the focused test and expect PASS.
+- [x] Refactor: remove duplicate exports and ensure the package has no React, API, infrastructure, or i18n import.
+- [x] Run `bun run --filter @emme/validation typecheck && bun run --filter @emme/validation test`.
+- [x] Commit with `refactor(validation): normalize public schema exports`.
 
 ### Task 2: Define deterministic common schema behavior
 
 **Files:** `packages/validation/src/common/*.schema.test.ts` and corresponding schema files.
 
-- [ ] Red: add cases for trimmed email, invalid email, UUID/ID boundaries, ISO date rejection, pagination lower/upper bounds, and phone normalization expectations based on the current schema contract.
-- [ ] Run the focused test files; each new case must fail for the intended validation reason.
-- [ ] Green: implement only the schema constraints required by the tests and preserve existing accepted application inputs.
-- [ ] Run `bun run --filter @emme/validation test`; expect all common schema tests to pass.
-- [ ] Refactor: share scalar constraints through helpers without changing error issue paths.
-- [ ] Run `bun run --filter @emme/validation typecheck`.
-- [ ] Commit with `test(validation): cover common boundary schemas`.
+- [x] Red: add cases for trimmed email, invalid email, UUID/ID boundaries, ISO date rejection, pagination lower/upper bounds, and phone normalization expectations based on the current schema contract.
+- [x] Run the focused test files; each new case must fail for the intended validation reason.
+- [x] Green: implement only the schema constraints required by the tests and preserve existing accepted application inputs.
+- [x] Run `bun run --filter @emme/validation test`; expect all common schema tests to pass.
+- [x] Refactor: share scalar constraints through helpers without changing error issue paths.
+- [x] Run `bun run --filter @emme/validation typecheck`.
+- [x] Commit with `test(validation): cover common boundary schemas`.
 
 ### Task 3: Make issue mapping stable for application and UI adapters
 
 **Files:** `packages/validation/src/errors/*`, `packages/validation/src/helpers/*`, colocated tests.
 
-- [ ] Red: add tests proving a nested Zod issue becomes `{ path, code, message }`, multiple issues preserve order, and invalid non-Zod errors are not silently treated as valid input.
-- [ ] Run `bun run --filter @emme/validation test`; confirm failures before implementation.
-- [ ] Green: implement the minimum normalized issue conversion and `ValidationError` behavior.
-- [ ] Run the focused tests and expect PASS.
-- [ ] Refactor: keep error construction independent from locale and UI while preserving the original issue path.
-- [ ] Run `bun run --filter @emme/validation typecheck && bun run --filter @emme/validation build`.
-- [ ] Commit with `feat(validation): normalize validation issues`.
+- [x] Red: add tests proving a nested Zod issue becomes `{ path, code, message }`, multiple issues preserve order, and invalid non-Zod errors are not silently treated as valid input.
+- [x] Run `bun run --filter @emme/validation test`; confirm failures before implementation.
+- [x] Green: implement the minimum normalized issue conversion and `ValidationError` behavior.
+- [x] Run the focused tests and expect PASS.
+- [x] Refactor: keep error construction independent from locale and UI while preserving the original issue path.
+- [x] Run `bun run --filter @emme/validation typecheck && bun run --filter @emme/validation build`.
+- [x] Commit with `feat(validation): normalize validation issues`.
 
 ## Acceptance Criteria
 
@@ -134,4 +134,3 @@ bun run --filter @emme/validation build
 - [ ] All tests pass with no skipped cases.
 - [ ] Root `bun run typecheck` and `bun run test` remain green after consumers are migrated.
 - [ ] Every changed file is committed and pushed.
-
