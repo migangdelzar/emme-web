@@ -1,4 +1,5 @@
-export interface MemoryStorage extends Pick<Storage, "getItem" | "setItem" | "removeItem"> {}
+export interface MemoryStorage
+  extends Pick<Storage, "getItem" | "setItem" | "removeItem" | "clear"> {}
 
 export function createMemoryStorage(): MemoryStorage {
   const values = new Map<string, string>();
@@ -10,6 +11,9 @@ export function createMemoryStorage(): MemoryStorage {
     },
     removeItem: (key) => {
       values.delete(key);
+    },
+    clear: () => {
+      values.clear();
     },
   };
 }

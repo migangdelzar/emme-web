@@ -12,4 +12,16 @@ describe("createMemoryStorage", () => {
     storage.removeItem("key");
     expect(storage.getItem("key")).toBeNull();
   });
+
+  it("clears only its own state", () => {
+    const first = createMemoryStorage();
+    const second = createMemoryStorage();
+
+    first.setItem("key", "first");
+    second.setItem("key", "second");
+    first.clear();
+
+    expect(first.getItem("key")).toBeNull();
+    expect(second.getItem("key")).toBe("second");
+  });
 });
