@@ -30,6 +30,33 @@ preserving the current tenant app behavior and package-level compatibility.
 - Test convention: colocated `*.test.ts(x)` by default; `__tests__` only for
   cross-module package integration tests.
 
+## Validation Task 3 — salon feature schema migration
+
+### Goal
+
+Migrate only existing salon feature schemas to `@emme/validation`; retain the
+no-schema state explicitly when the app has no feature schemas to migrate.
+
+### Execution checklist
+
+- [x] Inspect the Task 3 brief, validation package surface, and all app source
+      schema/validation references.
+- [x] Add a regression guard for the discovered no-feature-schema state.
+- [x] Run the guard in RED/GREEN evidence mode and record the result.
+- [x] Run required validation-package and salon-app verification.
+- [x] Self-review, report, commit, and push the scoped result.
+
+### Working notes
+
+- The complete app-source scan found no `schemas/` directory or `*.schema.*`
+  file, and no `zod`, `z.*`, `@hookform/resolvers`, `useForm`, or
+  `@emme/validation` source reference.
+- `ClientForm`, `AppointmentForm`, and `Login` are state/native-constraint
+  forms, not Zod schemas. Their local validation messages and fields remain
+  unchanged.
+- Do not add `@emme/validation` to the salon app until an actual feature schema
+  imports it; adding an unused package edge would violate the package boundary.
+
 ## Goal
 
 Apply the approved frontend architecture and integration guardrails without
