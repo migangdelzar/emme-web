@@ -147,6 +147,28 @@
         "vitest": "^4.1.8",
       },
     },
+    "packages/features": {
+      "name": "@emme/features",
+      "version": "0.0.0",
+      "dependencies": {
+        "@emme/domain": "workspace:*",
+        "@emme/ui": "workspace:*",
+      },
+      "devDependencies": {
+        "@testing-library/react": "^16.3.2",
+        "@types/react": "^19.2.0",
+        "@types/react-dom": "^19.2.0",
+        "happy-dom": "^20.10.6",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "typescript": "^5.8.0",
+        "vitest": "^4.1.8",
+      },
+      "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+      },
+    },
     "packages/i18n": {
       "name": "@emme/i18n",
       "version": "0.0.0",
@@ -489,6 +511,8 @@
     "@emme/e2e": ["@emme/e2e@workspace:e2e/src"],
 
     "@emme/emme-salon-app": ["@emme/emme-salon-app@workspace:apps/emme-salon-app"],
+
+    "@emme/features": ["@emme/features@workspace:packages/features"],
 
     "@emme/i18n": ["@emme/i18n@workspace:packages/i18n"],
 
