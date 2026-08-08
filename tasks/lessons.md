@@ -103,3 +103,12 @@
   unused `platformClient`/`apiClientInstance` files despite green feature tests.
 - Prevention rule: audit composition roots and auth/session code separately from
   feature consumers; enforce the public API boundary with source-level tests.
+
+## 2026-08-08 — Keep shared tooling factories dependency-injected
+
+- Failure mode: moving ESLint imports into a root-level shared config changed
+  Node's package-resolution boundary and made app-local lint dependencies unavailable.
+- Detection signal: `bun run lint` failed with `ERR_MODULE_NOT_FOUND` for
+  `@eslint/js` from `configs/eslint`.
+- Prevention rule: shared workspace config factories must receive toolchain
+  dependencies from the consuming package, whose manifest owns those dependencies.

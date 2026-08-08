@@ -1,15 +1,9 @@
 {
+  "extends": "../../configs/typescript/tsconfig.strict.json",
   "compilerOptions": {
     "target": "ES2024",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
     "declaration": true,
