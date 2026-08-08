@@ -19,8 +19,9 @@ describe('Button', () => {
     await user.tab();
     expect(document.activeElement).toBe(button);
     await user.keyboard('{Enter}');
+    await user.keyboard('[Space]');
 
-    expect(onClick).toHaveBeenCalledOnce();
+    expect(onClick).toHaveBeenCalledTimes(2);
   });
 
   it('does not activate when disabled', async () => {

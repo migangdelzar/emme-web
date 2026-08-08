@@ -142,3 +142,66 @@ Tests       5 passed (5)
 ### Reviewer-fix concerns
 
 None blocking.
+
+## Follow-up reviewer fix: app-path regex and Space keyboard coverage
+
+### Files changed
+
+- `packages/ui/src/__tests__/package-boundary.test.ts` — corrected the forbidden-import matcher to reject both `apps/...` and nested `.../apps/...` specifiers; added direct matcher coverage and excluded test fixtures from the source-file scan.
+- `packages/ui/src/components/Button/Button.test.tsx` — added Space-key activation coverage alongside Enter-key coverage.
+- `.superpowers/sdd/task-1-report.md` — appended this evidence.
+
+### TDD evidence
+
+#### RED
+
+Command:
+
+```text
+bun run --filter @emme/ui test
+```
+
+The pre-fix run failed as expected:
+
+```text
+@emme/ui package boundary > recognizes root-level and nested app import specifiers as forbidden
+expected "import Root from 'apps/root'" to match the old pattern
+
+Button > has an accessible name and activates from the keyboard
+expected "vi.fn()" to be called 2 times, but got 1 times
+
+Test Files  2 failed (2)
+Tests       3 failed | 3 passed (6)
+Exited with code 1
+```
+
+#### GREEN
+
+Commands:
+
+```text
+bun run --filter @emme/ui test
+bun run --filter @emme/ui typecheck
+git diff --check
+```
+
+Exact result:
+
+```text
+Test Files  2 passed (2)
+Tests       6 passed (6)
+@emme/ui typecheck: Exited with code 0
+```
+
+`git diff --check` exited with code 0.
+
+### Self-review
+
+- The matcher now accepts a forbidden specifier beginning with `apps/` or containing `/apps/` at any nested depth.
+- The recursive package scan covers production TypeScript source files while excluding colocated test fixtures, preventing the test’s own examples from creating false positives.
+- The Button test verifies both Enter and Space keyboard activation, plus the existing accessible-name, disabled, and loading behavior.
+- No production behavior or unrelated package was changed in this follow-up.
+
+### Follow-up concerns
+
+None blocking.
