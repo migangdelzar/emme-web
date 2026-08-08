@@ -22,6 +22,10 @@ class FakeAppointmentRepository implements AppointmentRepository {
     return this.result;
   }
 
+  async list(): Promise<Appointment[]> {
+    return this.result ? [this.result] : [];
+  }
+
   async save(value: Appointment): Promise<Appointment> {
     this.saved.push(value);
     return value;

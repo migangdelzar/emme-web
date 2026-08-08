@@ -23,4 +23,11 @@ class FakeClientRepository implements ClientRepository {
     this.createdName = input.name;
     return { id: "client-1", ...input };
   }
+
+  async update(
+    id: string,
+    input: Parameters<ClientRepository["update"]>[1],
+  ) {
+    return { id, name: input.name ?? "Existing client", phone: input.phone ?? "555-0100" };
+  }
 }
