@@ -3,12 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "echo 'No tests yet'",
+    "test": "vitest run",
     "build": "tsc"
   },
   "peerDependencies": {
@@ -16,8 +20,10 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.8"
   }
 }
