@@ -1,6 +1,23 @@
-import { expect, it } from 'vitest';
+import { expect, expectTypeOf, it } from 'vitest';
 
-import { err, ok } from './index.js';
+import { err, ok, type Err, type Ok, type Result } from './index.js';
+
+it('narrows Result payloads with isOk and isErr', () => {
+  const result: Result<number, string> = Math.random() > 0.5 ? ok(2) : err('failed');
+
+  if (result.isOk()) {
+    const narrowed: Ok<number> = result;
+    expectTypeOf(narrowed).toMatchTypeOf<Ok<number>>();
+    expectTypeOf(result.value).toEqualTypeOf<number>();
+    return;
+  }
+
+  if (result.isErr()) {
+    const narrowed: Err<string> = result;
+    expectTypeOf(narrowed).toMatchTypeOf<Err<string>>();
+    expectTypeOf(result.error).toEqualTypeOf<string>();
+  }
+});
 
 it('maps Ok values without evaluating Err branches', () => {
   const value = ok(2).map((number) => number * 3);

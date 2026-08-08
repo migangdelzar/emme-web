@@ -1,11 +1,12 @@
-import type { MatchHandlers, Result } from './result.js';
+import type { Ok } from './ok.js';
+import type { MatchHandlers } from './result.js';
 
-export class Err<E> implements Result<never, E> {
+export class Err<E> {
   readonly _tag = 'Err' as const;
 
   public constructor(readonly error: E) {}
 
-  isOk(): this is Result<never, never> {
+  isOk(): this is Ok<never> {
     return false;
   }
 
