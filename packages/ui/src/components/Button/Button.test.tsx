@@ -68,4 +68,14 @@ describe('Button', () => {
 
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it('keeps loading buttons busy when callers pass a conflicting aria-busy value', () => {
+    render(
+      <Button aria-busy={false} loading>
+        Save changes
+      </Button>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Save changes' }).getAttribute('aria-busy')).toBe('true');
+  });
 });

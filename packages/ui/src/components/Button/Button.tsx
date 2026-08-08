@@ -50,6 +50,7 @@ function Button({
   asChild = false,
   disabled = false,
   loading = false,
+  'aria-busy': ariaBusy,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot.Root : 'button';
@@ -61,7 +62,7 @@ function Button({
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
       disabled={disabled || loading}
-      aria-busy={loading || undefined}
+      aria-busy={loading ? true : ariaBusy}
       {...props}
     />
   );

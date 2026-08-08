@@ -38,4 +38,27 @@ describe('AlertDialog', () => {
     await screen.findByRole('alertdialog', { name: 'Delete appointment?' });
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Cancel' }));
   });
+
+  it('does not open from a disabled trigger', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AlertDialog>
+        <AlertDialogTrigger disabled>Delete appointment</AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogTitle>Delete appointment?</AlertDialogTitle>
+          <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Delete</AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>,
+    );
+    const trigger = screen.getByRole('button', { name: 'Delete appointment' });
+
+    await user.tab();
+    await user.keyboard('{Enter}');
+
+    expect(trigger).toHaveProperty('disabled', true);
+    expect(screen.queryByRole('alertdialog', { name: 'Delete appointment?' })).toBeNull();
+  });
 });

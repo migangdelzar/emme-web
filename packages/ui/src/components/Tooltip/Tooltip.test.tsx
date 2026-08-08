@@ -28,4 +28,27 @@ describe('Tooltip', () => {
     expect(screen.getByRole('button', { name: 'More information' })).toBe(document.activeElement);
     expect((await screen.findByRole('tooltip')).textContent).toContain('Explains the setting');
   });
+
+  it('does not reveal a tooltip from a disabled trigger', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button aria-label="More information" disabled>i</button>
+          </TooltipTrigger>
+          <TooltipContent>Explains the setting</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>,
+    );
+    const trigger = screen.getByRole('button', { name: 'More information' });
+
+    await user.tab();
+    await user.keyboard('{Enter}');
+
+    expect(trigger).toHaveProperty('disabled', true);
+    expect(document.activeElement).not.toBe(trigger);
+    expect(screen.queryByRole('tooltip')).toBeNull();
+  });
 });

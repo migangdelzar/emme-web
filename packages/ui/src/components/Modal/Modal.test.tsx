@@ -35,4 +35,25 @@ describe('Dialog', () => {
     expect(screen.queryByRole('dialog', { name: 'Edit profile' })).toBeNull();
     expect(document.activeElement).toBe(trigger);
   });
+
+  it('does not open from a disabled trigger', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog>
+        <DialogTrigger disabled>Open profile</DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>Update the profile details.</DialogDescription>
+        </DialogContent>
+      </Dialog>,
+    );
+    const trigger = screen.getByRole('button', { name: 'Open profile' });
+
+    await user.tab();
+    await user.keyboard('{Enter}');
+
+    expect(trigger).toHaveProperty('disabled', true);
+    expect(screen.queryByRole('dialog', { name: 'Edit profile' })).toBeNull();
+  });
 });
