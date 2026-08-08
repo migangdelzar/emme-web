@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/api/restClient';
-import { createServiceApi, type Service as ContractService } from '@emme/api';
-import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
+import { useApi } from '@emme/core';
+import type { Service as ContractService } from '@emme/api';
+import { createMutationOptions, createResourceKey } from '@/api/queryFactory';
 
 export interface NailService {
   id: string;
@@ -22,7 +22,7 @@ interface ServiceListParams {
   category?: string;
 }
 
-const servicesContract = createServiceApi(api);
+const SERVICES_KEY = createResourceKey('services');
 
 function mapContractService(raw: ContractService): NailService {
   return {
@@ -35,16 +35,6 @@ function mapContractService(raw: ContractService): NailService {
     isActive: raw.isActive,
   };
 }
-
-const SERVICES_KEY = createResourceKey('services');
-
-const servicesResource = createQueryResource<ServiceListParams, ServiceListResponse, 'services'>({
-  key: 'services',
-  queryKey: (params) => [...SERVICES_KEY, 'list', params],
-  queryFn: async (params) => ({
-    services: (await servicesContract.list(params)).map(mapContractService),
-  }),
-});
 
 export interface CreateServiceInput {
   name: string;
@@ -60,17 +50,26 @@ export interface UpdateServiceInput extends CreateServiceInput {
 }
 
 export function useNailServicesRest(category?: string) {
-  return useQuery(servicesResource.listOptions({ category }));
+  const api = useApi();
+  const params: ServiceListParams = { category };
+
+  return useQuery<ServiceListResponse>({
+    queryKey: [...SERVICES_KEY, 'list', params],
+    queryFn: async () => ({
+      services: (await api.services.list(params)).map(mapContractService),
+    }),
+  });
 }
 
 export function useCreateService() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
       {
         key: 'services',
         mutationFn: (input: CreateServiceInput) =>
-          servicesContract.create({
+          api.services.create({
             name: input.name,
             category: input.category,
             description: input.description,
@@ -84,13 +83,14 @@ export function useCreateService() {
 }
 
 export function useUpdateService() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
       {
         key: 'services',
         mutationFn: ({ id, ...data }: UpdateServiceInput) =>
-          servicesContract.update(id, {
+          api.services.update(id, {
             name: data.name,
             category: data.category,
             description: data.description,
@@ -105,13 +105,11 @@ export function useUpdateService() {
 }
 
 export function useDeleteService() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      {
-        key: 'services',
-        mutationFn: (id: string) => api.post(`/api/services/${id}/retire`),
-      },
+      { key: 'services', mutationFn: (id: string) => api.services.retire(id) },
       queryClient
     )
   );

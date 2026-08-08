@@ -48,6 +48,7 @@
     "@emme/application": "workspace:*",
     "@emme/core": "workspace:*",
     "@emme/domain": "workspace:*",
+    "@emme/features": "workspace:*",
     "@emme/infrastructure": "workspace:*",
     "@emme/i18n": "workspace:*",
     "@emme/ui": "workspace:*",

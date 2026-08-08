@@ -59,6 +59,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@emme/ui';
 import { Label } from '@emme/ui';
 import { Badge } from '@emme/ui';
+import { AppointmentStatusBadge } from '@emme/features';
 import { Calendar } from '@emme/ui';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@emme/ui';
 import { motion, AnimatePresence } from 'motion/react';
@@ -1006,22 +1007,10 @@ export function Appointments() {
                 </div>
 
                 <div className="p-1 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between pl-4">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        'size-2 rounded-full',
-                        statusStyles[selectedAptForDetail.status].dot
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        'text-[10px] font-black uppercase tracking-widest',
-                        statusStyles[selectedAptForDetail.status].text
-                      )}
-                    >
-                      {statusStyles[selectedAptForDetail.status].label}
-                    </span>
-                  </div>
+                  <AppointmentStatusBadge
+                    status={selectedAptForDetail.status}
+                    label={statusStyles[selectedAptForDetail.status].label}
+                  />
                   <Select
                     value={selectedAptForDetail.status}
                     onValueChange={(val) =>

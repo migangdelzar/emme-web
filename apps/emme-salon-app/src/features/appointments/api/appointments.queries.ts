@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/api/restClient';
-import { createAppointmentApi, type Appointment as ContractAppointment } from '@emme/api';
-import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
+import { useApi } from '@emme/core';
+import type { Appointment as ContractAppointment } from '@emme/api';
+import { createMutationOptions, createResourceKey } from '@/api/queryFactory';
 
 export interface Appointment {
   id: string;
@@ -32,8 +32,6 @@ export interface CreateAppointmentInput {
   notes?: string;
 }
 
-const appointmentsContract = createAppointmentApi(api);
-
 function mapContractAppointment(raw: ContractAppointment): Appointment {
   return {
     ...raw,
@@ -43,24 +41,22 @@ function mapContractAppointment(raw: ContractAppointment): Appointment {
 
 const APPOINTMENTS_KEY = createResourceKey('appointments');
 
-const appointmentsResource = createQueryResource<
-  AppointmentListParams,
-  AppointmentListResponse,
-  'appointments'
->({
-  key: 'appointments',
-  queryKey: (params) => [...APPOINTMENTS_KEY, 'list', params],
-  queryFn: async (params) => ({
-    appointments: (await appointmentsContract.list(params)).map(mapContractAppointment),
-  }),
-});
-
 export function useAppointmentsRest(date?: string) {
-  return useQuery(appointmentsResource.listOptions({ date }));
+  const api = useApi();
+  const params: AppointmentListParams = { date };
+
+  return useQuery<AppointmentListResponse>({
+    queryKey: [...APPOINTMENTS_KEY, 'list', params],
+    queryFn: async () => ({
+      appointments: (await api.appointments.list(params)).map(mapContractAppointment),
+    }),
+  });
 }
 
 export function useCreateAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
+
   return useMutation(
     createMutationOptions(
       {
@@ -68,7 +64,7 @@ export function useCreateAppointmentRest() {
         mutationFn: (input: CreateAppointmentInput) => {
           const [date, startTimeWithSeconds] = input.startTime.split('T');
           const [, endTimeWithSeconds] = input.endTime.split('T');
-          return appointmentsContract.create({
+          return api.appointments.create({
             clientId: input.clientId ?? '',
             serviceId: input.serviceId ?? '',
             artistId: input.artistId,
@@ -86,59 +82,62 @@ export function useCreateAppointmentRest() {
 }
 
 export function useCancelAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      {
-        key: 'appointments',
-        mutationFn: (id: string) => appointmentsContract.cancel(id),
-      },
+      { key: 'appointments', mutationFn: (id: string) => api.appointments.cancel(id) },
       queryClient
     )
   );
 }
 
 export function useConfirmAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.confirm(id) },
+      { key: 'appointments', mutationFn: (id: string) => api.appointments.confirm(id) },
       queryClient
     )
   );
 }
 
 export function useStartAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.start(id) },
+      { key: 'appointments', mutationFn: (id: string) => api.appointments.start(id) },
       queryClient
     )
   );
 }
 
 export function useCompleteAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.complete(id) },
+      { key: 'appointments', mutationFn: (id: string) => api.appointments.complete(id) },
       queryClient
     )
   );
 }
 
 export function useMarkNoShowAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
-      { key: 'appointments', mutationFn: (id: string) => appointmentsContract.markNoShow(id) },
+      { key: 'appointments', mutationFn: (id: string) => api.appointments.markNoShow(id) },
       queryClient
     )
   );
 }
 
 export function useRescheduleAppointmentRest() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
@@ -152,7 +151,7 @@ export function useRescheduleAppointmentRest() {
           id: string;
           newStartsAt: string;
           newEndsAt: string;
-        }) => appointmentsContract.reschedule(id, newStartsAt, newEndsAt),
+        }) => api.appointments.reschedule(id, newStartsAt, newEndsAt),
       },
       queryClient
     )

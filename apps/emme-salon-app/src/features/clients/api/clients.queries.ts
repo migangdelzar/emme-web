@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/api/restClient';
-import { createClientApi, type Client as ContractClient } from '@emme/api';
-import { createClient } from '@emme/application';
+import { useApi } from '@emme/core';
+import type { Client as ContractClient } from '@emme/api';
+import { createClient, updateClient } from '@emme/application';
 import { createClientRepository } from '@emme/infrastructure';
-import { createMutationOptions, createQueryResource, createResourceKey } from '@/api/queryFactory';
+import { createMutationOptions, createResourceKey } from '@/api/queryFactory';
 
 export interface Customer {
   id: string;
@@ -22,23 +23,11 @@ interface CustomerListResponse {
   customers: Customer[];
 }
 
-const customersContract = createClientApi(api);
-const clientRepository = createClientRepository(api);
-const createClientUseCase = createClient({ clients: clientRepository });
-
 function mapContractCustomer(raw: ContractClient): Customer {
   return raw;
 }
 
 const CUSTOMERS_KEY = createResourceKey('customers');
-
-const customersResource = createQueryResource<undefined, CustomerListResponse, 'customers'>({
-  key: 'customers',
-  queryKey: () => [...CUSTOMERS_KEY, 'list'],
-  queryFn: async () => ({
-    customers: (await customersContract.list()).map(mapContractCustomer),
-  }),
-});
 
 export interface CreateCustomerInput {
   name: string;
@@ -56,11 +45,24 @@ export interface UpdateCustomerInput extends CreateCustomerInput {
 }
 
 export function useCustomers() {
-  return useQuery(customersResource.listOptions(undefined));
+  const api = useApi();
+
+  return useQuery<CustomerListResponse>({
+    queryKey: [...CUSTOMERS_KEY, 'list'],
+    queryFn: async () => ({
+      customers: (await api.clients.list()).map(mapContractCustomer),
+    }),
+  });
 }
 
 export function useCreateCustomer() {
+  const api = useApi();
   const queryClient = useQueryClient();
+  const createClientUseCase = useMemo(
+    () => createClient({ clients: createClientRepository(api.clients) }),
+    [api]
+  );
+
   return useMutation(
     createMutationOptions(
       {
@@ -83,12 +85,31 @@ export function useCreateCustomer() {
 }
 
 export function useUpdateCustomer() {
+  const api = useApi();
   const queryClient = useQueryClient();
+  const updateClientUseCase = useMemo(
+    () => updateClient({ clients: createClientRepository(api.clients) }),
+    [api]
+  );
+
   return useMutation(
     createMutationOptions(
       {
         key: 'customers',
-        mutationFn: ({ id, ...data }: UpdateCustomerInput) => customersContract.update(id, data),
+        mutationFn: ({ id, ...data }: UpdateCustomerInput) =>
+          updateClientUseCase({
+            id,
+            input: {
+              name: data.name,
+              phone: data.phone ?? undefined,
+              email: data.email ?? undefined,
+              notes: data.notes ?? undefined,
+              allergies: data.allergies ?? undefined,
+              preferences: data.preferences ?? undefined,
+              isVip: data.isVip,
+              birthday: data.birthday ?? undefined,
+            },
+          }),
       },
       queryClient
     )
@@ -96,12 +117,13 @@ export function useUpdateCustomer() {
 }
 
 export function useDeleteCustomer() {
+  const api = useApi();
   const queryClient = useQueryClient();
   return useMutation(
     createMutationOptions(
       {
         key: 'customers',
-        mutationFn: (id: string) => customersContract.retire(id),
+        mutationFn: (id: string) => api.clients.retire(id),
       },
       queryClient
     )
