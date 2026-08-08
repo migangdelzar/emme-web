@@ -22,6 +22,7 @@
         "@dnd-kit/modifiers": "^9.0.0",
         "@emme/api": "workspace:*",
         "@emme/application": "workspace:*",
+        "@emme/core": "workspace:*",
         "@emme/domain": "workspace:*",
         "@emme/i18n": "workspace:*",
         "@emme/infrastructure": "workspace:*",
@@ -122,6 +123,9 @@
     "packages/core": {
       "name": "@emme/core",
       "version": "0.0.0",
+      "dependencies": {
+        "@emme/api": "workspace:*",
+      },
       "devDependencies": {
         "typescript": "^5.8.0",
         "vitest": "^4.1.8",
@@ -153,6 +157,14 @@
       "devDependencies": {
         "typescript": "^5.8.0",
         "vitest": "^3.2.4",
+      },
+    },
+    "packages/test-support": {
+      "name": "@emme/test-support",
+      "version": "0.0.0",
+      "devDependencies": {
+        "typescript": "^5.8.0",
+        "vitest": "^4.1.8",
       },
     },
     "packages/ui": {
@@ -449,6 +461,8 @@
     "@emme/i18n": ["@emme/i18n@workspace:packages/i18n"],
 
     "@emme/infrastructure": ["@emme/infrastructure@workspace:packages/infrastructure"],
+
+    "@emme/test-support": ["@emme/test-support@workspace:packages/test-support"],
 
     "@emme/ui": ["@emme/ui@workspace:packages/ui"],
 

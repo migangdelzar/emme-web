@@ -1,5 +1,5 @@
 {
-  "name": "@emme/core",
+  "name": "@emme/test-support",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,9 +14,6 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "build": "tsc"
-  },
-  "dependencies": {
-    "@emme/api": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

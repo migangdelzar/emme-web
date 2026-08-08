@@ -29,8 +29,10 @@ flowchart TB
     ROUTER --> LAYOUT[Application layout]
     LAYOUT --> FEATURE[Feature route]
     FEATURE --> HOOK[Feature hook]
-    HOOK --> CONTRACT[Capability API contract]
-    CONTRACT --> CLIENT[Shared typed HTTP client]
+    HOOK --> APPLICATION[Application use case]
+    APPLICATION --> DOMAIN[Domain rules and ports]
+    APPLICATION --> API[Typed API adapter]
+    API --> INFRA[Concrete infrastructure]
 ```
 
 ## Rules
@@ -48,9 +50,11 @@ flowchart TB
 
 Use Feature-Sliced Design for application-facing organization. Features own
 their user flows, query hooks, view models, and UI mapping. The canonical
-capability request adapters currently live in `@emme/contracts`; the shared
-`@emme/api-client` package owns only transport behavior: authentication, tenant
-headers, API-version headers, serialization, and Problem Details errors.
+capability request adapters live in `@emme/api`; the shared
+`@emme/infrastructure` package owns only concrete transport behavior:
+authentication, tenant headers, API-version headers, serialization, storage,
+and Problem Details errors. `@emme/domain` and `@emme/application` remain
+framework-agnostic.
 
 ```text
 features/
@@ -65,11 +69,11 @@ features/
     └── components/
 ```
 
-`@emme/contracts` owns capability interfaces and adapters such as
+`@emme/api` owns capability interfaces and adapters such as
 `createAppointmentApi`, `createClientApi`, and `createServiceApi`. Feature hooks
 may compose those adapters and map their results to UI models. UI components
 must not depend on `HttpClient` directly. Do not place salon endpoint methods in
-the reusable `@emme/api-client` package.
+the reusable `@emme/infrastructure` package.
 
 ### Composition root
 

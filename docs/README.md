@@ -8,8 +8,11 @@ This monorepo contains the web frontend packages and apps for the EMME platform.
 
 | Package | Purpose |
 |---|---|
-| `@emme/contracts` | TypeScript types, API route constants, REST adapters — mirrors backend module APIs |
-| `@emme/api-client` | HTTP client with auth token injection, tenant header, error handling |
+| `@emme/core` | Auth, tenancy, permissions, runtime configuration, shared errors |
+| `@emme/domain` | Pure business rules and models; no framework or browser dependencies |
+| `@emme/application` | Use cases and ports that orchestrate domain behavior |
+| `@emme/api` | Typed backend contracts, routes, ports, and capability adapters |
+| `@emme/infrastructure` | Concrete HTTP, auth-token, storage, and external adapters |
 | `@emme/i18n` | Typed translation keys, Spanish (es-MX) and English (en-US) |
 | `@emme/ui` | Shared UI components |
 | `@emme/validation` | Zod schemas shared across apps |
@@ -24,7 +27,7 @@ This monorepo contains the web frontend packages and apps for the EMME platform.
 
 ## Relationship to Backend
 
-All three apps consume the same **Spring Modulith** backend (`emme-service`) through typed contracts in `@emme/contracts`. Each app sees a subset of the backend's module capabilities:
+All three apps consume the same **Spring Modulith** backend (`emme-service`) through typed capabilities in `@emme/api`. Each app sees a subset of the backend's module capabilities:
 
 ```
 ┌──────────────────────────────────────┐

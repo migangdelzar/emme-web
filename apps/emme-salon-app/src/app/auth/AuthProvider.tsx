@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function AuthProvider({ children }: Props) {
-  const tokenStorage = createBrowserTokenStorage();
+  const tokenStorage = useMemo(() => createBrowserTokenStorage(), []);
   const [state, setState] = useState<AuthState>({
     status: 'loading',
     user: null,
@@ -67,44 +67,47 @@ export function AuthProvider({ children }: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tokenStorage]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    setState((s) => ({ ...s, error: null }));
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'API-Version': API_VERSION },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Credenciales inválidas' }));
-        setState((s) => ({ ...s, status: 'signedOut', error: err.error }));
-        return;
+  const login = useCallback(
+    async (email: string, password: string) => {
+      setState((s) => ({ ...s, error: null }));
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'API-Version': API_VERSION },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Credenciales inválidas' }));
+          setState((s) => ({ ...s, status: 'signedOut', error: err.error }));
+          return;
+        }
+        const data = await res.json();
+        const token = data.accessToken;
+        const user: CurrentUser = data.user; // login response already has full user data
+
+        // Store token and tenant for subsequent API calls
+        tokenStorage.set({ accessToken: token, refreshToken: data.refreshToken });
+        const firstMembership = user.memberships?.[0];
+        if (firstMembership) {
+          localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
+        }
+
+        setState((s) => ({
+          ...s,
+          status: 'ready',
+          user,
+          allTenants: user.memberships ?? [],
+          tenant: user.memberships?.[0] ?? null,
+          error: null,
+        }));
+      } catch {
+        setState((s) => ({ ...s, status: 'signedOut', error: 'Error de conexión' }));
       }
-      const data = await res.json();
-      const token = data.accessToken;
-      const user: CurrentUser = data.user; // login response already has full user data
-
-      // Store token and tenant for subsequent API calls
-      tokenStorage.set({ accessToken: token, refreshToken: data.refreshToken });
-      const firstMembership = user.memberships?.[0];
-      if (firstMembership) {
-        localStorage.setItem('tenant_slug', firstMembership.tenantSlug);
-      }
-
-      setState((s) => ({
-        ...s,
-        status: 'ready',
-        user,
-        allTenants: user.memberships ?? [],
-        tenant: user.memberships?.[0] ?? null,
-        error: null,
-      }));
-    } catch {
-      setState((s) => ({ ...s, status: 'signedOut', error: 'Error de conexión' }));
-    }
-  }, []);
+    },
+    [tokenStorage]
+  );
 
   const selectTenant = useCallback((slug: string) => {
     setState((s) => {
@@ -121,7 +124,7 @@ export function AuthProvider({ children }: Props) {
     localStorage.removeItem('tenant_slug');
     setState((s) => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
     window.location.href = '/';
-  }, []);
+  }, [tokenStorage]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

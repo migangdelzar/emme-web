@@ -50,4 +50,4 @@ AI responses draw only from the requesting workspace's indexed documents and gen
 
 ## Frontend Implementation Note
 
-The backend `POST /api/ai/chat` endpoint is implemented. The frontend React component for the AI chat interface is yet to be built. The route is defined in `@emme/contracts` as `API.AI_CHAT`.
+The backend `POST /api/ai/chat` endpoint is implemented. The frontend React component for the AI chat interface is yet to be built. The route is defined in `@emme/api` as `API.AI_CHAT`.

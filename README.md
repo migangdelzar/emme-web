@@ -89,7 +89,7 @@ apps/emme-salon-app/src/
 Features own user outcomes and feature state. The app shell owns routing and
 cross-feature providers. Shared code must be stable and genuinely reused.
 Backend internals are never imported; all communication crosses the typed HTTP
-contract through `@emme/api-client` and `@emme/contracts`.
+contract through `@emme/infrastructure` and `@emme/api`.
 
 ## Container image
 

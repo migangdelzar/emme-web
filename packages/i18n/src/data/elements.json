@@ -252,12 +252,12 @@
     "pageContainer": "page-container"
   },
   "nav": {
-    "dashboard": "nav-dashboard",
-    "services": "nav-services",
-    "clients": "nav-clients",
-    "agenda": "nav-agenda",
-    "finances": "nav-finances",
-    "settings": "nav-settings",
-    "appointments": "nav-agenda"
+    "dashboard": "mobile-nav-dashboard",
+    "services": "mobile-nav-services",
+    "clients": "mobile-nav-clients",
+    "agenda": "mobile-nav-agenda",
+    "finances": "mobile-nav-finances",
+    "settings": "mobile-nav-settings",
+    "appointments": "mobile-nav-appointments"
   }
 }

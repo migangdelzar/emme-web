@@ -14,7 +14,7 @@ for backend ownership and release policy.
 React feature
    ↓ feature hook
 capability API contract
-   ↓ shared typed HTTP client
+   ↓ application use case and API port
 HTTP /api
    ↓ auth + tenant context
 controller
@@ -25,13 +25,15 @@ domain + infrastructure
 ```mermaid
 sequenceDiagram
     participant UI as React feature
-    participant FEATURE_API as Capability API contract
-    participant CLIENT as Shared HTTP client
+    participant APP_USECASE as Application use case
+    participant FEATURE_API as @emme/api adapter
+    participant CLIENT as @emme/infrastructure HTTP
     participant API as Backend API
     participant APP as Application use case
     participant DB as Module data
 
-    UI->>FEATURE_API: Command / query
+    UI->>APP_USECASE: Command / query
+    APP_USECASE->>FEATURE_API: Use application port
     FEATURE_API->>CLIENT: Typed request
     CLIENT->>API: Authenticated request
     API->>API: Validate tenant + authorization
@@ -41,15 +43,16 @@ sequenceDiagram
     APP-->>API: Contract result/error
     API-->>CLIENT: Versioned response
     CLIENT-->>FEATURE_API: Typed response/error
-    FEATURE_API-->>UI: View model/state
+    FEATURE_API-->>APP_USECASE: Domain result/error
+    APP_USECASE-->>UI: View model/state
 ```
 
 ## Consumer rules
 
-- Consume versioned API routes through capability adapters in `@emme/contracts`
-  backed by `@emme/api-client`.
-- Keep `@emme/contracts` independent of `@emme/api-client`: contracts define
-  transport types, routes, and minimal HTTP ports; the API client implements
+- Consume versioned API routes through capability adapters in `@emme/api`
+  backed by `@emme/infrastructure`.
+- Keep `@emme/api` independent of `@emme/infrastructure`: the API package defines
+  transport types, routes, and minimal HTTP ports; infrastructure implements
   HTTP execution, authentication headers, tenant context, and Problem Details.
 - Application features may adapt contract payloads into view models, but must
   not call `fetch` directly from feature components or hooks.
@@ -71,9 +74,9 @@ sequenceDiagram
 ### API consumption
 
 - Keep OpenAPI/schema definitions with the backend contract owner.
-- Preserve the dependency direction: feature hook → capability contract →
-  shared API client → browser transport. The contracts package must never import
-  the concrete API client package.
+- Preserve the dependency direction: feature hook → application use case →
+  application port → `@emme/api` adapter → `@emme/infrastructure` transport.
+  The API package must never import concrete infrastructure.
 - Adapt transport types to feature view models where their lifecycles differ.
 - Detect breaking schema changes in CI before deployment.
 - Define maximum request/response sizes, pagination, timeout, and rate-limit behavior.

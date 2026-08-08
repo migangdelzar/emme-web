@@ -4,7 +4,9 @@ import { Loader2 } from 'lucide-react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 const Dashboard = React.lazy(() =>
-  import('@/features/dashboard/components/Dashboard').then((module) => ({ default: module.Dashboard }))
+  import('@/features/dashboard/components/Dashboard').then((module) => ({
+    default: module.Dashboard,
+  }))
 );
 const Appointments = React.lazy(() =>
   import('@/features/appointments/components/Appointments').then((module) => ({

@@ -45,6 +45,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@emme/api": "workspace:*",
     "@emme/application": "workspace:*",
+    "@emme/core": "workspace:*",
     "@emme/domain": "workspace:*",
     "@emme/infrastructure": "workspace:*",
     "@emme/i18n": "workspace:*",

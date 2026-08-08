@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useAuth } from '@/app/auth/useAuth';
 import { useNailServicesRest } from '@/features/services/api/services.queries';
 import { useBusinessProfile } from '@/features/settings/api/tenant-config.queries';
-import type { BusinessProfile as ProfileType } from '@/features/settings/api/tenant-config.queries';
 
 function mapNailServiceView(raw: {
   id: string;

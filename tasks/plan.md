@@ -78,24 +78,24 @@ explicitly out of scope for this architecture migration.
 
 ### Phase 0 — Package boundary migration
 
-- [ ] Rename `@emme/api-client` to `@emme/infrastructure`.
-- [ ] Rename and reorganize `@emme/contracts` as `@emme/api`.
-- [ ] Preserve public behavior and tests while moving files into capability,
+- [x] Rename `@emme/api-client` to `@emme/infrastructure`.
+- [x] Rename and reorganize `@emme/contracts` as `@emme/api`.
+- [x] Preserve public behavior and tests while moving files into capability,
       port, integration, and testing folders.
-- [ ] Update app, E2E, package scripts, and TypeScript references to the new
+- [x] Update app, E2E, package scripts, and TypeScript references to the new
       package names.
-- [ ] Add compatibility notes to architecture documentation.
+- [x] Add compatibility notes to architecture documentation.
 
 Acceptance: package tests, workspace typecheck, app tests, and E2E TypeScript
 compile without imports from the old package names.
 
 ### Phase 1 — Shared library foundations
 
-- [ ] Add `@emme/core` with auth, tenancy, access-control, runtime, config,
+- [x] Add `@emme/core` with auth, tenancy, access-control, runtime, config,
       errors, and common types as independently testable modules.
-- [ ] Add `@emme/domain` with pure clients, services, and appointments models,
+- [x] Add `@emme/domain` with pure clients, services, and appointments models,
       rules, and repository ports.
-- [ ] Add `@emme/application` with the first use cases for clients, services,
+- [x] Add `@emme/application` with the first use cases for clients, services,
       and appointments; inject repository ports rather than creating API
       clients internally.
 - [ ] Add `@emme/test-support` for shared fakes/factories only when a second
@@ -108,10 +108,10 @@ focused tests for exported behavior, and no circular workspace dependency.
 
 ### Phase 2 — Tenant app composition root
 
-- [ ] Add `src/app/AppProviders.tsx`.
-- [ ] Add `src/app/router.tsx` and preserve HashRouter paths.
-- [ ] Add `src/app/layouts/AppLayout.tsx` and app-owned error boundaries.
-- [ ] Make `main.tsx` a thin bootstrap.
+- [x] Add `src/app/AppProviders.tsx`.
+- [x] Add `src/app/router.tsx` and preserve HashRouter paths.
+- [x] Add `src/app/layouts/AppLayout.tsx` and app-owned error boundaries.
+- [x] Make `main.tsx` a thin bootstrap.
 - [ ] Keep signed-out, tenant-required, and ready states behaviorally equal.
 
 Acceptance: existing auth and navigation E2E flows remain green and there is
@@ -119,11 +119,11 @@ one provider composition root and one route tree.
 
 ### Phase 3 — Tenant feature vertical slices
 
-- [ ] Migrate clients into explicit UI `api`, `hooks`, `pages`, `components`,
+- [x] Migrate clients into explicit UI `api`, `hooks`, `pages`, `components`,
       and public-barrel ownership, delegating business behavior to
       `@emme/application` and `@emme/domain`.
-- [ ] Migrate services using the same tested boundary.
-- [ ] Migrate appointments and scheduling helpers, preserving status behavior.
+- [x] Migrate services using the same tested boundary.
+- [x] Migrate appointments and scheduling helpers, preserving status behavior.
 - [ ] Migrate remaining tenant-only features only where a boundary earns its
       complexity; do not create empty enterprise folders.
 - [ ] Remove `AppContext`, global API hooks, and transitional provider paths
@@ -161,7 +161,9 @@ may leave the workspace uncompilable.
 ## Definition of done
 
 - [ ] Target package boundaries are present and documented.
-- [ ] Old `@emme/contracts` and `@emme/api-client` imports are removed.
+- [x] Old `@emme/contracts` and `@emme/api-client` imports are removed from
+      active source and workspace manifests; historical plan records retain
+      their original names for auditability.
 - [ ] Current tenant routes and E2E flows remain compatible.
 - [ ] Every migrated behavior has tests written before implementation changes.
 - [ ] Workspace verification passes or pre-existing failures are documented.

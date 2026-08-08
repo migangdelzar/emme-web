@@ -8,10 +8,10 @@ transport-safe request/response adapters and browser-facing view models.
 ```mermaid
 flowchart LR
     Service["Service endpoint / event schema"] --> Contract["Versioned contract"]
-    Contract --> Client["@emme/api-client"]
-    Contract --> Types["@emme/contracts"]
-    Client --> Adapter["Feature adapter"]
-    Types --> View["View model"]
+    Contract --> Api["@emme/api"]
+    Api --> Port["HTTP port"]
+    Port --> Infrastructure["@emme/infrastructure"]
+    Api --> View["Domain/application mapping"]
 ```
 
 ## Rules
@@ -29,6 +29,6 @@ flowchart LR
 
 1. Define the service contract change.
 2. Add backward-compatible consumer/provider tests.
-3. Update `@emme/contracts` and adapters.
+3. Update `@emme/api` and adapters.
 4. Verify old and new versions during the compatibility window.
 5. Remove deprecated fields only after consumers migrate.

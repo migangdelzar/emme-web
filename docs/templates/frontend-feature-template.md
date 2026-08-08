@@ -13,7 +13,7 @@ apps/emme-salon-app/src/features/<feature>/
 ## Feature contract
 
 - Own one user-facing capability.
-- Consume `@emme/api-client` and `@emme/contracts`, never backend internals.
+- Consume `@emme/api` through `@emme/infrastructure`, never backend internals.
 - Define loading, empty, error, offline, permission, and success states.
 - Keep server state distinct from local UI state.
 - Keep network side effects in adapters/hooks, not presentational components.

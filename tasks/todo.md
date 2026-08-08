@@ -4,21 +4,21 @@
 
 ### Goal
 
-Apply the approved seven-library architecture to the Bun workspace while
+Apply the approved eight-library architecture to the Bun workspace while
 preserving the current tenant app behavior and package-level compatibility.
 
 ### Execution checklist
 
-- [ ] Update architecture plan and package ownership docs.
-- [ ] Rename `@emme/contracts` to `@emme/api` and reorganize its public modules.
-- [ ] Rename `@emme/api-client` to `@emme/infrastructure` and keep transport behavior.
-- [ ] Update all workspace consumers and remove legacy package imports.
-- [ ] Add tested `@emme/core` foundation modules.
-- [ ] Add tested `@emme/domain` rules and models.
-- [ ] Add tested `@emme/application` use cases and ports.
+- [x] Update architecture plan and package ownership docs.
+- [x] Rename `@emme/contracts` to `@emme/api` and reorganize its public modules.
+- [x] Rename `@emme/api-client` to `@emme/infrastructure` and keep transport behavior.
+- [x] Update all workspace consumers and remove legacy package imports.
+- [x] Add tested `@emme/core` foundation modules.
+- [x] Add tested `@emme/domain` rules and models.
+- [x] Add tested `@emme/application` use cases and ports.
 - [ ] Add `@emme/test-support` only for shared test fixtures that earn extraction.
-- [ ] Migrate the tenant app composition root.
-- [ ] Migrate clients, services, and appointments incrementally.
+- [x] Migrate the tenant app composition root.
+- [x] Migrate clients, services, and appointments incrementally.
 - [ ] Run focused and full verification; document unrelated baseline failures.
 
 ### Working notes

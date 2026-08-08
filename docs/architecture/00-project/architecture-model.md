@@ -9,9 +9,11 @@ contracts.
 ```mermaid
 flowchart TB
     Shell["App shell"] --> Feature["User-facing feature"]
-    Feature --> Client["Typed API client"]
-    Client --> Contract["Versioned service contract"]
-    Contract --> Service["emme-service"]
+    Feature --> Application["Application use case"]
+    Application --> Domain["Domain rules"]
+    Application --> Api["@emme/api"]
+    Api --> Infrastructure["@emme/infrastructure"]
+    Infrastructure --> Service["emme-service"]
     Feature --> Shared["Stable shared package"]
 ```
 
@@ -31,10 +33,11 @@ flowchart TB
 ```mermaid
 flowchart LR
     View["React view"] --> FeatureState["Feature state / hook"]
-    FeatureState --> Adapter["Feature API adapter"]
-    Adapter --> Client["@emme/api-client"]
-    Client --> Contract["@emme/contracts"]
-    Contract --> HTTP["HTTP boundary"]
+    FeatureState --> Application["@emme/application"]
+    Application --> Domain["@emme/domain"]
+    Application --> Port["Application port"]
+    Port --> Adapter["@emme/api + @emme/infrastructure"]
+    Adapter --> HTTP["HTTP boundary"]
 ```
 
 ## Verification

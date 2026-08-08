@@ -19,7 +19,7 @@ describe('i18n catalog', () => {
 
   it('resolves text and test ids independently', () => {
     expect(t('common.dashboard', 'en-US')).toBe(enUS.common.dashboard);
-    expect(tid('nav.dashboard')).toBe('nav-dashboard');
+    expect(tid('nav.dashboard')).toBe('mobile-nav-dashboard');
   });
 
   it('returns the requested key when a translation is unavailable', () => {

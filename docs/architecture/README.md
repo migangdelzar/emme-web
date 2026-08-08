@@ -44,7 +44,8 @@ breaking contract requires a coordinated compatibility window and migration.
 ## Architecture lenses
 
 - Frontend capability organization groups code by user outcome and ownership.
-- Hexagonal thinking protects the API client and runtime boundary from UI code.
+- Hexagonal thinking protects domain/application boundaries and the runtime
+  infrastructure boundary from UI code.
 - The service's DDD model is consumed through contracts; it is not copied into
   browser packages.
 - Build behavior is expressed by Bun workspace scripts and CI capabilities, not

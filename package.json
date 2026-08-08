@@ -7,11 +7,11 @@
     "e2e/*"
   ],
   "scripts": {
-    "dev": "bun run --filter @emme/salon-app dev",
+    "dev": "bun run --filter @emme/emme-salon-app dev",
     "typecheck": "bun run --filter '*' typecheck",
     "build": "bun run --filter '*' build",
     "lint": "bun run --filter '*' lint",
-    "test": "bun run --filter @emme/i18n test && bun run --filter @emme/api test && bun run --filter @emme/emme-salon-app test && bun run --filter @emme/infrastructure test",
+    "test": "bun run --filter @emme/i18n test && bun run --filter @emme/core test && bun run --filter @emme/domain test && bun run --filter @emme/application test && bun run --filter @emme/api test && bun run --filter @emme/infrastructure test && bun run --filter @emme/test-support test && bun run --filter @emme/emme-salon-app test",
     "test:coverage": "bun run --filter @emme/emme-salon-app test:coverage",
     "test:e2e": "bun run --filter @emme/e2e test",
     "test:e2e:mock": "bun run --filter @emme/e2e test",
