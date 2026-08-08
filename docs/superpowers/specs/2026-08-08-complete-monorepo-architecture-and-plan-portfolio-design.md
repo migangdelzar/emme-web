@@ -37,6 +37,10 @@ compatibility constraints.
   client, and admin requirements.
 - Make every package and feature independently testable with protocol-based
   dependencies and deterministic test doubles.
+- Use advanced TypeScript safety consistently: strict mode, unchecked-index
+  safety, exact optional-property semantics, discriminated unions, branded
+  identifiers, exhaustive checks, typed `Result` errors, `satisfies`-checked
+  configuration, and no unjustified `any` or suppression directives.
 - Preserve backend authority for authorization, tenant isolation, validation,
   persistence, and business invariants.
 
@@ -506,6 +510,33 @@ package or feature barrels; consumers do not import private implementation
 paths.
 
 ## 10. Testing architecture and TDD
+
+### TypeScript safety baseline
+
+All package and app configs use a strict shared baseline with these options
+unless a documented platform constraint requires a narrow override:
+
+```json
+{
+  "strict": true,
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true,
+  "noImplicitOverride": true,
+  "noPropertyAccessFromIndexSignature": true,
+  "useUnknownInCatchVariables": true,
+  "verbatimModuleSyntax": true,
+  "isolatedModules": true,
+  "noImplicitAny": true,
+  "noFallthroughCasesInSwitch": true
+}
+```
+
+Domain statuses and transport states use discriminated unions with exhaustive
+switch checks. Public configuration objects use `satisfies` against their
+protocols. Branded IDs prevent cross-entity assignment. `Result<T, E>` carries
+expected failures; `unknown` is narrowed at external boundaries. `any`,
+`@ts-ignore`, and `@ts-expect-error` require a documented, reviewed boundary
+exception and are not permitted in domain/application code.
 
 Every implementation task follows Red → Green → Refactor → Verify. A plan
 cannot mark a task complete without focused tests and applicable regression

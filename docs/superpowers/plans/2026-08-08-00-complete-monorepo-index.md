@@ -18,6 +18,7 @@
 - Backend authorization, tenant isolation, validation, persistence, and invariants remain authoritative.
 - Every code task follows Red → Green → Refactor → Verify.
 - Every created or modified file is tested at its applicable test layer.
+- Use strict TypeScript with `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`, `noPropertyAccessFromIndexSignature`, `useUnknownInCatchVariables`, `verbatimModuleSyntax`, `isolatedModules`, exhaustive discriminated unions, branded IDs, typed `Result` errors, and `satisfies`-checked configuration.
 
 ## Plan Portfolio
 
