@@ -15,3 +15,4 @@ export * from "./integrations/google-sheets/api.js";
 export * from "./integrations/calendar-sync/api.js";
 export * from "./ports/http-client.js";
 export * from "./testing/provider.js";
+export { createApi, type Api } from "./create-api.js";
