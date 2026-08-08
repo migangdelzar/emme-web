@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { TranslationKey } from '@emme/i18n';
+import { useMemo } from 'react';
+import { useTranslation as useSharedTranslation, type TranslationKey } from '@emme/i18n';
+import { setApplicationLocale } from '@/i18n';
+import { normalizeLocale } from './locale';
 
 /**
  * Application translation boundary.
@@ -9,11 +10,17 @@ import type { TranslationKey } from '@emme/i18n';
  * user-facing copy. The key type is derived from the shared locale catalog.
  */
 export function useAppTranslation() {
-  const { t: translate, i18n } = useTranslation();
-  const t = useCallback(
-    (key: TranslationKey, defaultValue?: string): string =>
-      translate(key, defaultValue === undefined ? undefined : { defaultValue }),
-    [translate]
+  const { locale, t: translate } = useSharedTranslation();
+  const t = (key: TranslationKey, defaultValue?: string): string => {
+    const translated = translate(key);
+    return translated === key && defaultValue !== undefined ? defaultValue : translated;
+  };
+  const i18n = useMemo(
+    () => ({
+      language: locale,
+      changeLanguage: (nextLocale: string) => setApplicationLocale(normalizeLocale(nextLocale)),
+    }),
+    [locale]
   );
 
   return { t, i18n };

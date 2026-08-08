@@ -1,16 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import { createCalendarSyncApi } from '@emme/api';
-import { api } from '@/api/restClient';
+import { useApi } from '@emme/core';
 import { apiErrorMessage } from '@/api/apiErrorMessage';
 import { useAppTranslation } from '@/app/translation';
 import { toast } from 'sonner';
 
-const calendarSyncApi = createCalendarSyncApi(api);
-
 export function useCalendarSync() {
+  const api = useApi();
   const { t } = useAppTranslation();
   const sync = useMutation({
-    mutationFn: () => calendarSyncApi.syncNow(),
+    mutationFn: () => api.calendarSync.syncNow(),
     onError: (error) =>
       toast.error(apiErrorMessage(error, t, 'common.errors.calendar_sync_failed')),
   });

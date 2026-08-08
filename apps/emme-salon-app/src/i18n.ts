@@ -1,36 +1,39 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import { getInitialLocale, normalizeLocale, persistLocale } from './app/locale';
 import { getResources, type Locale } from '@emme/i18n';
-import { getInitialLocale, persistLocale } from './app/locale';
 
 export const NAMESPACES = ['translation'] as const;
 
-const DEFAULT_LOCALE: Locale = 'es-MX';
+type LanguageChangedListener = (locale: Locale) => void;
 
-function synchronizeDocumentLanguage(locale: string): void {
+const listeners = new Set<LanguageChangedListener>();
+let currentLocale = getInitialLocale();
+
+function synchronizeDocumentLanguage(locale: Locale): void {
   if (typeof document !== 'undefined') document.documentElement.lang = locale;
 }
 
-const initialLocale = getInitialLocale();
-synchronizeDocumentLanguage(initialLocale);
-i18n.on('languageChanged', synchronizeDocumentLanguage);
+synchronizeDocumentLanguage(currentLocale);
 
-i18n.use(initReactI18next).init({
-  resources: getResources(),
-  lng: initialLocale,
-  fallbackLng: DEFAULT_LOCALE,
-  ns: NAMESPACES as unknown as string[],
-  defaultNS: 'translation',
-  fallbackNS: 'translation',
-  debug: false,
-  interpolation: { escapeValue: false },
-  partialBundledLanguages: true,
-  returnObjects: true,
-  returnNull: false,
-});
+const i18n = {
+  get language(): Locale {
+    return currentLocale;
+  },
+  on(event: 'languageChanged', listener: LanguageChangedListener): void {
+    if (event === 'languageChanged') listeners.add(listener);
+  },
+  off(event: 'languageChanged', listener: LanguageChangedListener): void {
+    if (event === 'languageChanged') listeners.delete(listener);
+  },
+  async changeLanguage(locale: string): Promise<void> {
+    const nextLocale = normalizeLocale(locale);
+    currentLocale = nextLocale;
+    persistLocale(nextLocale);
+    synchronizeDocumentLanguage(nextLocale);
+    listeners.forEach((listener) => listener(nextLocale));
+  },
+};
 
 export async function setApplicationLocale(locale: Locale): Promise<void> {
-  persistLocale(locale);
   await i18n.changeLanguage(locale);
 }
 
@@ -45,4 +48,5 @@ export function getAvailableLocales(): readonly { code: Locale; name: string; fl
   ];
 }
 
+export { getResources };
 export default i18n;

@@ -12,7 +12,7 @@ Production PWA for EmmeNails salon management.
 | State | Zustand + TanStack Query |
 | Auth | Firebase Auth (Google OAuth) |
 | APIs | Google Calendar, Google Sheets |
-| i18n | i18next (ES + EN) |
+| i18n | `@emme/i18n` (ES-MX + EN-US) |
 | PWA | Service Worker + installable |
 
 ## Quick Start
