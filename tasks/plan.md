@@ -89,7 +89,7 @@ packages/features/src/
 - [x] Run mock E2E.
 - [ ] Run real E2E when backend and Keycloak variables are available.
 - [x] Verify no reusable package imports app paths or app aliases.
-- [ ] Commit and push the completed migration increment.
+- [x] Commit and push the completed migration increment.
 
 ## Risks and Mitigations
 

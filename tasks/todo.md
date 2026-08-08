@@ -9,7 +9,7 @@
 - [x] Add or update package boundary tests
 - [x] Run typecheck, unit tests, lint, build, and mock E2E
 - [ ] Run real E2E when credentials and endpoints are configured
-- [ ] Summarize changes and verification evidence
+- [x] Summarize changes and verification evidence
 
 ## Acceptance criteria
 
