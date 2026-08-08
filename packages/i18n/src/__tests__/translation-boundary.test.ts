@@ -7,7 +7,7 @@ import {
   translations,
   useTranslation,
   type TranslationCatalogs,
-} from '../index';
+} from '../index.js';
 
 function TranslationProbe() {
   const { fallbackLocale, locale, t } = useTranslation();

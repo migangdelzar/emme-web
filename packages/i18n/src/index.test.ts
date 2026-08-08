@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import enUS from './data/translations/en-US.json';
 import esMX from './data/translations/es-MX.json';
-import { getResources, t, tid } from './index';
+import { getResources, t, tid } from './index.js';
 
 function collectLeafPaths(node: unknown, path = ''): string[] {
   if (typeof node === 'string') return [path];

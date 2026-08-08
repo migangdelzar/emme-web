@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { Locale, TranslationKey } from './index';
+import type { Locale, TranslationKey } from './translation-catalog.js';
 
 export type TranslationLookup = (key: TranslationKey) => string;
 

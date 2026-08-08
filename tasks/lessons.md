@@ -1,5 +1,15 @@
 # Engineering Lessons
 
+## 2026-08-08 — Publish NodeNext-safe internal ESM specifiers
+
+- Failure mode: shared package source used extensionless relative imports that
+  passed bundler resolution but failed NodeNext typechecking.
+- Detection signal: TS2835 reported the missing emitted `.js` extension from a
+  public barrel re-export.
+- Prevention rule: for published ESM package internals, use `.js` relative
+  specifiers and keep implementation modules from importing runtime values back
+  through their own public barrel.
+
 ## 2026-08-03 — Validate package-specific test selectors
 
 - Failure mode: the first API-client test command passed a repository path to a

@@ -1,15 +1,21 @@
 import elements from './data/elements.json' with { type: 'json' };
-import enUS from './data/translations/en-US.json' with { type: 'json' };
-import esMX from './data/translations/es-MX.json' with { type: 'json' };
+import {
+  readPath,
+  resources,
+  translations,
+  type Locale as TranslationLocale,
+  type TranslationKey as CatalogTranslationKey,
+} from './translation-catalog.js';
 
-export type Locale = 'en-US' | 'es-MX';
-export type TranslationCatalog = typeof enUS;
-export type TranslationCatalogs = Record<Locale, TranslationCatalog>;
-
-export const translations: TranslationCatalogs = {
-  'en-US': enUS,
-  'es-MX': esMX,
-};
+export {
+  translations,
+  type Locale,
+  type TranslationCatalog,
+  type TranslationCatalogs,
+  type TranslationKey,
+  type TranslationResources,
+} from './translation-catalog.js';
+export { createTranslationLookup, type TranslationLookupOptions } from './translation-lookup.js';
 
 export const els = elements;
 
@@ -27,54 +33,13 @@ type ElementPaths<T, Prefix extends string = ''> = {
 
 export type ElementKey = ElementPaths<typeof els>;
 
-type LeafPaths<T, Prefix extends string = ''> = {
-  [Key in keyof T & string]: T[Key] extends string
-    ? `${Prefix}${Key}`
-    : T[Key] extends Record<string, unknown>
-      ? LeafPaths<T[Key], `${Prefix}${Key}.`>
-      : never;
-}[keyof T & string];
-
-export type TranslationKey = LeafPaths<TranslationCatalog>;
-
-export type TranslationResources = Record<Locale, { translation: TranslationCatalog }>;
-
-const resources: TranslationResources = {
-  'en-US': { translation: enUS },
-  'es-MX': { translation: esMX },
-};
-
-export function getResources(): TranslationResources {
+export function getResources(): typeof resources {
   return resources;
 }
 
-export function t(key: TranslationKey, locale: Locale = 'es-MX'): string {
+export function t(key: CatalogTranslationKey, locale: TranslationLocale = 'es-MX'): string {
   const value = readPath(translations[locale], key);
   return typeof value === 'string' ? value : key;
-}
-
-export interface TranslationLookupOptions {
-  readonly catalogs?: TranslationCatalogs;
-  readonly fallbackLocale?: Locale;
-  readonly locale: Locale;
-}
-
-/**
- * Creates a typed translation lookup that resolves the active locale first,
- * then its configured fallback, and finally returns the key when unavailable.
- */
-export function createTranslationLookup({
-  catalogs = translations,
-  fallbackLocale = 'es-MX',
-  locale,
-}: TranslationLookupOptions): (key: TranslationKey) => string {
-  return (key) => {
-    const activeValue = readPath(catalogs[locale], key);
-    if (typeof activeValue === 'string') return activeValue;
-
-    const fallbackValue = readPath(catalogs[fallbackLocale], key);
-    return typeof fallbackValue === 'string' ? fallbackValue : key;
-  };
 }
 
 export function tid(key: ElementKey): string {
@@ -84,13 +49,6 @@ export function tid(key: ElementKey): string {
     : typeof value === 'object' && value !== null && 'testId' in value
     ? (value as { testId?: string }).testId ?? key
     : key;
-}
-
-function readPath(root: unknown, path: string): unknown {
-  return path.split('.').reduce<unknown>((value, key) => {
-    if (typeof value !== 'object' || value === null) return undefined;
-    return (value as Record<string, unknown>)[key];
-  }, root);
 }
 
 /**
@@ -113,6 +71,6 @@ export function findTestId(i18nKey: string): string | undefined {
   return search(els);
 }
 
-export { I18nProvider, type I18nProviderProps } from './i18n-provider';
-export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context';
-export { useTranslation } from './use-translation';
+export { I18nProvider, type I18nProviderProps } from './i18n-provider.js';
+export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context.js';
+export { useTranslation } from './use-translation.js';

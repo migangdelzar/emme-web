@@ -66,3 +66,38 @@ bun run --filter @emme/i18n validate
 
 None. This task deliberately does not migrate salon-app consumers; that is
 Task 3 in the approved i18n plan.
+
+## NodeNext review-finding fix — 2026-08-08
+
+### RED evidence
+
+```bash
+cd packages/i18n
+bunx tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --jsx react-jsx --strict --resolveJsonModule --esModuleInterop src/index.ts
+```
+
+Result: exited 2 with TS2835 at `src/index.ts:116-118`; the new provider,
+locale-context, and hook re-exports omitted required relative ESM `.js`
+extensions.
+
+### Fix and GREEN evidence
+
+- Moved catalog types/data and lookup construction into direct internal modules,
+  so `I18nProvider` no longer imports runtime values from the public barrel.
+- Updated all new or related internal source and test specifiers to emitted
+  `.js` paths.
+
+```bash
+cd packages/i18n
+bunx tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --jsx react-jsx --strict --resolveJsonModule --esModuleInterop src/index.ts
+# exit 0
+
+bun run --filter @emme/i18n typecheck
+# exit 0
+
+bun run --filter @emme/i18n test
+# 2 test files passed, 9 tests passed
+
+bun run typecheck
+# all workspace package typechecks exited 0
+```

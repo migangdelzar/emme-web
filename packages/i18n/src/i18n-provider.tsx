@@ -1,10 +1,7 @@
 import { createElement, useMemo, type ReactNode } from 'react';
-import {
-  createTranslationLookup,
-  type Locale,
-  type TranslationCatalogs,
-} from './index';
-import { LocaleContext } from './locale-context';
+import { createTranslationLookup } from './translation-lookup.js';
+import type { Locale, TranslationCatalogs } from './translation-catalog.js';
+import { LocaleContext } from './locale-context.js';
 
 export interface I18nProviderProps {
   readonly catalogs?: TranslationCatalogs;
