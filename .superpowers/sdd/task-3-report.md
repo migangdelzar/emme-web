@@ -205,3 +205,54 @@ Exited with code 0
   a workspace symlink. A normal `bun install` materialized
   `apps/emme-salon-app/node_modules/@emme/ui`; this was verified before the
   passing app test and build runs.
+
+## Re-review Fix Evidence
+
+The re-review identified two parser gaps: side-effect static imports in generic
+consumers and comments between import syntax and module specifiers in retained
+sources. I replaced both regex collectors with a TypeScript AST traversal that
+collects static imports, re-exports, and dynamic `import()` calls, including
+explicit extensions and comments.
+
+### RED
+
+I added regression tests before implementing the AST collector:
+
+```text
+bun run --filter @emme/emme-salon-app test -- src/app/ui-import-boundary.test.ts
+Test Files  1 failed (1)
+Tests       2 failed | 3 passed (5)
+Exited with code 1
+```
+
+The side-effect case failed because `findForbiddenGenericUiImports` was not
+implemented; the comment-separated re-export/dynamic case returned `[]`
+instead of the two expected `./input.tsx` specifiers.
+
+### GREEN / REFACTOR
+
+After replacing the regex collectors with the AST collector and formatting the
+test file:
+
+```text
+bun run --filter @emme/emme-salon-app test -- src/app/ui-import-boundary.test.ts src/shared/ui/PhoneInput.test.tsx src/shared/ui/sonner.test.tsx
+Test Files  3 passed (3)
+Tests       7 passed (7)
+Exited with code 0
+
+bun run --filter @emme/emme-salon-app format:check
+All matched files use Prettier code style!
+Exited with code 0
+
+bun run --filter @emme/emme-salon-app typecheck
+Exited with code 0
+
+bun run --filter @emme/emme-salon-app build
+Vite build and PWA generation completed
+Exited with code 0
+```
+
+The generic consumer guard now catches side-effect imports such as
+`import '@/shared/ui/button'`; retained-source allowlists now reject
+comment-separated forms such as `export * from /* comment */ './input.tsx'`
+and `import /* comment */ ('./input.tsx')`.
