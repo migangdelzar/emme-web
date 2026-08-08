@@ -1,4 +1,4 @@
-import type { Appointment } from '@/context/AppContext';
+import type { Appointment } from '@emme/api';
 
 export interface AppointmentViewInput {
   id: string;

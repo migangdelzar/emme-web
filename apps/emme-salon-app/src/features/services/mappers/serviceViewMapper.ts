@@ -1,4 +1,4 @@
-import type { Service } from '@/context/AppContext';
+import type { Service } from '@emme/api';
 
 export interface ServiceViewInput {
   id: string;

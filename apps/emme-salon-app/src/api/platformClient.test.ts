@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createPlatformClient } from './platformClient';
-import type { RuntimeConfig } from '../../app/config/runtimeConfig';
+import type { RuntimeConfig } from '../app/config/runtimeConfig';
 
 describe('createPlatformClient', () => {
   it('creates a platform client from runtime config', async () => {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useAppointmentsRest } from '@/api/hooks/useAppointments';
-import { useNailServicesRest } from '@/api/hooks/useServices';
+import { useAppointmentsRest } from '@/features/appointments/api/appointments.queries';
+import { useNailServicesRest } from '@/features/services/api/services.queries';
 import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
 import { mapNailServiceView } from '@/features/services/mappers/serviceViewMapper';
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/app/auth/useAuth';
-import { useNailServicesRest } from '@/api/hooks/useServices';
+import { useNailServicesRest } from '@/features/services/api/services.queries';
 import { useBusinessProfile } from '@/api/hooks/useTenantConfig';
 import type { BusinessProfile as ProfileType } from '@/api/hooks/useTenantConfig';
 

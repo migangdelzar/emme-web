@@ -4,8 +4,8 @@ import {
   useCreateService,
   useUpdateService,
   useDeleteService,
-} from '@/api/hooks/useServices';
-import type { Service } from '@/context/AppContext';
+} from '@/features/services/api/services.queries';
+import type { Service } from '@emme/api';
 
 function mapNailServiceView(raw: {
   id: string;

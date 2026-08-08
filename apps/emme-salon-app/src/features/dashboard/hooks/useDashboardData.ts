@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useAppointmentsRest } from '@/api/hooks/useAppointments';
-import { useNailServicesRest } from '@/api/hooks/useServices';
+import { useAppointmentsRest } from '@/features/appointments/api/appointments.queries';
+import { useNailServicesRest } from '@/features/services/api/services.queries';
 import { mapAppointmentView } from '@/features/appointments/mappers/appointmentViewMapper';
 import { mapNailServiceView } from '@/features/services/mappers/serviceViewMapper';
-import type { Appointment, Service } from '@/context/AppContext';
+import type { Appointment, Service } from '@emme/api';
 import { createDashboardStreamUrl } from './dashboardStream';
 
 interface DashboardData {
