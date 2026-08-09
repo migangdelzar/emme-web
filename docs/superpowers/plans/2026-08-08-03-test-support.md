@@ -38,10 +38,10 @@ it('returns queued responses in request order and records requests', async () =>
 
 ### Task 2: Fixtures and providers
 
-- [ ] **Step 1:** Write tests proving `createTestWrapper` provides i18n, auth, tenancy, and query context without leaking state between tests.
-- [ ] **Step 2:** Implement fixture factories with override arguments: `createAppointmentFixture`, `createCustomerFixture`, `createServiceFixture`, and `createTenantFixture`.
-- [ ] **Step 3:** Implement test providers and export only public factories from `src/index.ts`.
-- [ ] **Step 4:** Run `bun run --filter @emme/test-support typecheck` and the focused provider tests; expected result is PASS.
+- [x] **Step 1:** Write tests proving `createTestWrapper` provides i18n, auth, tenancy, and query context without leaking state between tests.
+- [x] **Step 2:** Implement fixture factories with override arguments: `createAppointmentFixture`, `createCustomerFixture`, `createServiceFixture`, and `createTenantFixture`.
+- [x] **Step 3:** Implement test providers and export only public factories from `src/index.ts`.
+- [x] **Step 4:** Run `bun run --filter @emme/test-support typecheck` and the focused provider tests; expected result is PASS.
 
 ### Task 3: Commit
 
