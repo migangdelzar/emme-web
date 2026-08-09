@@ -4,26 +4,32 @@ import { Loader2 } from 'lucide-react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 const Dashboard = React.lazy(() =>
-  import('@emme/features').then((module) => ({
+  import('../features/dashboard/components/Dashboard').then((module) => ({
     default: module.Dashboard,
   }))
 );
 const Appointments = React.lazy(() =>
-  import('@emme/features').then((module) => ({
+  import('../features/appointments/components/Appointments').then((module) => ({
     default: module.Appointments,
   }))
 );
 const Clients = React.lazy(() =>
-  import('@emme/features').then((module) => ({ default: module.Clients }))
+  import('../features/clients/components/Clients').then((module) => ({ default: module.Clients }))
 );
 const Services = React.lazy(() =>
-  import('@emme/features').then((module) => ({ default: module.Services }))
+  import('../features/services/components/Services').then((module) => ({
+    default: module.Services,
+  }))
 );
 const Finances = React.lazy(() =>
-  import('@emme/features').then((module) => ({ default: module.Finances }))
+  import('../features/finances/components/Finances').then((module) => ({
+    default: module.Finances,
+  }))
 );
 const Settings = React.lazy(() =>
-  import('@emme/features').then((module) => ({ default: module.Settings }))
+  import('../features/settings/components/Settings').then((module) => ({
+    default: module.Settings,
+  }))
 );
 
 export function PageLoader() {

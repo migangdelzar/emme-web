@@ -6,7 +6,7 @@ import { ApiProvider } from '@emme/core';
 import { I18nProvider, i18n, getInitialLocale, normalizeLocale, type Locale } from '@emme/i18n';
 import { createBrowserStorage, createHttpClient, createTokenStorage } from '@emme/infrastructure';
 import { SessionProvider as AuthProvider } from '@emme/core';
-import { BusinessProfileProvider } from '@emme/features';
+import { BusinessProfileProvider } from '../features/settings/context/BusinessProfileContext';
 import { ErrorBoundary } from './error-boundary/AppErrorBoundary';
 import { TooltipProvider } from '@emme/ui';
 import { Toaster } from '@emme/ui';

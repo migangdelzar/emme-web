@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Sparkles } from 'lucide-react';
 
-import { Sidebar, MobileNav } from '@emme/features';
+import { Sidebar, MobileNav } from '../../features/navigation';
 import { els } from '@emme/i18n';
 import { useAppTranslation } from '@emme/i18n';
 
