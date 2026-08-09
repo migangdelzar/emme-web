@@ -22,21 +22,21 @@
 
 ### Task 1: Money and payment domain
 
-- [ ] **Step 1:** Write tests for non-negative amounts, currency consistency, totals, deposit limits, refundable states, and duplicate operation keys.
-- [ ] **Step 2:** Implement `Money`, `Payment`, status transitions, `PaymentRepository`, and typed payment errors.
-- [ ] **Step 3:** Run focused tests; expected result is PASS.
+- [x] **Step 1:** Write tests for non-negative amounts, currency consistency, totals, deposit limits, refundable states, and duplicate operation keys.
+- [x] **Step 2:** Implement `Money`, `Payment`, status transitions, `PaymentRepository`, and typed payment errors.
+- [x] **Step 3:** Run focused tests; expected result is PASS.
 
 ### Task 2: Application ports
 
-- [ ] **Step 1:** Write fake-provider tests for create intent, confirm, capture, refund, get status, and idempotent retry.
-- [ ] **Step 2:** Implement `PaymentProvider`, `PaymentRepository`, and application commands/queries with injected dependencies.
-- [ ] **Step 3:** Verify backend-denied, pending, failed, expired, duplicate, and network failure cases.
+- [x] **Step 1:** Write fake-provider tests for create intent, confirm, capture, refund, get status, and idempotent retry.
+- [x] **Step 2:** Implement `PaymentProvider`, `PaymentRepository`, and application commands/queries with injected dependencies.
+- [x] **Step 3:** Verify backend-denied, pending, failed, expired, duplicate, and network failure cases.
 
 ### Task 3: Contracts and UI
 
-- [ ] **Step 1:** Write tests for API status mapping, redaction, currency, and minor-unit conversion.
-- [ ] **Step 2:** Implement API contracts/adapters and reusable `PaymentStatusBadge`, `PaymentSummary`, and failure/retry states.
-- [ ] **Step 3:** Run package tests, typecheck, and boundary checks.
+- [x] **Step 1:** Write tests for API status mapping, redaction, currency, and minor-unit conversion.
+- [x] **Step 2:** Implement API contracts/adapters and reusable `PaymentStatusBadge`, `PaymentSummary`, and failure/retry states.
+- [x] **Step 3:** Run package tests, typecheck, and boundary checks.
 
 ### Task 4: Commit
 
@@ -47,5 +47,7 @@ git commit -m "feat(payments): add provider-neutral payment contracts"
 
 ## Definition of Done
 
-- [ ] Payment behavior is provider-neutral and backend-authoritative.
-- [ ] No sensitive payment material appears in code, fixtures, logs, or UI state.
+- [x] Payment behavior is provider-neutral and backend-authoritative.
+- [x] No sensitive payment material appears in code, fixtures, logs, or UI state.
+
+**Status:** Complete

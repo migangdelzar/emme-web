@@ -1,0 +1,1 @@
+export function OnboardingProgress({ completed, total }: { readonly completed: number; readonly total: number }) { return <progress aria-label="Onboarding progress" value={completed} max={total} />; }

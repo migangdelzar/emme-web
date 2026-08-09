@@ -1,0 +1,3 @@
+import { asRecord, firstNumberField, stringField } from '@emme/api';
+import { createMoney, type Payment } from '../domain/index.js';
+export function mapPaymentPayload(payload: unknown): Payment { const raw = asRecord(payload, 'payment'); return { id: stringField(raw, 'id', 'payment'), tenantId: stringField(raw, 'tenantId', 'payment'), amount: createMoney(firstNumberField(raw, ['amountMinor', 'amount']), stringField(raw, 'currency', 'payment') as Payment['amount']['currency']), status: stringField(raw, 'status', 'payment') as Payment['status'], operationKey: stringField(raw, 'operationKey', 'payment') }; }

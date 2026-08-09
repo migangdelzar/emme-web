@@ -22,21 +22,21 @@
 
 ### Task 1: Staff domain
 
-- [ ] **Step 1:** Write tests for active/inactive staff, role assignment, schedule ownership, and invalid availability ranges.
-- [ ] **Step 2:** Implement `StaffMember`, role/value types, availability value objects, and typed errors.
-- [ ] **Step 3:** Run focused domain tests; expected result is PASS.
+- [x] **Step 1:** Write tests for active/inactive staff, role assignment, schedule ownership, and invalid availability ranges.
+- [x] **Step 2:** Implement `StaffMember`, role/value types, availability value objects, and typed errors.
+- [x] **Step 3:** Run focused domain tests; expected result is PASS.
 
 ### Task 2: Staff operations and ports
 
-- [ ] **Step 1:** Write tests for list, get, create/update, activate/deactivate, and availability operations using fakes.
-- [ ] **Step 2:** Implement `StaffRepository`, `StaffAvailabilityRepository`, and use-case factories with DI.
-- [ ] **Step 3:** Verify permission denied, missing staff, overlap, and backend failure behavior.
+- [x] **Step 1:** Write tests for list, get, create/update, activate/deactivate, and availability operations using fakes.
+- [x] **Step 2:** Implement `StaffRepository`, `StaffAvailabilityRepository`, and use-case factories with DI.
+- [x] **Step 3:** Verify permission denied, missing staff, overlap, and backend failure behavior.
 
 ### Task 3: API and presentation
 
-- [ ] **Step 1:** Write mapper tests for staff identity, roles, schedule, and tenant fields.
-- [ ] **Step 2:** Implement contracts, adapters, `StaffAvatar`, `StaffSummary`, and app-local management form contracts.
-- [ ] **Step 3:** Run all package tests and boundary checks.
+- [x] **Step 1:** Write mapper tests for staff identity, roles, schedule, and tenant fields.
+- [x] **Step 2:** Implement contracts, adapters, `StaffAvatar`, `StaffSummary`, and app-local management form contracts.
+- [x] **Step 3:** Run all package tests and boundary checks.
 
 ### Task 4: Commit
 
@@ -47,5 +47,7 @@ git commit -m "feat(staff): add reusable staff and availability module"
 
 ## Definition of Done
 
-- [ ] Appointment availability can depend on staff protocols.
-- [ ] Salon staff workflows are app-local and package exports are public-only.
+- [x] Appointment availability can depend on staff protocols.
+- [x] Salon staff workflows are app-local and package exports are public-only.
+
+**Status:** Complete

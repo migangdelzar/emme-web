@@ -1,0 +1,3 @@
+import { asRecord, stringField, optionalStringField } from '@emme/api';
+import type { Message } from '../domain/index.js';
+export function mapMessagePayload(payload: unknown): Message { const raw = asRecord(payload, 'message'); return { id: stringField(raw, 'id', 'message'), conversationId: stringField(raw, 'conversationId', 'message'), role: stringField(raw, 'role', 'message') as Message['role'], channel: stringField(raw, 'channel', 'message') as Message['channel'], content: stringField(raw, 'content', 'message'), createdAt: stringField(raw, 'createdAt', 'message'), ...(optionalStringField(raw, 'attachmentUrl') ? { attachments: [{ kind: 'file' as const, url: optionalStringField(raw, 'attachmentUrl')!, contentType: 'application/octet-stream' }] } : {}) }; }

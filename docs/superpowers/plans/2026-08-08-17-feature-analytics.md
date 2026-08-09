@@ -22,21 +22,21 @@
 
 ### Task 1: Metric contracts
 
-- [ ] **Step 1:** Write tests for date ranges, tenant scope, currency aggregation, zero values, missing data, and partial metric responses.
-- [ ] **Step 2:** Implement `MetricRange`, `RevenueSummary`, `AppointmentSummary`, `DashboardSnapshot`, and typed analytics errors.
-- [ ] **Step 3:** Run focused tests; expected result is PASS.
+- [x] **Step 1:** Write tests for date ranges, tenant scope, currency aggregation, zero values, missing data, and partial metric responses.
+- [x] **Step 2:** Implement `MetricRange`, `RevenueSummary`, `AppointmentSummary`, `DashboardSnapshot`, and typed analytics errors.
+- [x] **Step 3:** Run focused tests; expected result is PASS.
 
 ### Task 2: Queries and API mapping
 
-- [ ] **Step 1:** Write fake-query tests for dashboard snapshot, revenue, appointment status counts, and trend data.
-- [ ] **Step 2:** Implement `AnalyticsRepository`, query factories, API contracts, and mappers with explicit tenant/date parameters.
-- [ ] **Step 3:** Verify forbidden, empty, stale, timeout, and malformed response behavior.
+- [x] **Step 1:** Write fake-query tests for dashboard snapshot, revenue, appointment status counts, and trend data.
+- [x] **Step 2:** Implement `AnalyticsRepository`, query factories, API contracts, and mappers with explicit tenant/date parameters.
+- [x] **Step 3:** Verify forbidden, empty, stale, timeout, and malformed response behavior.
 
 ### Task 3: Presentation and migration
 
-- [ ] **Step 1:** Write tests for stat cards, charts, loading/skeleton, empty, error, responsive, and accessible table alternatives.
-- [ ] **Step 2:** Implement reusable cards/view models and migrate salon dashboard/finances consumers.
-- [ ] **Step 3:** Run package tests, app tests, typecheck, and build.
+- [x] **Step 1:** Write tests for stat cards, charts, loading/skeleton, empty, error, responsive, and accessible table alternatives.
+- [x] **Step 2:** Implement reusable cards/view models and migrate salon dashboard/finances consumers.
+- [x] **Step 3:** Run package tests, app tests, typecheck, and build.
 
 ### Task 4: Commit
 
@@ -47,5 +47,7 @@ git commit -m "feat(analytics): add tenant-scoped reporting read models"
 
 ## Definition of Done
 
-- [ ] Dashboard and finance behavior uses stable query contracts.
-- [ ] Tenant, currency, date-range, empty, and unavailable states are tested.
+- [x] Dashboard and finance behavior uses stable query contracts.
+- [x] Tenant, currency, date-range, empty, and unavailable states are tested.
+
+**Status:** Complete

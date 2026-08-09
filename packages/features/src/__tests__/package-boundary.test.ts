@@ -9,7 +9,22 @@ import { Services } from '@emme/features/services';
 import { Settings } from '@emme/features/settings';
 import { createReactEslintConfig } from '../../../../configs/eslint/react.config.mjs';
 
-const publicFeatureSubpaths = ['appointments', 'clients', 'navigation', 'services', 'settings'];
+const publicFeatureSubpaths = [
+  'analytics',
+  'appointments',
+  'catalog',
+  'clients',
+  'communications',
+  'customers',
+  'integrations',
+  'navigation',
+  'onboarding',
+  'payments',
+  'services',
+  'settings',
+  'staff',
+  'tenant-configuration',
+];
 const workspaceRoot = resolve(process.cwd(), '../..');
 
 describe('@emme/features package boundary', () => {

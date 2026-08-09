@@ -22,21 +22,21 @@
 
 ### Task 1: Configuration domain
 
-- [ ] **Step 1:** Write tests for business profile fields, hours ranges, active days, cancellation notice, advance-booking limits, and preference defaults.
-- [ ] **Step 2:** Implement configuration value objects, `TenantConfiguration`, and typed validation errors.
-- [ ] **Step 3:** Run focused domain tests; expected result is PASS.
+- [x] **Step 1:** Write tests for business profile fields, hours ranges, active days, cancellation notice, advance-booking limits, and preference defaults.
+- [x] **Step 2:** Implement configuration value objects, `TenantConfiguration`, and typed validation errors.
+- [x] **Step 3:** Run focused domain tests; expected result is PASS.
 
 ### Task 2: Configuration and onboarding operations
 
-- [ ] **Step 1:** Write fake-repository tests for load/update profile, hours, policy, preferences, onboarding status, step completion, and resume.
-- [ ] **Step 2:** Implement ports and use cases with explicit tenant context and idempotent step completion.
-- [ ] **Step 3:** Verify invalid ranges, permission denied, stale version, offline retry, and repeated completion.
+- [x] **Step 1:** Write fake-repository tests for load/update profile, hours, policy, preferences, onboarding status, step completion, and resume.
+- [x] **Step 2:** Implement ports and use cases with explicit tenant context and idempotent step completion.
+- [x] **Step 3:** Verify invalid ranges, permission denied, stale version, offline retry, and repeated completion.
 
 ### Task 3: API, validation, and presentation
 
-- [ ] **Step 1:** Write contract tests for existing profile/hours/policy payloads and error mapping.
-- [ ] **Step 2:** Implement schemas, adapters, settings view models, and reusable onboarding step/status components.
-- [ ] **Step 3:** Migrate salon settings/onboarding screens and run package/app tests.
+- [x] **Step 1:** Write contract tests for existing profile/hours/policy payloads and error mapping.
+- [x] **Step 2:** Implement schemas, adapters, settings view models, and reusable onboarding step/status components.
+- [x] **Step 3:** Migrate salon settings/onboarding screens and run package/app tests.
 
 ### Task 4: Commit
 
@@ -47,5 +47,7 @@ git commit -m "feat(configuration): add tenant configuration and onboarding modu
 
 ## Definition of Done
 
-- [ ] Tenant configuration is explicit, validated, resumable, and tested.
-- [ ] App workflows remain local while reusable contracts are public.
+- [x] Tenant configuration is explicit, validated, resumable, and tested.
+- [x] App workflows remain local while reusable contracts are public.
+
+**Status:** Complete

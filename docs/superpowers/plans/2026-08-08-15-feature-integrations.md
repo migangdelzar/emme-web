@@ -22,22 +22,22 @@
 
 ### Task 1: Integration contracts and domain
 
-- [ ] **Step 1:** Write tests for connection state, provider account identity, sync status, idempotency key, and safe disconnect.
-- [ ] **Step 2:** Implement provider-neutral `CalendarConnection`, `SheetExport`, sync result types, and typed errors.
-- [ ] **Step 3:** Run focused tests; expected result is PASS.
+- [x] **Step 1:** Write tests for connection state, provider account identity, sync status, idempotency key, and safe disconnect.
+- [x] **Step 2:** Implement provider-neutral `CalendarConnection`, `SheetExport`, sync result types, and typed errors.
+- [x] **Step 3:** Run focused tests; expected result is PASS.
 
 ### Task 2: Application ports and API
 
-- [ ] **Step 1:** Write fake-port tests for connect, disconnect, list calendars/sheets, sync appointment, export data, and retry status.
-- [ ] **Step 2:** Implement ports and API capability contracts using existing backend routes as the source of truth.
-- [ ] **Step 3:** Verify expired token, revoked grant, conflict, timeout, and partial export behavior.
+- [x] **Step 1:** Write fake-port tests for connect, disconnect, list calendars/sheets, sync appointment, export data, and retry status.
+- [x] **Step 2:** Implement ports and API capability contracts using existing backend routes as the source of truth.
+- [x] **Step 3:** Verify expired token, revoked grant, conflict, timeout, and partial export behavior.
 
 ### Task 3: Adapters and presentation
 
-- [ ] **Step 1:** Write tests for adapter request mapping and redacted error diagnostics.
-- [ ] **Step 2:** Implement concrete adapters in feature infrastructure using injected provider clients and global token storage.
-- [ ] **Step 3:** Implement reusable connection/status/export components and migrate salon screens.
-- [ ] **Step 4:** Run integration tests with provider fakes and mocked E2E for the Google workflow.
+- [x] **Step 1:** Write tests for adapter request mapping and redacted error diagnostics.
+- [x] **Step 2:** Implement concrete adapters in feature infrastructure using injected provider clients and global token storage.
+- [x] **Step 3:** Implement reusable connection/status/export components and migrate salon screens.
+- [x] **Step 4:** Run integration tests with provider fakes and mocked E2E for the Google workflow.
 
 ### Task 4: Commit
 
@@ -48,5 +48,7 @@ git commit -m "feat(integrations): isolate external workspace capabilities"
 
 ## Definition of Done
 
-- [ ] Calendar, Sheets, OAuth, and provider failures are typed and tested.
-- [ ] No token or provider SDK leaks into domain/application/presentation code.
+- [x] Calendar, Sheets, OAuth, and provider failures are typed and tested.
+- [x] No token or provider SDK leaks into domain/application/presentation code.
+
+**Status:** Complete
