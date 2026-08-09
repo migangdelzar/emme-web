@@ -16,6 +16,7 @@ export type AppointmentStatus =
 
 export interface Appointment {
   id: string;
+  tenantId?: string;
   clientId: string; // maps to backend customerId
   customerName?: string;
   serviceId: string;

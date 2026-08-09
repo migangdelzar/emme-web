@@ -156,6 +156,7 @@
         "@emme/domain": "workspace:*",
         "@emme/i18n": "workspace:*",
         "@emme/infrastructure": "workspace:*",
+        "@emme/kernel": "workspace:*",
         "@emme/ui": "workspace:*",
         "@tanstack/react-query": "5.62.0",
         "date-fns": "^4.4.0",

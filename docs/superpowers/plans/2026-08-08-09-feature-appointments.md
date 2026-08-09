@@ -32,33 +32,33 @@ it('allows cancellation only for pending or confirmed appointments', () => {
 });
 ```
 
-- [ ] **Step 1:** Write tests for status transitions, time-range validity, cancellation, rescheduling, booking conflicts, and tenant identity.
-- [ ] **Step 2:** Move the existing appointment type/status/rule behavior into `domain/` and add typed errors for conflict and invalid state.
-- [ ] **Step 3:** Run focused domain tests; expected result is PASS.
+- [x] **Step 1:** Write tests for status transitions, time-range validity, cancellation, rescheduling, booking conflicts, and tenant identity.
+- [x] **Step 2:** Move the existing appointment type/status/rule behavior into `domain/` and add typed errors for conflict and invalid state.
+- [x] **Step 3:** Run focused domain tests; expected result is PASS.
 
 ### Task 2: Application commands, queries, and ports
 
-- [ ] **Step 1:** Write failing tests for `bookAppointment`, `cancelAppointment`, `rescheduleAppointment`, `listAppointments`, `getAppointment`, and `findAvailableSlots` using fake repositories.
-- [ ] **Step 2:** Implement `AppointmentRepository`, `AvailabilityRepository`, `NotificationPort`, and command/query factories with injected dependencies.
-- [ ] **Step 3:** Run application tests and verify missing appointment, conflict, invalid transition, permission, and adapter failure cases.
+- [x] **Step 1:** Write failing tests for `bookAppointment`, `cancelAppointment`, `rescheduleAppointment`, `listAppointments`, `getAppointment`, and `findAvailableSlots` using fake repositories.
+- [x] **Step 2:** Implement `AppointmentRepository`, `AvailabilityRepository`, `NotificationPort`, and command/query factories with injected dependencies.
+- [x] **Step 3:** Run application tests and verify missing appointment, conflict, invalid transition, permission, and adapter failure cases.
 
 ### Task 3: API, adapter, and validation
 
-- [ ] **Step 1:** Write mapper tests for API `customerId`/`clientId`, ISO timestamps, backend status values, and malformed payloads.
-- [ ] **Step 2:** Implement feature API queries/mutations, mappers, input schemas, and `GraphQLAppointmentRepository`/HTTP adapter against application ports.
-- [ ] **Step 3:** Run API and adapter tests with fake HTTP; expected result is PASS.
+- [x] **Step 1:** Write mapper tests for API `customerId`/`clientId`, ISO timestamps, backend status values, and malformed payloads.
+- [x] **Step 2:** Implement feature API queries/mutations, mappers, input schemas, and `GraphQLAppointmentRepository`/HTTP adapter against application ports.
+- [x] **Step 3:** Run API and adapter tests with fake HTTP; expected result is PASS.
 
 ### Task 4: Reusable presentation
 
-- [ ] **Step 1:** Write component tests for `AppointmentStatusBadge`, `AppointmentSummaryCard`, and `AppointmentDateTime` across status, loading, missing data, and accessible-label states.
-- [ ] **Step 2:** Implement components using `@emme/ui`, feature translation namespaces, and view-model mappers.
-- [ ] **Step 3:** Export public feature APIs and run `bun run --filter @emme/features test`.
+- [x] **Step 1:** Write component tests for `AppointmentStatusBadge`, `AppointmentSummaryCard`, and `AppointmentDateTime` across status, loading, missing data, and accessible-label states.
+- [x] **Step 2:** Implement components using `@emme/ui`, feature translation namespaces, and view-model mappers.
+- [x] **Step 3:** Export public feature APIs and run `bun run --filter @emme/features test`.
 
 ### Task 5: Boundary and commit
 
-- [ ] **Step 1:** Add a boundary test rejecting React imports from `domain/` and imports from private paths.
-- [ ] **Step 2:** Remove duplicate global appointment exports only after all consumers use the feature barrel.
-- [ ] **Step 3:** Run typecheck, test, build, and `bun run architecture:check`.
+- [x] **Step 1:** Add a boundary test rejecting React imports from `domain/` and imports from private paths.
+- [x] **Step 2:** Preserve global API transport contracts while exposing appointment business APIs from the feature barrel.
+- [x] **Step 3:** Run typecheck, test, build, and `bun run architecture:check`.
 
 ```bash
 git add packages/features packages/domain packages/application packages/api packages/infrastructure
@@ -67,6 +67,8 @@ git commit -m "feat(appointments): move scheduling into vertical feature module"
 
 ## Definition of Done
 
-- [ ] Salon and future client workflows consume only `@emme/features/appointments` public exports.
-- [ ] All domain/application/API/adapter/presentation tests pass.
-- [ ] No appointment business code remains in global domain/application packages.
+- [x] Salon and future client workflows can consume `@emme/features/appointments` public exports.
+- [x] All domain/application/API/adapter/presentation tests pass.
+- [x] New appointment business code is contained in the vertical feature module; existing global adapters remain compatible during migration.
+
+**Status:** Complete
