@@ -153,6 +153,22 @@ describe("createApiClient", () => {
 });
 
 describe("createHttpClient", () => {
+  it("retries transient server failures only up to the configured limit", async () => {
+    const fetcher = vi
+      .fn<Fetcher>()
+      .mockResolvedValueOnce(new Response("busy", { status: 503 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    const client = createHttpClient({ baseUrl: "https://api.emme.app", fetcher, maxRetries: 1 });
+
+    await expect(client.get<{ ok: boolean }>("/api/health")).resolves.toEqual({ ok: true });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
   it("resolves API paths against the frontend origin for same-origin proxying", async () => {
     const requests: Array<RequestInfo | URL> = [];
     const fetcher = async (input: RequestInfo | URL) => {

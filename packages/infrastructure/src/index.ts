@@ -26,3 +26,4 @@ export {
   type StorageAdapter,
 } from './storage/local-storage.js';
 export { cacheService } from './storage/cache-service.js';
+export * from './telemetry/index.js';

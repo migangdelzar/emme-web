@@ -17,6 +17,7 @@ export interface ApiClientOptions {
   getAccessToken?: AccessTokenProvider;
   getTenantSlug?: TenantSlugProvider;
   fetcher?: typeof fetch;
+  maxRetries?: number;
 }
 
 /** Generic HTTP client — domain modules depend on this, not on specific implementations. */
@@ -110,11 +111,27 @@ async function request<T>(
     if (value) url.searchParams.set(key, value);
   }
 
-  const response = await context.fetcher(url, {
+  const requestInit: RequestInit = {
     method: requestOptions.method,
     headers,
     body: requestOptions.body === undefined ? undefined : JSON.stringify(requestOptions.body),
-  });
+  };
+  const maxRetries = normalizeRetryCount(context.options.maxRetries);
+  let attempt = 0;
+  let response: Response;
+
+  while (true) {
+    try {
+      response = await context.fetcher(url, requestInit);
+    } catch (error) {
+      if (attempt >= maxRetries) throw error;
+      attempt += 1;
+      continue;
+    }
+
+    if (response.ok || !isTransientStatus(response.status) || attempt >= maxRetries) break;
+    attempt += 1;
+  }
   const body = response.status === 204 ? undefined : await parseBody(response);
 
   if (!response.ok) {
@@ -153,4 +170,12 @@ function normalizeBaseUrl(baseUrl: string): string {
 
 function trimPath(path: string): string {
   return path.replace(/^\/+/, "");
+}
+
+function normalizeRetryCount(value: number | undefined): number {
+  return value === undefined || !Number.isFinite(value) ? 0 : Math.max(0, Math.floor(value));
+}
+
+function isTransientStatus(status: number): boolean {
+  return status === 408 || status === 429 || status >= 500;
 }
