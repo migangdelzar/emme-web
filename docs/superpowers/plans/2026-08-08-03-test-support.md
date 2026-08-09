@@ -32,9 +32,9 @@ it('returns queued responses in request order and records requests', async () =>
 });
 ```
 
-- [ ] **Step 1:** Write failing tests for queued responses, injected errors, fixed time, and isolated memory storage.
-- [ ] **Step 2:** Implement protocol-compatible fakes with `error: Error | null` and request recording.
-- [ ] **Step 3:** Run `bun run --filter @emme/test-support test`; expected result is PASS.
+- [x] **Step 1:** Write failing tests for queued responses, injected errors, fixed time, and isolated memory storage.
+- [x] **Step 2:** Implement protocol-compatible fakes with `error: Error | null` and request recording.
+- [x] **Step 3:** Run `bun run --filter @emme/test-support test`; expected result is PASS.
 
 ### Task 2: Fixtures and providers
 
