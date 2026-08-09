@@ -6,7 +6,7 @@ import {
   useDeleteCustomer,
   type Customer,
 } from '../api/clients.queries';
-import type { Client } from '@emme/domain';
+import type { Client } from '@emme/business/clients';
 
 function mapClientView(raw: Customer): Client {
   return {

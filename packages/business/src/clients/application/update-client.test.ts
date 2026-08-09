@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { updateClient } from './update-client.js';
 import type { ClientRepository } from './ports/client-repository.js';
-import type { Client } from '@emme/domain';
+import type { Client } from '../domain/index.js';
 
 describe('updateClient', () => {
   it('normalizes a provided name before updating the client', async () => {

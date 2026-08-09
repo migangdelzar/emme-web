@@ -1,6 +1,9 @@
 import type { AppointmentApi } from '@emme/api';
-import type { Appointment } from '@emme/domain';
-import type { AppointmentFilters, AppointmentRepository } from '@emme/application';
+import type {
+  Appointment,
+  AppointmentFilters,
+  AppointmentRepository,
+} from '@emme/business/appointments';
 
 export function createAppointmentRepository(api: AppointmentApi): AppointmentRepository {
   return {

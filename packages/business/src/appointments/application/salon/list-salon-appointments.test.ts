@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { listSalonAppointments } from './list-salon-appointments.js';
 import type { AppointmentRepository } from '../ports/appointment-repository.js';
-import type { Appointment } from '@emme/domain';
+import type { Appointment } from '../../domain/index.js';
 
 describe('listSalonAppointments', () => {
   it('passes salon filters to the appointment repository', async () => {

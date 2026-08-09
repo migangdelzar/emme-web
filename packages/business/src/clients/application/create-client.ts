@@ -1,4 +1,4 @@
-import { normalizeClientName, type Client } from "@emme/domain";
+import { normalizeClientName, type Client } from '../domain/index.js';
 
 import type { ClientRepository, CreateClientInput } from "./ports/client-repository.js";
 

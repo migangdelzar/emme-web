@@ -1,4 +1,4 @@
-import type { Appointment } from "@emme/domain";
+import type { Appointment } from '../../domain/index.js';
 
 export interface AppointmentFilters {
   date?: string;

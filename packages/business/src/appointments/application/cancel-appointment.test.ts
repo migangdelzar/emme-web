@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { cancelAppointment } from "./cancel-appointment.js";
 import type { AppointmentRepository } from "./ports/appointment-repository.js";
-import type { Appointment } from "@emme/domain";
+import type { Appointment } from '../domain/index.js';
 
 const appointment: Appointment = {
   id: "appointment-1",

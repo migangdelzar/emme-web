@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '@emme/core';
 import type { Client as ContractClient } from '@emme/api';
-import { createClient, updateClient } from '@emme/application';
+import { createClient, updateClient } from '@emme/business/clients';
 import { createClientRepository } from '@emme/infrastructure';
 import { createMutationOptions, createResourceKey } from '../../shared/queryFactory';
 

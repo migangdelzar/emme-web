@@ -3,7 +3,7 @@ import type {
   ClientRepository,
   CreateClientInput,
   UpdateClientInput,
-} from "@emme/application";
+} from '@emme/business/clients';
 
 export function createClientRepository(source: HttpClient): ClientRepository;
 export function createClientRepository(source: ClientApi): ClientRepository;

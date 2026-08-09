@@ -1,4 +1,4 @@
-import type { Appointment } from '@emme/domain';
+import type { Appointment } from '../../domain/index.js';
 import type { AppointmentFilters, AppointmentRepository } from '../ports/appointment-repository.js';
 
 interface ListSalonAppointmentsDependencies {

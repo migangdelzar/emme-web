@@ -1,1 +1,1 @@
-export type { Client } from '@emme/domain';
+export type { Client } from '@emme/business/clients';

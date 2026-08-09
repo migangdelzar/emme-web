@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import type { AppointmentStatus, Appointment } from '@emme/api';
 import type { Service } from '@emme/api';
-import type { Client } from '@emme/domain';
+import type { Client } from '@emme/business/clients';
 import { useBusinessProfileContext } from '../../settings/context/BusinessProfileContext';
 import { useClientData } from '../../clients/hooks/useClientData';
 

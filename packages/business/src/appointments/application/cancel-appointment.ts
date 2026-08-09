@@ -1,4 +1,4 @@
-import { canCancelAppointment, type Appointment } from "@emme/domain";
+import { canCancelAppointment, type Appointment } from '../domain/index.js';
 
 import type { AppointmentRepository } from "./ports/appointment-repository.js";
 
