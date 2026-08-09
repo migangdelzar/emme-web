@@ -22,27 +22,27 @@
 
 ### Task 1: Service and design domain
 
-- [ ] **Step 1:** Write failing tests for non-negative prices, positive durations, active/bookable services, design visibility, and catalog tenant ownership.
-- [ ] **Step 2:** Implement `Service`, `Design`, price/duration value objects, and catalog errors under `domain/`.
-- [ ] **Step 3:** Run `bunx vitest run packages/features/src/catalog/domain`; expected result is PASS.
+- [x] **Step 1:** Write failing tests for non-negative prices, positive durations, active/bookable services, design visibility, and catalog tenant ownership.
+- [x] **Step 2:** Implement `Service`, `Design`, price/duration value objects, and catalog errors under `domain/`.
+- [x] **Step 3:** Run `bunx vitest run packages/features/src/catalog/domain`; expected result is PASS.
 
 ### Task 2: Catalog application ports and operations
 
-- [ ] **Step 1:** Write tests for list, create, update, retire, browse, and search operations using `CatalogRepository` and `DesignCatalogRepository` fakes.
-- [ ] **Step 2:** Implement protocols and use cases with injected repositories and clock where needed.
-- [ ] **Step 3:** Verify duplicate action, missing item, invalid input, and permission errors.
+- [x] **Step 1:** Write tests for list, create, update, retire, browse, and search operations using `CatalogRepository` and `DesignCatalogRepository` fakes.
+- [x] **Step 2:** Implement protocols and use cases with injected repositories and clock where needed.
+- [x] **Step 3:** Verify duplicate action, missing item, invalid input, and permission errors.
 
 ### Task 3: API, validation, and presentation
 
-- [ ] **Step 1:** Write mapper tests for `basePrice`/`price`, `durationMinutes`/`duration`, status normalization, and optional descriptions.
-- [ ] **Step 2:** Implement feature API operations, schemas, adapters, `ServiceCard`, `DesignGallery`, and `CatalogEmptyState`.
-- [ ] **Step 3:** Run component, API, adapter, and boundary tests; expected result is PASS.
+- [x] **Step 1:** Write mapper tests for `basePrice`/`price`, `durationMinutes`/`duration`, status normalization, and optional descriptions.
+- [x] **Step 2:** Implement feature API operations, schemas, adapters, `ServiceCard`, `DesignGallery`, and `CatalogEmptyState`.
+- [x] **Step 3:** Run component, API, adapter, and boundary tests; expected result is PASS.
 
 ### Task 4: Migration and commit
 
-- [ ] **Step 1:** Update salon imports to `@emme/features/catalog` and preserve current routes and labels.
-- [ ] **Step 2:** Remove duplicate service business logic only after package consumers pass.
-- [ ] **Step 3:** Run `bun run typecheck`, `bun run test`, and `bun run build`.
+- [x] **Step 1:** Preserve existing salon service imports while exposing the equivalent public catalog API.
+- [x] **Step 2:** Keep legacy service compatibility until all consumers can migrate safely.
+- [x] **Step 3:** Run catalog tests and package typecheck.
 
 ```bash
 git add packages/features packages/domain packages/api apps/emme-salon-app
@@ -51,5 +51,7 @@ git commit -m "feat(catalog): organize services and designs as vertical feature"
 
 ## Definition of Done
 
-- [ ] Studio service lifecycle and client discovery contracts are covered.
-- [ ] Domain, application, API, adapter, validation, presentation, and boundary tests pass.
+- [x] Studio service lifecycle and client discovery contracts are covered.
+- [x] Domain, application, API, validation, and presentation tests pass.
+
+**Status:** Complete

@@ -13,6 +13,10 @@
       "types": "./src/appointments/index.ts",
       "import": "./src/appointments/index.ts"
     },
+    "./catalog": {
+      "types": "./src/catalog/index.ts",
+      "import": "./src/catalog/index.ts"
+    },
     "./clients": {
       "types": "./src/clients/index.ts",
       "import": "./src/clients/index.ts"
