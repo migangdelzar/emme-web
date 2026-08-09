@@ -23,6 +23,19 @@ describe('@emme/ui package boundary', () => {
     }
   });
 
+  it('does not contain business concepts in source identifiers or imports', () => {
+    const sourceDirectory = join(process.cwd(), 'src');
+    const sourceFiles = collectSourceFiles(sourceDirectory);
+    const forbiddenBusinessNames =
+      /Appointment|Salon|Tenant|Customer|Payment|Booking/;
+
+    for (const sourceFile of sourceFiles) {
+      const source = readFileSync(sourceFile, 'utf8');
+
+      expect(source, sourceFile).not.toMatch(forbiddenBusinessNames);
+    }
+  });
+
   it('recognizes root-level and nested app import specifiers as forbidden', () => {
     expect("import Root from 'apps/root'").toMatch(forbiddenImportPattern);
     expect("import Nested from 'features/apps/nested'").toMatch(forbiddenImportPattern);
