@@ -1,5 +1,5 @@
 import { asRecord, firstStringField, optionalStringField, stringField } from '@emme/api';
-import type { Appointment, AppointmentStatus } from '../domain/appointment.types.js';
+import type { Appointment, AppointmentStatus } from '@emme/business/appointments';
 
 const STATUS_MAP: Readonly<Record<string, AppointmentStatus>> = {
   PENDING: 'pending',

@@ -1,3 +1,0 @@
-import { asRecord, firstNumberField, stringField } from '@emme/api';
-import type { DashboardSnapshot } from '../domain/index.js';
-export function mapDashboardPayload(payload: unknown): DashboardSnapshot { const raw = asRecord(payload, 'dashboard'); return { range: { tenantId: stringField(raw, 'tenantId', 'dashboard'), from: stringField(raw, 'from', 'dashboard'), to: stringField(raw, 'to', 'dashboard'), timezone: stringField(raw, 'timezone', 'dashboard') }, revenue: { amountMinor: firstNumberField(raw, ['revenueMinor']), currency: stringField(raw, 'currency', 'dashboard') }, appointments: { total: firstNumberField(raw, ['appointmentsTotal']), completed: firstNumberField(raw, ['appointmentsCompleted']), cancelled: firstNumberField(raw, ['appointmentsCancelled']) } }; }

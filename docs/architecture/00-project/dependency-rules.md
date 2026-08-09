@@ -11,25 +11,21 @@ flowchart LR
     I18N["@emme/i18n"]
     API["@emme/api"]
     INFRA["@emme/infrastructure"]
-    DOMAIN["feature domain"]
-    APPLICATION["feature application"]
-    FEATURE_API["feature API"]
-    FEATURE_INFRA["feature infrastructure"]
-    PRESENTATION["feature presentation"]
-    APP["app composition root + workflows"]
+    BUSINESS["@emme/business capability"]
+    APP_FEATURE["salon app feature"]
+    AUTH["@emme/auth"]
+    APP["app composition root"]
 
-    DOMAIN --> KERNEL
-    APPLICATION --> DOMAIN
-    APPLICATION --> KERNEL
-    FEATURE_API --> API
-    FEATURE_API --> APPLICATION
-    FEATURE_INFRA --> API
-    FEATURE_INFRA --> APPLICATION
-    PRESENTATION --> FEATURE_API
-    PRESENTATION --> UI
-    PRESENTATION --> CORE
-    PRESENTATION --> I18N
-    APP --> PRESENTATION
+    BUSINESS --> KERNEL
+    APP_FEATURE --> BUSINESS
+    APP_FEATURE --> API
+    APP_FEATURE --> UI
+    APP_FEATURE --> CORE
+    APP_FEATURE --> I18N
+    AUTH --> CORE
+    AUTH --> CORE
+    APP --> APP_FEATURE
+    APP --> AUTH
     APP --> CORE
     APP --> UI
     APP --> I18N
@@ -44,12 +40,11 @@ through public barrels.
 ## Layer rules
 
 ```text
-feature domain         -> @emme/kernel
-feature application    -> feature domain + @emme/kernel
-feature API            -> @emme/api + feature application contracts/mappers
-feature infrastructure -> @emme/api + feature application ports
-feature presentation   -> @emme/ui + @emme/core + @emme/i18n + feature public APIs
-apps                   -> selected features + core + ui + infrastructure + i18n
+business domain        -> @emme/kernel
+business application   -> business domain + @emme/kernel
+salon feature          -> @emme/business + @emme/api + @emme/ui + @emme/core + @emme/i18n
+shared auth gate       -> @emme/core
+apps                   -> local features + auth + core + ui + infrastructure + i18n
 ```
 
 1. Domain code never imports React, browser APIs, transport clients, storage,
@@ -62,8 +57,8 @@ apps                   -> selected features + core + ui + infrastructure + i18n
    business policy.
 5. UI has no business, API, application, infrastructure, feature, or app
    dependency.
-6. Features communicate through stable public exports and never import another
-   feature's private path.
+6. Salon features communicate through local public barrels and may consume
+   `@emme/business` capability exports; they do not import another app.
 7. Packages never import app code, and apps never import another app.
 8. Tenant context is explicit at API/application boundaries and is never
    inferred from arbitrary UI state.
@@ -80,11 +75,10 @@ apps                   -> selected features + core + ui + infrastructure + i18n
   barrel but are not consumer entry points unless explicitly exported.
 - Public exports are contracts, types, factories, and reusable presentation;
   private mappers, adapters, fixtures, and file layout remain replaceable.
-- Apps import `@emme/features/appointments` or another documented export, never
-  `@emme/features/src/appointments/...`.
-- A cross-feature collaboration depends on the providing feature's public
-  contract. If no contract exists, add one deliberately instead of deep
-  importing.
+- Apps import local salon features through app-relative public barrels. Business
+  consumers use `@emme/business/<capability>`; auth consumers use `@emme/auth`.
+- A cross-feature collaboration depends on a local public contract. If no
+  contract exists, add one deliberately instead of deep importing.
 - Export-map, public-barrel, and forbidden-import tests are required before a
   migration deletes the previous entry point.
 

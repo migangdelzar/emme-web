@@ -18,10 +18,12 @@ emme-web/
 │   ├── kernel/
 │   ├── ui/
 │   ├── core/
+│   ├── auth/
 │   ├── i18n/
 │   ├── api/
 │   ├── infrastructure/
-│   ├── features/
+│   ├── business/
+│   ├── validation/
 │   └── test-support/
 ├── configs/
 │   ├── eslint/
@@ -158,28 +160,53 @@ packages/infrastructure/src/
 Infrastructure owns global technical adapters. A repository that implements a
 feature application port remains in that feature's `infrastructure/` folder.
 
-## `@emme/features`
+## `@emme/business`
 
 ```text
-packages/features/src/
-├── appointments/
-├── catalog/
-├── customers/
-├── staff/
-├── payments/
-├── communications/
-├── integrations/
-├── tenant-configuration/
-├── onboarding/
-├── analytics/
-├── __tests__/package-boundary.test.ts
+packages/business/src/
+├── appointments/{domain,application}/
+├── clients/{domain,application}/
+├── services/{domain,application}/
 └── index.ts
 ```
 
-Every module uses the complete Hexagonal structure in
-[feature module structure](feature-module-structure.md). The package barrel
-exports feature barrels only; it does not recreate global domain, application,
-or validation layers.
+Each capability owns internal `domain/` and `application/` layers. The package
+is framework-free and contains no React pages, browser adapters, or app routes.
+
+## `@emme/auth`
+
+```text
+packages/auth/src/
+├── components/AuthGate.tsx
+├── __tests__/AuthGate.test.tsx
+└── index.ts
+```
+
+`@emme/auth` provides the shared authentication state gate only. Each app owns
+its login and tenant-selection presentation. Session state and auth providers
+remain in `@emme/core`; concrete token/storage adapters remain in
+`@emme/infrastructure`.
+
+## Salon app features
+
+```text
+apps/salon-app/src/features/
+├── auth/components/{Login,TenantSelector}.tsx
+├── appointments/{api,components,hooks,mappers,presentation,validation}/
+├── clients/{api,components,hooks}/
+├── dashboard/{components,hooks}/
+├── finances/{components,hooks}/
+├── google-workspace/{components,hooks}/
+├── onboarding/{components}/
+├── services/{api,components,domain,hooks,validation}/
+├── settings/{components,context,hooks}/
+├── shared/{components,hooks,uiStore}/
+└── feature-boundary.test.ts
+```
+
+Pages, hooks, workflow state, feature-specific API composition, and business
+UI are salon-owned. Reusable rules and use cases are imported from
+`@emme/business`.
 
 ## `@emme/test-support`
 
@@ -221,9 +248,10 @@ simple local record-and-return fakes may remain beside the consuming test.
 ## Structure checklist
 
 - [ ] Every top-level directory has one documented owner.
-- [ ] All eight package trees are represented without omitted technical layers.
-- [ ] Each feature uses the complete vertical structure and exports one feature
-      barrel.
+- [ ] All current package trees are represented without omitted technical layers.
+- [ ] Salon features own product presentation and workflow code.
+- [ ] `@emme/auth` contains only shared authentication boundary primitives;
+      login pages are app-local.
 - [ ] App-only routes and workflows stay under `apps/<app>/src/features`.
 - [ ] No app-to-app or package-to-app imports exist.
 - [ ] Transitional global business packages are removed only after consumers

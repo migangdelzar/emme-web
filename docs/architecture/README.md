@@ -8,10 +8,12 @@ and is established by
 The [master plan index](../superpowers/plans/2026-08-08-00-complete-monorepo-index.md)
 maps this structure to implementation plans `01` through `21`.
 
-The handbook governs future ownership. Existing `@emme/domain`,
-`@emme/application`, and `@emme/validation` code is transitional migration
-input; reusable business behavior belongs to vertical modules under
-`@emme/features`. The backend remains authoritative for authorization, tenant
+The handbook governs the current salon-first ownership model. The three apps
+remain independently deployable, but `salon-app` is the only app that owns
+product features today. `@emme/business` contains reusable framework-free
+business behavior, and `@emme/auth` contains only the shared authentication
+gate primitive. Each app owns its own login page and authentication
+presentation. The backend remains authoritative for authorization, tenant
 isolation, validation, persistence, and business invariants.
 
 ## Handbook status key
@@ -36,7 +38,7 @@ is normative within its stated scope.
 | [Package ownership](00-project/package-ownership.md) | Canonical | Package responsibilities and forbidden ownership. |
 | [Dependency rules](00-project/dependency-rules.md) | Canonical | Allowed dependency graph and boundary checklist. |
 | [Naming conventions](00-project/naming-conventions.md) | Canonical | Directory, file, symbol, schema, test, and barrel names. |
-| [Feature module structure](00-project/feature-module-structure.md) | Canonical | Complete appointments Hexagonal example and exports. |
+| [Feature module structure](00-project/feature-module-structure.md) | Updated | Salon-local feature structure and business package boundary. |
 | [App shell structure](00-project/app-shell-structure.md) | Canonical | Salon, client, and platform-admin workflow trees. |
 | [Testing architecture](00-project/testing-architecture.md) | Canonical | Test locations, lanes, doubles, and completion checklist. |
 | [Web/native UI boundary](00-project/web-native-ui-boundary.md) | Canonical | Portable UI contract and platform extension points. |
@@ -102,15 +104,19 @@ is normative within its stated scope.
 
 ## Canonical structure checklist
 
-- [ ] The repository tree contains the three app shells and exactly the eight
-      target package boundaries: kernel, UI, core, i18n, API, infrastructure,
-      features, and test support.
+- [ ] The repository tree contains the three app shells and the package
+      boundaries: kernel, UI, core, auth, i18n, API, infrastructure, business,
+      validation, and test support.
 - [ ] Each package matches its complete tree in
       [repository structure](00-project/repository-structure.md); summaries do
       not replace those trees.
-- [ ] Reusable business behavior is vertical under
-      `packages/features/src/<feature>`; global domain/application/validation
-      packages are treated only as migration sources.
+- [ ] Reusable business behavior is capability-oriented under
+      `packages/business/src/<capability>`, with internal `domain` and
+      `application` layers.
+- [ ] Product features, pages, hooks, workflows, and business-specific UI are
+      under `apps/salon-app/src/features`.
+- [ ] `@emme/auth` contains only shared authentication boundary primitives;
+      login pages remain app-local and `@emme/features` does not exist.
 - [ ] App routes, navigation, branding, role permissions, forms, filters, and
       workflow orchestration remain app-owned.
 - [ ] Public imports use package or feature barrels; no consumer deep-imports a

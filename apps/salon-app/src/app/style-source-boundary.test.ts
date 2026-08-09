@@ -6,7 +6,8 @@ const globalStyles = readFileSync(join(process.cwd(), 'src/theme/globals.css'), 
 
 describe('application style source boundary', () => {
   it('scans reusable package components for Tailwind utilities', () => {
-    expect(globalStyles).toContain("@source '../../../../packages/features/src';");
+    expect(globalStyles).toContain("@source '../../../../apps/salon-app/src';");
+    expect(globalStyles).toContain("@source '../../../../packages/auth/src';");
     expect(globalStyles).toContain("@source '../../../../packages/ui/src';");
   });
 });

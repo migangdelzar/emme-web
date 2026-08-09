@@ -1,3 +1,0 @@
-import { asRecord, firstNumberField, stringField } from '@emme/api';
-import type { TenantConfiguration } from '../domain/index.js';
-export function mapTenantConfigurationPayload(payload: unknown): TenantConfiguration { const raw = asRecord(payload, 'tenant configuration'); return { tenantId: stringField(raw, 'tenantId', 'tenant configuration'), businessName: stringField(raw, 'businessName', 'tenant configuration'), timezone: stringField(raw, 'timezone', 'tenant configuration'), hours: [], cancellationNoticeHours: firstNumberField(raw, ['cancellationNoticeHours']), advanceBookingDays: firstNumberField(raw, ['advanceBookingDays'], 1) }; }

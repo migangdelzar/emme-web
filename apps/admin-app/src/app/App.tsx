@@ -1,3 +1,17 @@
 import { Outlet } from 'react-router-dom';
+import { AuthGate } from '@emme/auth';
 import { AppProviders } from './AppProviders.js';
-export function App() { return <AppProviders><main><Outlet /></main></AppProviders>; }
+import { AdminLoginPage } from '../features/auth/AdminLoginPage.js';
+
+export function App() {
+  return (
+    <AppProviders>
+      <AuthGate
+        signedOutFallback={<AdminLoginPage />}
+        tenantRequiredFallback={<p role="status">Choose an administration workspace.</p>}
+      >
+        <main><Outlet /></main>
+      </AuthGate>
+    </AppProviders>
+  );
+}

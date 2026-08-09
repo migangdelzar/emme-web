@@ -1,7 +1,7 @@
 # Frontend Feature
 
-> **Status: Updated.** Presentation detail is retained; reusable business logic
-> belongs to the owning vertical feature, while role workflows remain app-local.
+> **Status: Updated.** Product feature presentation, hooks, and workflows are
+> salon-app local; framework-free reusable behavior belongs in `@emme/business`.
 
 A feature delivers one coherent user outcome, such as booking an appointment,
 managing availability, or reviewing an audit timeline.
@@ -44,7 +44,9 @@ stateDiagram-v2
 
 | Concern | Owner |
 | --- | --- |
-| reusable policy/use case/contract/adapter/component | vertical `@emme/features` module |
+| reusable policy/use case/contract | capability in `@emme/business` |
+| salon component/hook/page/workflow | `apps/salon-app/src/features/<feature>` |
+| shared authentication gate | `@emme/auth`; login pages remain app-local |
 | role page, route, form, filter, multi-step orchestration | app workflow |
 | generic visual primitive | `@emme/ui` |
 | auth/tenant/permission/runtime | `@emme/core` |

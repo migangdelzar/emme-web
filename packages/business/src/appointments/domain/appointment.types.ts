@@ -1,4 +1,4 @@
-import type { AppointmentStatus } from "./appointment-status.js";
+import type { AppointmentStatus } from './appointment-status.js';
 
 export interface Appointment {
   id: string;
@@ -8,6 +8,7 @@ export interface Appointment {
   startTime: string;
   endTime: string;
   status: AppointmentStatus;
+  tenantId?: string;
   customerName?: string;
   notes?: string;
 }

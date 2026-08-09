@@ -1,5 +1,6 @@
 @import 'tailwindcss';
-@source '../../../../packages/features/src';
+@source '../../../../apps/salon-app/src';
+@source '../../../../packages/auth/src';
 @source '../../../../packages/ui/src';
 
 /* ─── shadcn/ui compatible CSS variables ─── */

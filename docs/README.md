@@ -9,12 +9,12 @@ This monorepo contains the web frontend packages and apps for the EMME platform.
 | Package | Purpose |
 |---|---|
 | `@emme/core` | Auth, tenancy, permissions, runtime configuration, shared errors |
-| `@emme/domain` | Pure business rules and models; no framework or browser dependencies |
-| `@emme/application` | Use cases and ports that orchestrate domain behavior |
+| `@emme/business` | Framework-free business capabilities with internal domain/application layers |
 | `@emme/api` | Typed backend contracts, routes, ports, and capability adapters |
 | `@emme/infrastructure` | Concrete HTTP, auth-token, storage, and external adapters |
 | `@emme/i18n` | Typed translation keys, Spanish (es-MX) and English (en-US) |
 | `@emme/ui` | Shared UI components |
+| `@emme/auth` | Shared authentication gate primitive; login pages remain app-local |
 | `@emme/validation` | Zod schemas shared across apps |
 
 ### Apps
@@ -22,10 +22,9 @@ This monorepo contains the web frontend packages and apps for the EMME platform.
 | App | Path | Status |
 |---|---|---|
 | **Admin** | `apps/admin-app/` | Platform administration frontend |
-| **Studio** | `apps/salon-app/` | Tenant-owner/staff React 19 + Vite PWA |
-| **Client** | `apps/client-app/` | Public client booking frontend |
-| **Client** | _(not yet built)_ | Backend APIs ready, frontend pending |
-| **Admin** | _(not yet built)_ | Backend APIs ready, frontend pending |
+| **Salon** | `apps/salon-app/` | Current tenant-owner/staff React 19 + Vite PWA and product feature owner |
+| **Client** | `apps/client-app/` | Separate deployable shell; auth-only scope for now |
+| **Admin** | `apps/admin-app/` | Separate deployable shell; auth-only scope for now |
 
 ## Relationship to Backend
 

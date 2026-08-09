@@ -3,20 +3,19 @@
 > **Status: Updated.** A reusable module is now a complete vertical feature,
 > not an app `modules/` technical grouping.
 
-A module is a cohesive business capability organized around user outcomes. A
-reusable module lives under `packages/features/src/<feature>` and follows the
-[complete feature structure](../00-project/feature-module-structure.md). An
-app-local module stays under `apps/<app>/src/features` until a second app proves
-reuse.
+A module is a cohesive business capability organized around user outcomes. The
+current product modules live under `apps/salon-app/src/features`. Their
+framework-free rules and use cases may be consumed from
+`packages/business/src/<capability>`. `@emme/auth` provides the shared auth
+gate, while each app owns its login and tenant-selection presentation.
 
 ```mermaid
 flowchart LR
-    App[app workflow] --> Public[feature public barrel]
-    Public --> Presentation[presentation]
-    Public --> Application[application contracts]
-    Application --> Domain[domain]
-    Adapter[feature infrastructure] --> Application
-    Private[feature internals] -. forbidden deep import .-> Other[other feature/app]
+    App[app workflow] --> Salon[local salon feature]
+    Salon --> Business["@emme/business capability"]
+    Salon --> API["@emme/api"]
+    Salon --> UI["@emme/ui"]
+    Auth["@emme/auth gate"] --> Core["@emme/core"]
 ```
 
 ## Boundary record
@@ -34,14 +33,14 @@ flowchart LR
 
 ## Rules
 
-- Cross-module imports use public exports only.
+- Cross-feature imports use local public exports only.
 - Generated API types are transport contracts, not automatic domain/view models.
 - Route-level code stays thin and delegates to app workflows and feature APIs.
 - Cross-feature workflows are coordinated by an app or explicit orchestration
   feature, never private imports.
 - A module is independently testable through protocol fakes.
-- Promotion requires real reuse and a dedicated plan; extraction is not a
-  substitute for clear ownership.
+- Shared login presentation is intentionally app-local; only the auth gate
+  primitive is shared.
 
 ## Module checklist
 

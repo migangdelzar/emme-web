@@ -1,12 +1,1 @@
-import type { Appointment } from '../../domain/index.js';
-
-export interface AppointmentFilters {
-  date?: string;
-  status?: Appointment["status"];
-}
-
-export interface AppointmentRepository {
-  findById(id: string): Promise<Appointment | null>;
-  list(filters?: AppointmentFilters): Promise<Appointment[]>;
-  save(appointment: Appointment): Promise<Appointment>;
-}
+export type { AppointmentFilters, AppointmentRepository } from '../ports.js';

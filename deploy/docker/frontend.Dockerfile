@@ -14,10 +14,9 @@ COPY apps/admin-app/package.json ./apps/admin-app/
 COPY apps/salon-app/package.json ./apps/salon-app/
 COPY e2e/src/package.json ./e2e/src/
 COPY packages/api/package.json ./packages/api/
-COPY packages/application/package.json ./packages/application/
+COPY packages/auth/package.json ./packages/auth/
+COPY packages/business/package.json ./packages/business/
 COPY packages/core/package.json ./packages/core/
-COPY packages/domain/package.json ./packages/domain/
-COPY packages/features/package.json ./packages/features/
 COPY packages/i18n/package.json ./packages/i18n/
 COPY packages/infrastructure/package.json ./packages/infrastructure/
 COPY packages/kernel/package.json ./packages/kernel/

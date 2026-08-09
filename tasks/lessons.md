@@ -1,5 +1,16 @@
 # Engineering Lessons
 
+## 2026-08-09 — Keep shared React scope explicit
+
+- Failure mode: a broad shared feature package made salon UI, business rules,
+  API adapters, and application logic appear to have the same owner.
+- Detection signal: app ownership tests found imports from `@emme/features` in
+  client placeholders and the salon shell.
+- Prevention rule: keep current product UI in `apps/salon-app/src/features`,
+  keep reusable framework-free behavior in `@emme/business`, and introduce a
+  shared React package only for an explicitly approved cross-app concern such
+  as authentication.
+
 ## 2026-08-08 — Publish NodeNext-safe internal ESM specifiers
 
 - Failure mode: shared package source used extensionless relative imports that

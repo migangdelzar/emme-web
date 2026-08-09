@@ -1,44 +1,52 @@
-# Package-First Migration Checklist
+# Salon-first consolidation checklist
 
-- [ ] Restate goal and acceptance criteria
-- [x] Locate existing implementation and package patterns
-- [x] Design package ownership and dependency direction
-- [x] Migrate shared utilities and platform adapters
-- [x] Migrate reusable feature modules
-- [x] Reduce the salon app to composition and tenant-specific code
-- [x] Add or update package boundary tests
-- [x] Run typecheck, unit tests, lint, build, and mock E2E
-- [ ] Build and serve the latest `salon-app` production image
-- [ ] Run real E2E against the deployed salon image using provisioner-generated storage state
-- [ ] Build all three independent frontend images
-- [ ] Validate Kubernetes manifests and deployment topology
-- [x] Summarize changes and verification evidence
+- [x] Confirm three independent deployable app shells remain.
+- [x] Consolidate reusable framework-free business logic into `@emme/business`.
+- [x] Move current product features into `apps/salon-app/src/features`.
+- [x] Add shared `@emme/auth` gate with app-local login pages.
+- [x] Localize client placeholders and remove `@emme/features`.
+- [x] Keep admin and client product routes deferred; their shells expose auth
+      only until those products are intentionally started.
+- [x] Update architecture handbook, root documentation, and boundary checks.
+- [ ] Run the complete quality, build, coverage, and Playwright verification.
+- [ ] Verify the latest salon app with the real backend/provider deployment.
+- [ ] Build/validate the three independent frontend artifacts and compose setup.
+- [ ] Commit and push all remaining changes.
 
 ## Acceptance criteria
 
-- Reusable feature code is owned by packages, not `apps/salon-app/src/features`.
-- The salon app contains only composition, configuration, theme, branding, and genuinely tenant-specific code.
-- No package imports from `apps/salon-app` or the `@/` alias.
-- Public package APIs are exported through package barrels.
-- Existing behavior remains covered by tests and builds successfully.
-
-## Results
-
-- Reusable feature code, shared UI adapters, locale behavior, session logic, and cache storage now live in workspace packages.
-- `apps/salon-app/src` contains the salon app shell: providers, routes, layout, runtime config, theme entrypoint, branding, and app-specific error presentation.
-- Tailwind package source scanning is explicit through `@source` declarations in `src/theme/globals.css`.
-- Package and application boundary tests were moved with their owning modules and updated for the new roots.
-- Verification passed: typecheck, unit tests, documentation validation, i18n validation, formatting, security audit, lint (warnings only), production build, and mock E2E (36 passed, 3 intentionally skipped).
-- Real E2E authenticated successfully against the local backend and Keycloak stack; final verification must use the deployed `salon-app` image.
-
-## Known follow-up
-
-- `@emme/features` currently imports the concrete client repository adapter from `@emme/infrastructure` for its client query composition. This keeps the reusable feature self-contained for the current migration; a later strict hexagonal refinement can inject that adapter from each app composition root.
+- `admin-app`, `salon-app`, and `client-app` remain separate deployable roots.
+- All current product features are owned by `apps/salon-app/src/features`.
+- All three apps can render the shared `@emme/auth` gate with distinct local
+  login pages.
+- `@emme/business` contains reusable rules/use cases and has no React/browser
+  dependencies.
+- No source or manifest imports `@emme/features`, `@emme/domain`, or
+  `@emme/application`.
+- Architecture docs, package trees, and validators describe the same structure.
 
 ## Working notes
 
-- Current branch: `feat/api-version-contract`.
-- Package manager: Bun workspaces; Turbo is not used.
-- Real E2E requires `E2E_BASE_URL`, `E2E_API_URL`, and one provisioner-generated auth JSON file per selected salon; username/password variables remain bootstrap fallbacks only.
-- The web runner consumes the per-salon storage-state contract; `emme-service` still needs to emit those artifacts from its provisioner.
-- Production frontend topology is three package-name-aligned apps built by one parameterized Dockerfile under `deploy/docker/`.
+- Branch: `feat/api-version-contract`.
+- Package manager: Bun workspace; `bun.lock` is authoritative.
+- Auth/session state remains in `@emme/core`; concrete storage/provider adapters
+  remain in `@emme/infrastructure`.
+- `@emme/auth` only gates auth states; app login UI is local and backend
+  authorization remains authoritative.
+- Real E2E requires the provisioner-generated per-salon auth storage state and a
+  running `emme-service` backend.
+
+## Results
+
+- `@emme/auth` typecheck and four AuthGate tests pass.
+- Final verification passed: workspace typecheck, full unit/integration tests,
+  production builds for all three apps, architecture/docs checks, salon
+  coverage (79.05% statements), and mocked Playwright (36 passed, 3 skipped).
+- Dockerfile boundary tests pass and Compose configuration validates. Image
+  startup was attempted, but the installed legacy Docker daemon stalled during
+  the large build context; no backend/Keycloak containers are running for real
+  provider E2E.
+- Admin, client, and salon app typechecks pass.
+- Client ownership test passed after localizing its two placeholder components.
+- Architecture validator passes after adding the retired-feature and business
+  package boundaries.

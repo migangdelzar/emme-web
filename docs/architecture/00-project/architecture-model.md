@@ -1,8 +1,8 @@
 # Frontend Architecture Model
 
 > **Status: Updated.** This retained overview now reflects the canonical
-> vertical-feature ownership model. The previous global `@emme/domain` and
-> `@emme/application` dependency diagram is superseded.
+> salon-first ownership model. The previous global `@emme/domain`,
+> `@emme/application`, and shared React feature-package diagrams are superseded.
 
 ## Two-repository ownership
 
@@ -27,22 +27,19 @@ breaking contract requires a coordinated compatibility window and migration.
 
 ```mermaid
 flowchart TB
-    Shell["App shell and workflow"] --> Presentation["Feature presentation"]
-    Presentation --> FeatureAPI["Feature API/mappers"]
-    Presentation --> Application["Feature application"]
-    FeatureAPI --> Api["@emme/api contracts"]
-    Application --> Domain["Feature domain"]
-    Application --> Port["Feature application port"]
-    FeatureInfrastructure["Feature infrastructure adapter"] --> Port
-    FeatureInfrastructure --> Api
+    Shell["App shell"] --> SalonFeature["salon-app local feature"]
+    SalonFeature --> Business["@emme/business capability"]
+    SalonFeature --> Api["@emme/api contracts"]
+    SalonFeature --> UI["@emme/ui"]
+    Shell --> Auth["@emme/auth gate + app-local login"]
+    Auth --> Core["@emme/core session"]
     Shell --> GlobalInfrastructure["@emme/infrastructure"]
     GlobalInfrastructure --> Service["emme-service"]
-    FeatureInfrastructure --> GlobalInfrastructure
 ```
 
-The invariant is vertical business ownership: a reusable feature contains its
-own domain and application layers. Global packages own only genuinely
-cross-cutting primitives, runtime, transport contracts, and technical adapters.
+The invariant is explicit ownership: salon workflows and presentation remain in
+the salon app; framework-free rules and use cases with demonstrated reuse live
+in `@emme/business`; only authentication UI is shared across the app shells.
 
 ## Rules
 

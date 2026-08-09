@@ -1,5 +1,5 @@
 import { Badge, Card, CardContent, CardHeader, CardTitle, Skeleton } from '@emme/ui';
-import type { Appointment } from '../../domain/appointment.types.js';
+import type { Appointment } from '@emme/business/appointments';
 import { AppointmentDateTime } from './AppointmentDateTime.js';
 
 export interface AppointmentSummaryCardProps {

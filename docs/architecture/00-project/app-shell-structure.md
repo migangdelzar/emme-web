@@ -1,11 +1,11 @@
 # App Shell and Workflow Structure
 
-Each app is a composition root. It owns routing, layouts, navigation, branding,
-role-specific permission composition, app forms and filters, and workflow
-orchestration. Concrete dependencies are instantiated only at composition-root
-registration.
+Each app is an independent composition root and deployable artifact. All three
+shells share the authentication gate primitive through `@emme/auth`; each app
+owns its own login presentation. Current product features are owned by
+`salon-app` only.
 
-## Canonical shell
+## Shell template
 
 ```text
 apps/<app>/src/
@@ -14,153 +14,74 @@ apps/<app>/src/
 │   ├── AppProviders.tsx
 │   ├── app-config.ts
 │   ├── router.tsx
-│   ├── routes/
-│   ├── layouts/
-│   └── error-boundary/
-├── features/
-├── config/
-├── theme/
+│   └── layouts/
+├── features/                 # only salon-app owns product features today
 └── main.tsx
 ```
 
-Every app feature owns these registration files in addition to its workflow
-implementation:
+`AppProviders` creates the runtime contexts and injects infrastructure. `App`
+composes `AuthGate`, app-local signed-out/tenant fallbacks, layouts, and routes.
+Backend authorization remains authoritative.
 
-```text
-<app-feature>/
-├── routes.tsx
-├── navigation.ts
-├── permissions.ts
-└── module.ts
-```
-
-`module.ts` registers the feature's routes, navigation, permissions, and
-capability dependencies with the app composition root. It does not instantiate
-global infrastructure outside registration.
-
-## Salon app workflows
-
-The three app shells are independent deployable roots:
-
-- `apps/admin-app` / package `admin-app`
-- `apps/salon-app` / package `salon-app`
-- `apps/client-app` / package `client-app`
+## Salon app
 
 ```text
 apps/salon-app/src/features/
-├── appointments/
-│   ├── calendar/
-│   ├── manage/
-│   ├── availability/
-│   ├── routes.tsx
-│   ├── navigation.ts
-│   ├── permissions.ts
-│   └── module.ts
-├── catalog/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-├── customers/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-├── staff/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-├── settings/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-├── onboarding/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-├── analytics/{routes.tsx,navigation.ts,permissions.ts,module.ts}
-└── integrations/{routes.tsx,navigation.ts,permissions.ts,module.ts}
+├── appointments/{api,components,hooks,mappers,presentation,validation}/
+├── clients/{api,components,hooks}/
+├── dashboard/{components,hooks}/
+├── finances/{components,hooks}/
+├── google-workspace/{components,hooks}/
+├── navigation/
+├── onboarding/{components}/
+├── services/{api,components,domain,hooks,validation}/
+├── settings/{components,context,hooks}/
+├── shared/{components,hooks,uiStore}/
+└── feature-boundary.test.ts
 ```
 
-The app consumes shared appointments, catalog, customers, staff, payments,
-integrations, tenant-configuration, onboarding, and analytics public APIs. Its
-calendar, management, availability, settings, onboarding, dashboard/analytics,
-and staff-facing integration flows remain app-owned.
+Salon owns the current pages, hooks, feature state, role workflows, API
+composition, and business-specific components. Reusable framework-free rules
+and use cases are consumed from `@emme/business`.
 
-## Client app workflows
+## Admin and client apps
 
 ```text
-apps/client-app/src/features/
-├── booking/
-│   ├── BookAppointmentPage.tsx
-│   ├── ServiceSelectionStep.tsx
-│   ├── DateSelectionStep.tsx
-│   ├── TimeSelectionStep.tsx
-│   ├── BookingConfirmation.tsx
-│   ├── useBookingFlow.ts
-│   ├── booking.schema.ts
-│   ├── routes.tsx
-│   ├── navigation.ts
-│   ├── permissions.ts
-│   └── module.ts
-├── my-appointments/
-│   ├── MyAppointmentsPage.tsx
-│   ├── AppointmentDetailsPage.tsx
-│   ├── useMyAppointments.ts
-│   ├── appointmentFilters.schema.ts
-│   ├── routes.tsx
-│   ├── navigation.ts
-│   ├── permissions.ts
-│   └── module.ts
-└── cancellation/
-    ├── CancelAppointmentDialog.tsx
-    ├── useCancelOwnAppointment.ts
-    ├── routes.tsx
-    ├── navigation.ts
-    ├── permissions.ts
-    └── module.ts
+apps/admin-app/src/
+├── app/
+└── main.tsx
+
+apps/client-app/src/
+├── app/
+├── features/auth/            # app-local login presentation only
+└── main.tsx
 ```
 
-The broader client app may also own auth, profile, discovery,
-communications, and calendar workflows. The tree above is the canonical
-appointment ownership example: it consumes shared feature policies and
-capabilities but keeps the customer journey local.
+The admin and client applications remain separate deployable shells so their
+security policies, URLs, environments, releases, and rollback paths stay
+independent. They may render the shared `@emme/auth` gate and call shared
+API/core packages, but their login pages remain local and they do not consume
+salon product features or `@emme/features`.
 
-## Platform-admin app workflows
-
-```text
-apps/admin-app/src/features/
-├── search/
-│   ├── PlatformAppointmentsPage.tsx
-│   ├── TenantAppointmentFilters.tsx
-│   ├── usePlatformAppointments.ts
-│   ├── routes.tsx
-│   ├── navigation.ts
-│   ├── permissions.ts
-│   └── module.ts
-└── audit/
-    ├── AppointmentAuditPage.tsx
-    ├── AppointmentAuditTimeline.tsx
-    ├── useAppointmentAudit.ts
-    ├── routes.tsx
-    ├── navigation.ts
-    ├── permissions.ts
-    └── module.ts
-```
-
-Tenant lifecycle, feature flags, memberships, provisioning, subscriptions, and
-other platform operations follow the same metadata pattern and remain local to
-the platform-admin app. No platform-only route or policy is forced into a
-tenant feature.
-
-## Composition-root registration
+## Composition flow
 
 ```mermaid
 flowchart TB
-    Main[main.tsx] --> Config[app-config.ts]
-    Config --> Providers[AppProviders.tsx]
-    Config --> Modules["feature module.ts registrations"]
-    Providers --> Infrastructure["concrete infrastructure"]
-    Modules --> Routes[router.tsx]
-    Modules --> Navigation[app navigation]
-    Modules --> Permissions[role permission composition]
-    Routes --> Workflow[app-local workflow]
-    Workflow --> FeatureAPI[shared feature public API]
+    Main[main.tsx] --> Providers[AppProviders.tsx]
+    Providers --> Infra["@emme/infrastructure"]
+    Providers --> Core["@emme/core"]
+    App[App.tsx] --> Auth["@emme/auth gate + app login"]
+    Auth --> Routes[router.tsx]
+    Routes --> Salon["salon-app local workflow"]
+    Salon --> Business["@emme/business"]
+    Salon --> API["@emme/api"]
 ```
 
-See [runtime configuration](../01-runtime/configuration.md) for complete
-`defineAppConfig` and `defineModule` examples.
+## Checklist
 
-## App structure checklist
-
-- [ ] The app shell matches the canonical shell tree.
-- [ ] Each app feature has `routes.tsx`, `navigation.ts`, `permissions.ts`, and
-      `module.ts`.
-- [ ] Role-specific pages, filters, forms, and orchestration remain app-local.
-- [ ] Shared business behavior is consumed only through feature public exports.
+- [ ] Each app has its own build, runtime configuration, and production image.
+- [ ] All three apps use the shared auth gate with app-local login pages.
+- [ ] Salon product features remain under `apps/salon-app/src/features`.
+- [ ] Admin/client shells do not import salon feature internals.
 - [ ] Concrete infrastructure is created only in composition-root wiring.
-- [ ] No app imports another app's internals.
-- [ ] Route, permission, tenant, loading, error, and workflow tests are present.
+- [ ] Route, auth, loading, error, and workflow tests exist for active flows.

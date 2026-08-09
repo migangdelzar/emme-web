@@ -8,8 +8,8 @@ const importPatterns = [
   /import\(\s*['"]([^'"]+)['"]\s*\)/g,
   /require\(\s*['"]([^'"]+)['"]\s*\)/g,
 ];
-const uiBusinessImportPattern = /^@emme\/(?:api|application|domain|features|infrastructure)(?:\/|$)/;
-const featurePrivatePathPattern = /^@emme\/features\/(?:src\/|[^/]+\/)/;
+const uiBusinessImportPattern = /^@emme\/(?:api|application|domain|features|business|infrastructure)(?:\/|$)/;
+const retiredFeaturesImportPattern = /^@emme\/features(?:\/|$)/;
 
 async function exists(path) {
   try {
@@ -130,8 +130,8 @@ export async function validateWorkspaceArchitecture({ root } = {}) {
           addViolation(violations, 'ui-cannot-import-business', workspaceRoot, file, specifier);
         }
 
-        if (featurePrivatePathPattern.test(specifier)) {
-          addViolation(violations, 'feature-cannot-import-private-path', workspaceRoot, file, specifier);
+        if (retiredFeaturesImportPattern.test(specifier)) {
+          addViolation(violations, 'retired-feature-package-import', workspaceRoot, file, specifier);
         }
       }
     }

@@ -12,7 +12,10 @@
 
 Emme keeps `admin-app`, `salon-app`, and `client-app` as separate deployable applications. The current implementation effort is salon-first: the salon application owns its complete user experience, while shared packages contain only stable business foundations and technical infrastructure.
 
-The existing `@emme/features` package is too broad. It mixes React pages, hooks, feature state, business rules, API adapters, and application logic. It will become a temporary migration facade and will be retired after salon-owned presentation code has moved to `apps/salon-app/src/features`.
+The existing `@emme/features` package is too broad. It mixed React pages, hooks,
+feature state, business rules, API adapters, and application logic. It is
+retired after salon-owned presentation code moves to
+`apps/salon-app/src/features`; no compatibility facade remains.
 
 The shared business boundary is one `@emme/business` package. It preserves domain/application separation as internal capability folders without turning each architectural layer into a separate workspace package.
 
@@ -99,9 +102,9 @@ emme/
 │   └── client-app/
 ├── packages/
 │   ├── api/
+│   ├── auth/           # shared login, tenant selection, and auth gate UI
 │   ├── business/       # shared domain rules and application use cases
 │   ├── core/
-│   ├── features/          # temporary migration facade; remove later
 │   ├── i18n/
 │   ├── infrastructure/
 │   ├── kernel/
@@ -111,7 +114,9 @@ emme/
 └── docs/
 ```
 
-The `features` package is intentionally shown as temporary. The final architecture does not require a shared React feature package for the salon product.
+The final architecture has no general shared React feature package. The auth
+gate primitive is shared, while each app owns a distinct login page and tenant
+selection presentation.
 
 ## 4. Package Responsibilities
 
@@ -119,6 +124,7 @@ The `features` package is intentionally shown as temporary. The final architectu
 |---|---|---|
 | `@emme/kernel` | Result types, base errors, brands, IDs, clocks | React, HTTP, browser APIs, business concepts |
 | `@emme/business` | Pure domain rules plus application use cases grouped by capability | React, browser APIs, query libraries, concrete infrastructure |
+| `@emme/auth` | Shared authentication gate primitive | Login pages, tenant selection presentation, and salon product workflows |
 | `@emme/api` | HTTP/API contracts, transport mappers, typed operations | Pages, React hooks, domain policy decisions |
 | `@emme/infrastructure` | Concrete HTTP, storage, auth, telemetry adapters | Business rules and page workflows |
 | `@emme/core` | Auth, tenant context, permissions, runtime providers, routing primitives | Appointment or salon-specific behavior |
@@ -159,7 +165,7 @@ The salon app owns the user-facing workflow. A local feature may contain:
 - `api/`: app-specific query composition, only when it is not a reusable transport operation.
 - `index.ts`: the feature's local public boundary.
 
-Do not create empty layer folders. Do not create a package for every feature. Do not move a page into `@emme/ui` or `@emme/features` merely because another app may eventually need a similar screen.
+Do not create empty layer folders. Do not create a package for every feature. Do not move a page into `@emme/ui` or `@emme/auth` merely because another app may eventually need a similar screen.
 
 App-owned examples:
 
@@ -207,8 +213,11 @@ Additional rules:
 
 Migration is incremental and behavior-preserving:
 
-### Phase 1: Establish salon ownership
+### Phase 1: Establish shared authentication and salon ownership
 
+- Create `@emme/auth` with `AuthGate`; keep `Login` and `TenantSelector` in each
+  app's auth feature.
+- Wire `AuthGate` into the admin, salon, and client app shells.
 - Add local `features` boundaries and local public barrels.
 - Move salon routing imports from `@emme/features` to the local feature modules.
 - Move auth, onboarding, navigation, settings, and dashboard presentation into the salon app.
@@ -230,10 +239,12 @@ Migration is incremental and behavior-preserving:
 
 - Keep finances, Google Workspace, and salon settings app-owned unless a stable shared contract emerges.
 
-### Phase 5: Remove the facade
+### Phase 5: Defer non-salon product apps and remove the feature package
 
-- Remove salon React imports from `@emme/features`.
-- Delete the package when no app consumes it.
+- Keep admin and client as auth-only deployable shells until their product
+  requirements are intentionally started.
+- Remove all app imports and package dependencies on `@emme/features`.
+- Delete `@emme/features`.
 - Update package exports, architecture checks, documentation, and CI commands.
 
 Every phase must preserve the existing mock and real-provider Playwright flows before moving to the next phase.
@@ -244,6 +255,7 @@ Every phase must preserve the existing mock and real-provider Playwright flows b
 |---|---|---|
 | Business domain rules | `packages/business/src/**/domain/**` | Pure business invariants and edge cases |
 | Business application use cases | `packages/business/src/**/application/**` | Ports, orchestration, errors, and DTOs with fakes |
+| Shared auth boundary | `packages/auth/src/**` | Auth-gate behavior and fallback contracts |
 | API contracts/mappers | `packages/api/src/**` | Serialization, request contracts, response mapping |
 | Salon feature logic | `apps/salon-app/src/features/**` | Hooks, view models, forms, state, and page behavior |
 | Generic UI | `packages/ui/src/**` | Accessibility and component behavior independent of salon concepts |
@@ -292,7 +304,8 @@ Rejected because it mixes appointments, clients, services, and payments. Capabil
 ## 11. Acceptance Criteria
 
 - Salon pages, hooks, feature state, and salon-specific components are owned by `apps/salon-app/src/features`.
-- `@emme/features` contains no permanent salon presentation responsibility.
+- `@emme/auth` contains only the shared auth gate; login pages are app-local.
+- `@emme/features` is removed.
 - Shared business rules and use cases remain React-free inside `@emme/business`.
 - `@emme/ui` has no business concepts.
 - Existing salon routes and behavior remain stable during migration.

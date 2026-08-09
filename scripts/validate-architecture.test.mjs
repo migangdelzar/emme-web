@@ -41,7 +41,7 @@ test('reports each prohibited dependency from an isolated workspace fixture', as
           specifier: '@emme/domain/orders',
         },
         {
-          rule: 'feature-cannot-import-private-path',
+          rule: 'retired-feature-package-import',
           file: 'packages/core/src/feature-private-path.ts',
           specifier: '@emme/features/billing/internal',
         },

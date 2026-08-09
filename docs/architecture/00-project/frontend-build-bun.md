@@ -15,13 +15,15 @@
 | shared localization runtime/catalogs | `packages/i18n` |
 | abstract backend/transport contracts | `packages/api` |
 | global HTTP, storage, provider adapters | `packages/infrastructure` |
-| reusable vertical business behavior | `packages/features/src/<feature>` |
+| reusable framework-free business behavior | `packages/business/src/<capability>` |
+| salon product features | `apps/salon-app/src/features/<feature>` |
+| shared authentication gate | `packages/auth/src` |
 | deterministic shared test utilities | `packages/test-support` |
 | browser journeys | root `e2e` |
 
-The legacy `packages/domain`, `packages/application`, and
-`packages/validation` directories are migration sources, not future ownership
-destinations.
+`packages/domain` and `packages/application` were migration sources and are no
+longer ownership destinations. `packages/validation` remains a small shared
+schema utility; feature-specific schemas stay with the salon feature.
 
 ## Rules
 

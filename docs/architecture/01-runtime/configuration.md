@@ -6,35 +6,23 @@ value is public; secrets and authorization policy remain server-side.
 
 ## `defineModule`
 
-Each app feature registers its public routes, navigation, permission vocabulary,
-and dependency factory from `module.ts`:
+Each app shell defines its public runtime values and registers local routes and
+providers. There is no shared product-feature module registry today; the salon
+feature folders are ordinary app-local modules.
 
 ```ts
-import { defineModule } from '@emme/core';
-import { createAppointmentsCapabilities } from '@emme/features/appointments';
+import { defineAppConfig } from '@emme/core';
 
-import { appointmentNavigation } from './navigation';
-import { appointmentPermissions } from './permissions';
-import { appointmentRoutes } from './routes';
-
-export const appointmentsModule = defineModule({
-  id: 'appointments',
-  routes: appointmentRoutes,
-  navigation: appointmentNavigation,
-  permissions: appointmentPermissions,
-  register: ({ apiClient, clock, queryClient, tenantContext }) =>
-    createAppointmentsCapabilities({
-      apiClient,
-      clock,
-      queryClient,
-      tenantContext,
-    }),
+export const salonAppConfig = defineAppConfig({
+  id: 'salon-app',
+  scope: 'tenant',
+  api: { baseUrl: import.meta.env.VITE_API_BASE_URL },
 });
 ```
 
-The example defines the canonical configuration shape; feature-specific values
-are illustrative. Registration receives protocols from the composition root and
-does not instantiate browser/network dependencies inside the feature.
+The composition root creates concrete infrastructure and supplies it to core
+providers. Salon features consume the resulting contexts and typed API hooks;
+they do not instantiate browser or network dependencies.
 
 ## `defineAppConfig`
 

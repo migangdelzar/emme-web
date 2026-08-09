@@ -16,8 +16,12 @@ describe('shared frontend production image workspace boundary', () => {
   it('copies every workspace manifest and shared build input required by each app', () => {
     expect(dockerfile).toContain('COPY apps/client-app/package.json ./apps/client-app/');
     expect(dockerfile).toContain('COPY apps/admin-app/package.json ./apps/admin-app/');
+    expect(dockerfile).toContain('COPY packages/auth/package.json ./packages/auth/');
+    expect(dockerfile).toContain('COPY packages/business/package.json ./packages/business/');
     expect(dockerfile).toContain('COPY packages/kernel/package.json ./packages/kernel/');
-    expect(dockerfile).toContain('COPY packages/features/package.json ./packages/features/');
+    expect(dockerfile).not.toContain('packages/application/package.json');
+    expect(dockerfile).not.toContain('packages/domain/package.json');
+    expect(dockerfile).not.toContain('packages/features/package.json');
     expect(dockerfile).toContain('COPY configs/ ./configs/');
     expect(dockerfile).toContain("sed -i 's#^pid .*#pid /tmp/nginx.pid;#'");
     expect(dockerfile).toContain('CMD ["nginx", "-g", "daemon off;"]');

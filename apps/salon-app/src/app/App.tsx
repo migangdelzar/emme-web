@@ -1,30 +1,22 @@
 import React, { Suspense, useEffect } from 'react';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, useLocation } from 'react-router-dom';
+import { AuthGate } from '@emme/auth';
+import { Login } from '../features/auth/components/Login';
+import { TenantSelector } from '../features/auth/components/TenantSelector';
 import { useBusinessProfileContext } from '../features/settings/context/BusinessProfileContext';
 import { useUiStore } from '../features/shared/uiStore';
-import { useAuth } from '@emme/core';
 import { useAppTranslation } from '@emme/i18n';
 import { AppLayout } from './layouts/AppLayout';
 import { PageLoader, SalonRoutes } from './router';
 
-const Login = React.lazy(() =>
-  import('../features/auth/components/Login').then((module) => ({ default: module.Login }))
-);
 const Onboarding = React.lazy(() =>
   import('../features/onboarding/components/Onboarding').then((module) => ({
     default: module.Onboarding,
   }))
 );
-const TenantSelector = React.lazy(() =>
-  import('../features/auth/components/TenantSelector').then((module) => ({
-    default: module.TenantSelector,
-  }))
-);
-
 function AppContent() {
   const { profile } = useBusinessProfileContext();
   const isFirstTime = useUiStore((state) => state.isFirstTime);
-  const { status } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname.split('/')[1] || 'dashboard';
   const { i18n } = useAppTranslation();
@@ -35,33 +27,17 @@ function AppContent() {
     }
   }, [profile?.language, i18n]);
 
-  if (status === 'loading') {
-    return <PageLoader />;
-  }
-
-  if (status === 'signedOut') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="*" element={<Login />} />
-        </Routes>
-      </Suspense>
-    );
-  }
-
-  if (status === 'tenantRequired') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <TenantSelector />
-      </Suspense>
-    );
-  }
-
   return (
-    <AppLayout activeTab={currentPath}>
-      <Suspense fallback={null}>{isFirstTime && <Onboarding />}</Suspense>
-      <SalonRoutes />
-    </AppLayout>
+    <AuthGate
+      loadingFallback={<PageLoader />}
+      signedOutFallback={<Login />}
+      tenantRequiredFallback={<TenantSelector />}
+    >
+      <AppLayout activeTab={currentPath}>
+        <Suspense fallback={null}>{isFirstTime && <Onboarding />}</Suspense>
+        <SalonRoutes />
+      </AppLayout>
+    </AuthGate>
   );
 }
 

@@ -1,3 +1,0 @@
-import { describe, expect, it } from 'vitest';
-import { addMoney, createMoney, isRefundable } from './index.js';
-describe('payment domain', () => { it('uses integer minor units and explicit currency', () => { expect(addMoney(createMoney(100, 'MXN'), createMoney(50, 'MXN'))).toEqual({ amountMinor: 150, currency: 'MXN' }); expect(() => createMoney(-1, 'MXN')).toThrow(); }); it('only captured payments are refundable', () => { const payment = { id: 'payment-1', tenantId: 'tenant-1', amount: createMoney(100, 'MXN'), status: 'captured' as const, operationKey: 'op-1' }; expect(isRefundable(payment)).toBe(true); }); });
