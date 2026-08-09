@@ -32,22 +32,22 @@ it('maps a non-success response to a normalized ApiError', async () => {
 });
 ```
 
-- [ ] **Step 1:** Write tests for success, JSON parsing, no-content, timeout, retry limit, malformed response, and 401/403/404/409/500 mapping.
-- [ ] **Step 2:** Implement the HTTP adapter against the `@emme/api` protocol.
-- [ ] **Step 3:** Run focused tests and typecheck; expected result is PASS.
+- [x] **Step 1:** Write tests for success, JSON parsing, no-content, timeout, retry limit, malformed response, and 401/403/404/409/500 mapping.
+- [x] **Step 2:** Implement the HTTP adapter against the `@emme/api` protocol.
+- [x] **Step 3:** Run focused tests and typecheck; expected result is PASS.
 
 ### Task 2: Auth, tenant, and storage adapters
 
-- [ ] **Step 1:** Write tests for token persistence, expiry, clearing on logout, tenant resolution, memory fallback, and storage failures.
-- [ ] **Step 2:** Implement token storage, tenant storage/resolver, browser storage, and secure-storage protocol adapters.
-- [ ] **Step 3:** Run `bun run --filter @emme/infrastructure test`; expected result is PASS.
+- [x] **Step 1:** Write tests for token persistence, expiry, clearing on logout, tenant resolution, memory fallback, and storage failures.
+- [x] **Step 2:** Implement token storage, tenant storage/resolver, browser storage, and secure-storage protocol adapters.
+- [x] **Step 3:** Run `bun run --filter @emme/infrastructure test`; expected result is PASS.
 
 ### Task 3: Feature repository adapters and telemetry
 
-- [ ] **Step 1:** Write tests proving appointment/client/service adapters map API payloads to feature models and preserve tenant context.
-- [ ] **Step 2:** Move existing adapters out of global application/domain imports into feature-local infrastructure modules.
-- [ ] **Step 3:** Implement analytics/error tracking protocols with no-op test adapters and redaction tests.
-- [ ] **Step 4:** Run package build and all adapter tests; expected result is PASS.
+- [x] **Step 1:** Write tests proving appointment/client/service adapters map API payloads to feature models and preserve tenant context.
+- [x] **Step 2:** Move existing adapters out of global application/domain imports into feature-local infrastructure modules.
+- [x] **Step 3:** Implement analytics/error tracking protocols with no-op test adapters and redaction tests.
+- [x] **Step 4:** Run package build and all adapter tests; expected result is PASS.
 
 ### Task 4: Commit
 
@@ -58,6 +58,6 @@ git commit -m "feat(infrastructure): add concrete transport and external adapter
 
 ## Definition of Done
 
-- [ ] Concrete adapters are injectable and tested.
-- [ ] No business policy lives in infrastructure.
-- [ ] Auth, tenant, retry, error, and redaction behavior is covered.
+- [x] Concrete adapters are injectable and tested.
+- [x] No business policy lives in infrastructure.
+- [x] Auth, tenant, retry, error, and redaction behavior is covered.
