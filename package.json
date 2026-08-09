@@ -15,7 +15,7 @@
     "docker:build:client": "docker build -f deploy/docker/frontend.Dockerfile --build-arg APP_NAME=client-app -t emme/client-frontend:local .",
     "docker:build:all": "bun run docker:build:admin && bun run docker:build:salon && bun run docker:build:client",
     "lint": "bun run --filter '*' lint",
-    "test": "bun run --filter @emme/ui test && bun run --filter @emme/validation test && bun run --filter @emme/i18n test && bun run --filter @emme/core test && bun run --filter @emme/domain test && bun run --filter @emme/application test && bun run --filter @emme/api test && bun run --filter @emme/infrastructure test && bun run --filter @emme/features test && bun run --filter @emme/test-support test && bun run --filter salon-app test && bun run --filter client-app test && bun run --filter admin-app test",
+    "test": "bun run --filter @emme/ui test && bun run --filter @emme/validation test && bun run --filter @emme/i18n test && bun run --filter @emme/core test && bun run --filter @emme/business test && bun run --filter @emme/api test && bun run --filter @emme/infrastructure test && bun run --filter @emme/features test && bun run --filter @emme/test-support test && bun run --filter salon-app test && bun run --filter client-app test && bun run --filter admin-app test",
     "test:coverage": "bun run --filter salon-app test:coverage",
     "test:e2e": "bun run --filter @emme/e2e test",
     "test:e2e:mock": "bun run --filter @emme/e2e test",
