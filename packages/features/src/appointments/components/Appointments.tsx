@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { els } from '@emme/i18n';
 import type { AppointmentStatus, Appointment } from '@emme/api';
+import type { Service } from '@emme/api';
+import type { Client } from '@emme/domain';
 import { useBusinessProfileContext } from '../../settings/context/BusinessProfileContext';
 import { useClientData } from '../../clients/hooks/useClientData';
 
@@ -11,6 +13,36 @@ const S = {
   COMPLETED: 'completed' as AppointmentStatus,
   CANCELLED: 'cancelled' as AppointmentStatus,
 } as const;
+
+function isAppointmentStatus(value: string): value is AppointmentStatus {
+  return value === 'pending' || value === 'confirmed' || value === 'completed' || value === 'cancelled';
+}
+
+function readAppointment(value: unknown): Appointment | null {
+  if (!value || typeof value !== 'object' || !('apt' in value)) return null;
+  const candidate = value.apt;
+  if (!candidate || typeof candidate !== 'object') return null;
+  if (!('id' in candidate) || typeof candidate.id !== 'string') return null;
+  if (!('clientId' in candidate) || typeof candidate.clientId !== 'string') return null;
+  if (!('serviceId' in candidate) || typeof candidate.serviceId !== 'string') return null;
+  if (!('date' in candidate) || typeof candidate.date !== 'string') return null;
+  if (!('startTime' in candidate) || typeof candidate.startTime !== 'string') return null;
+  if (!('endTime' in candidate) || typeof candidate.endTime !== 'string') return null;
+  if (!('status' in candidate) || typeof candidate.status !== 'string' || !isAppointmentStatus(candidate.status)) return null;
+  const customerName = 'customerName' in candidate && typeof candidate.customerName === 'string' ? candidate.customerName : undefined;
+  const notes = 'notes' in candidate && typeof candidate.notes === 'string' ? candidate.notes : undefined;
+  return {
+    id: candidate.id,
+    clientId: candidate.clientId,
+    serviceId: candidate.serviceId,
+    date: candidate.date,
+    startTime: candidate.startTime,
+    endTime: candidate.endTime,
+    status: candidate.status,
+    ...(customerName ? { customerName } : {}),
+    ...(notes ? { notes } : {}),
+  };
+}
 import { useAppointmentData } from '../hooks/useAppointmentData';
 import { ErrorBanner } from '@emme/ui';
 import { Button } from '@emme/ui';
@@ -112,25 +144,6 @@ const minutesToTime = (minutes: number) => {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 };
 
-interface AgendarModalProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  clientId: string;
-  setClientId: (id: string) => void;
-  serviceId: string;
-  setServiceId: (id: string) => void;
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
-  startTime: string;
-  setStartTime: (time: string) => void;
-  duration: number;
-  setDuration: (duration: number) => void;
-  clients: any[];
-  services: any[];
-  appointments: any[];
-}
-
 const AgendarModal = ({
   isOpen,
   onOpenChange,
@@ -162,7 +175,7 @@ const AgendarModal = ({
 };
 
 // HELPER: Calendar Sync functions
-const generateGoogleCalendarLink = (apt: any, client: any, service: any) => {
+const generateGoogleCalendarLink = (apt: Appointment, client: Client | undefined, service: Service | undefined) => {
   const dateStr = apt.date.split('T')[0].replace(/-/g, '');
   const startTimeStr = apt.startTime.replace(':', '') + '00';
   const endTimeStr = apt.endTime.replace(':', '') + '00';
@@ -178,7 +191,7 @@ const generateGoogleCalendarLink = (apt: any, client: any, service: any) => {
   return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
 };
 
-const downloadICS = (apt: any, client: any, service: any) => {
+const downloadICS = (apt: Appointment, client: Client | undefined, service: Service | undefined) => {
   const dateStr = apt.date.split('T')[0].replace(/-/g, '');
   const startTimeStr = apt.startTime.replace(':', '') + '00';
   const endTimeStr = apt.endTime.replace(':', '') + '00';
@@ -240,12 +253,21 @@ const item = {
 
 interface DraggableAppointmentProps {
   apt: Appointment;
-  client: any;
-  service: any;
-  style: any;
-  statusStyle: any;
+  client: Client | undefined;
+  service: Service | undefined;
+  style?: React.CSSProperties;
+  statusStyle: AppointmentStatusStyle;
   isOverlay?: boolean;
   onDetailClick?: (id: string) => void;
+}
+
+interface AppointmentStatusStyle {
+  readonly bg: string;
+  readonly text: string;
+  readonly border: string;
+  readonly dot: string;
+  readonly label: string;
+  readonly glow: string;
 }
 
 const AppointmentCard = React.forwardRef<
@@ -279,7 +301,6 @@ const AppointmentCard = React.forwardRef<
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          if (!isOverlay && props.onClick) props.onClick(e as any);
           if (!isOverlay && onDetailClick) onDetailClick(apt.id);
         }
       }}
@@ -346,7 +367,7 @@ const DraggableAppointment = ({
   service,
   statusStyle,
   onDetailClick,
-}: Omit<DraggableAppointmentProps, 'style'> & { key?: any }) => {
+}: Omit<DraggableAppointmentProps, 'style'>) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: apt.id,
     data: { apt },
@@ -385,7 +406,6 @@ const DroppableColumn = ({
   day: Date;
   children: React.ReactNode;
   onSlotClick: (time: string) => void;
-  key?: any;
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: format(day, 'yyyy-MM-dd'),
@@ -453,7 +473,7 @@ export function Appointments() {
   );
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveAptId(event.active.id as string);
+    setActiveAptId(String(event.active.id));
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -461,8 +481,9 @@ export function Appointments() {
     const { active, over, delta } = event;
 
     if (over && active.data.current) {
-      const apt = active.data.current.apt as Appointment;
-      const newDateStr = over.id as string;
+      const apt = readAppointment(active.data.current);
+      if (!apt) return;
+      const newDateStr = String(over.id);
       const originalStartMins = timeToMinutes(apt.startTime);
       const newStartMins = originalStartMins + Math.round(delta.y);
       const duration = timeToMinutes(apt.endTime) - originalStartMins;
@@ -1014,7 +1035,7 @@ export function Appointments() {
                   <Select
                     value={selectedAptForDetail.status}
                     onValueChange={(val) =>
-                      handleStatusChange(selectedAptForDetail.id, val as AppointmentStatus)
+                      isAppointmentStatus(val) && handleStatusChange(selectedAptForDetail.id, val)
                     }
                   >
                     <SelectTrigger className="h-10 w-28 bg-neutral-50 border-none rounded-xl text-[9px] font-black uppercase tracking-widest px-3 focus:ring-primary/10">
@@ -1399,7 +1420,7 @@ export function Appointments() {
                               <Select
                                 value={apt.status}
                                 onValueChange={(val) =>
-                                  handleStatusChange(apt.id, val as AppointmentStatus)
+                                  isAppointmentStatus(val) && handleStatusChange(apt.id, val)
                                 }
                               >
                                 <SelectTrigger
