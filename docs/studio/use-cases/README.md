@@ -1,6 +1,6 @@
 # Studio App — Use Case Index
 
-> **Source:** `apps/emme-salon-app/` — React 19 + Vite PWA
+> **Source:** `apps/salon-app/` — React 19 + Vite PWA
 > **Backend:** `emme-service` Spring Modulith
 > **Traceability:** Use case IDs match backend specs for cross-reference
 

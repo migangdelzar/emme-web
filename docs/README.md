@@ -21,7 +21,9 @@ This monorepo contains the web frontend packages and apps for the EMME platform.
 
 | App | Path | Status |
 |---|---|---|
-| **Studio** | `apps/emme-salon-app/` | Active — React 19 + Vite PWA |
+| **Admin** | `apps/admin-app/` | Platform administration frontend |
+| **Studio** | `apps/salon-app/` | Tenant-owner/staff React 19 + Vite PWA |
+| **Client** | `apps/client-app/` | Public client booking frontend |
 | **Client** | _(not yet built)_ | Backend APIs ready, frontend pending |
 | **Admin** | _(not yet built)_ | Backend APIs ready, frontend pending |
 

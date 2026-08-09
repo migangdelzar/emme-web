@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseRuntimeConfig } from './runtimeConfig';
+import { getRuntimeConfig, parseRuntimeConfig } from './runtimeConfig';
 
 describe('parseRuntimeConfig', () => {
   it('returns config when required VITE_ values are present', () => {
@@ -15,6 +15,7 @@ describe('parseRuntimeConfig', () => {
       appEnv: 'staging',
       apiBaseUrl: 'https://api.staging.emme.app',
       webBaseDomain: 'staging.emme.app',
+      appName: 'salon-app',
       sentryDsn: 'https://public@sentry.example/1',
     });
   });
@@ -26,7 +27,18 @@ describe('parseRuntimeConfig', () => {
     });
 
     expect(config.appEnv).toBe('local');
+    expect(config.appName).toBe('salon-app');
     expect(config.sentryDsn).toBeNull();
+  });
+
+  it('accepts an explicit deployable app name from public runtime config', () => {
+    const config = parseRuntimeConfig({
+      VITE_API_BASE_URL: 'https://admin.emme.app',
+      VITE_WEB_BASE_DOMAIN: 'admin.emme.app',
+      APP_NAME: 'admin-app',
+    });
+
+    expect(config.appName).toBe('admin-app');
   });
 
   it('rejects missing required config', () => {
@@ -63,5 +75,35 @@ describe('parseRuntimeConfig', () => {
         VITE_GEMINI_API_KEY: 'test-key',
       })
     ).toThrow('Secret-like config key is not allowed in the client bundle');
+  });
+
+  it('reads browser-provided runtime configuration for a production container', () => {
+    window.__EMME_RUNTIME_CONFIG__ = {
+      apiUrl: 'https://api.emme.app',
+      environment: 'prod',
+      appName: 'salon-app',
+      webBaseDomain: 'app.emme.com',
+    };
+
+    expect(getRuntimeConfig()).toEqual({
+      appEnv: 'prod',
+      apiBaseUrl: 'https://api.emme.app',
+      webBaseDomain: 'app.emme.com',
+      appName: 'salon-app',
+      sentryDsn: null,
+    });
+
+    delete window.__EMME_RUNTIME_CONFIG__;
+  });
+
+  it('falls back to the browser origin and hostname when runtime values are absent', () => {
+    window.__EMME_RUNTIME_CONFIG__ = {};
+
+    const config = getRuntimeConfig();
+
+    expect(config.apiBaseUrl).toBe(window.location.origin);
+    expect(config.webBaseDomain).toBe(window.location.hostname);
+
+    delete window.__EMME_RUNTIME_CONFIG__;
   });
 });

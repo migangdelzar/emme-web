@@ -3,7 +3,7 @@
 | Item | Convention | Example |
 | --- | --- | --- |
 | package directory | kebab-case | `test-support` |
-| package name | `@emme/<kebab-case>` | `@emme/test-support` |
+| package name | `@emme/<kebab-case>` for libraries; exact app directory name for deployable apps | `@emme/test-support`, `salon-app` |
 | feature/layer directory | lowercase kebab-case | `tenant-configuration` |
 | React component directory | PascalCase | `AppointmentStatusBadge/` |
 | React component file | PascalCase | `AppointmentStatusBadge.tsx` |
@@ -26,8 +26,8 @@
   the file has one clearly documented responsibility.
 - Use `customer` for the canonical feature name; map a backend `clientId` at the
   API boundary instead of spreading transport terminology into the domain.
-- Use `salon` for tenant-owner/staff role concepts; preserve
-  `apps/emme-salon-app` as the physical application name.
+- Use `salon-app` for the tenant-owner/staff deployable application and
+  `admin-app` / `client-app` for the other deployable roots.
 - Use `platform-admin` for platform-only permissions and workflows.
 - Error names describe the failed invariant or category, not the component that
   happened to display them.

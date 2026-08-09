@@ -236,7 +236,9 @@ Every request:
 | `E2E_API_URL` | Backend URL | `http://localhost:8081` |
 | `E2E_BASE_URL` | Frontend URL | `http://localhost:3000` |
 | `E2E_TENANT_SLUG` | Tenant to test against | `e2e-studio` |
-| `E2E_KEYCLOAK_USERNAME` | Keycloak login username | (required) |
-| `E2E_KEYCLOAK_PASSWORD` | Keycloak login password | (required) |
+| `E2E_USER_ROLE` | Provisioned user role | `owner` |
+| `E2E_PROVISIONER_AUTH_DIR` | Directory containing one provisioner-generated storage-state JSON per salon | `.auth/provisioned-auth/` |
+| `E2E_PROVISIONER_AUTH_FILE` | Optional explicit per-salon storage-state JSON override | unset |
+| `E2E_KEYCLOAK_USERNAME` / `E2E_KEYCLOAK_PASSWORD` | Bootstrap fallback only when storage state is unavailable | unset |
 | `E2E_EXTERNAL_WEB` | Use pre-built frontend | `false` |
 | `RECORD_DEMO` | Enable video/trace | `false` |

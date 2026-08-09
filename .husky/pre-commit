@@ -2,5 +2,5 @@
 
 set -eu
 
-(cd apps/emme-salon-app && bunx lint-staged)
+(cd apps/salon-app && bunx lint-staged)
 bun run i18n:check

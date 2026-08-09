@@ -2,7 +2,7 @@
 
 ## Overview
 
-Move reusable salon capabilities out of `apps/emme-salon-app` into workspace packages. The salon app becomes a composition shell containing providers, routing, layouts, runtime configuration, theme entrypoints, and only behavior that is genuinely unique to this application.
+Move reusable salon capabilities out of `apps/salon-app` into workspace packages. The salon app becomes a composition shell containing providers, routing, layouts, runtime configuration, theme entrypoints, and only behavior that is genuinely unique to this application. Keep `admin-app`, `salon-app`, and `client-app` as separate deployable applications.
 
 ## Architecture Decisions
 
@@ -21,7 +21,7 @@ Move reusable salon capabilities out of `apps/emme-salon-app` into workspace pac
 ## Target Application Shape
 
 ```text
-apps/emme-salon-app/src/
+apps/salon-app/src/
 ├── app/
 │   ├── App.tsx
 │   ├── AppProviders.tsx

@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 
-const sourceRoot = join(process.cwd(), 'apps/emme-salon-app/src');
+const sourceRoot = join(process.cwd(), 'apps/salon-app/src');
 const violations = [];
 
 async function visit(directory) {

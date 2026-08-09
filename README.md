@@ -57,13 +57,15 @@ bun run dev
 ```
 
 The Vite application runs at `http://localhost:3000`. Copy
-`apps/emme-salon-app/.env.example` to a local `.env` and set only public
+`apps/salon-app/.env.example` to a local `.env` and set only public
 browser configuration. Never put private provider keys in `VITE_*` variables.
 
 ## Repository structure
 
 ```text
-apps/emme-salon-app/  Main React/Vite/PWA application
+apps/salon-app/       Tenant-owner/staff React/Vite/PWA application
+apps/client-app/      Public client booking application
+apps/admin-app/       Platform administration application
 packages/infrastructure/ Concrete HTTP, auth, storage, and external adapters
 packages/api/          Typed backend contracts and API boundary
 packages/core/         Auth, tenancy, permissions, and runtime providers
@@ -80,7 +82,7 @@ docs/                 Frontend and integration architecture
 ## Frontend boundaries
 
 ```text
-apps/emme-salon-app/src/
+apps/salon-app/src/
 ├── app/          Composition root, routes, and providers
 ├── auth/         Session and tenant selection behavior
 ├── features/     User-facing capabilities

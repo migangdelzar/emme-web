@@ -2,16 +2,18 @@
 
 ## Artifact
 
-The production static image is published as:
+The production static images are published independently as:
 
 ```text
-ghcr.io/migangdelzar/emme-web
+emme/admin-frontend
+emme/salon-frontend
+emme/client-frontend
 ```
 
 ```mermaid
 flowchart LR
-    Source["Web source"] --> Build["Bun install + Vite build"]
-    Build --> Image["Nginx static image"]
+    Source["Web source"] --> Build["Shared Dockerfile + APP_NAME"]
+    Build --> Image["One Nginx image per app"]
     Image --> Scan["SBOM + vulnerability scan"]
     Scan --> Digest["Immutable digest"]
     Digest --> Deploy["Deployment target"]
@@ -20,7 +22,10 @@ flowchart LR
 ## Rules
 
 - Use a reproducible frozen lockfile and approved immutable base images.
-- Build in a separate stage from the minimal Nginx runtime.
+- Use `deploy/docker/frontend.Dockerfile` for all three apps and pass one of
+  `admin-app`, `salon-app`, or `client-app` as `APP_NAME`.
+- Build in a separate stage from the minimal Nginx runtime; copy only the
+  selected app's `dist/` output into the final image.
 - Run the runtime as non-root and expose only required ports.
 - Configure security headers and SPA fallback explicitly.
 - Proxy `/api`, OAuth, and `/q` requests through Nginx to the configured
@@ -32,6 +37,14 @@ flowchart LR
 - Exclude `/api` from service-worker fallback/caching unless an approved design
   explicitly defines safe authenticated caching.
 - Publish SBOM, scan result, source label, commit, version, and digest.
+
+## Local build commands
+
+```bash
+bun run docker:build:admin
+bun run docker:build:salon
+bun run docker:build:client
+```
 
 ## Verification
 

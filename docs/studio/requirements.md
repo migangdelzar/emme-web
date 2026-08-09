@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| App | `apps/emme-salon-app/` |
+| App | `apps/salon-app/` |
 | Stack | React 19, Vite, TanStack Query, Zustand, react-router-dom |
 | Backend | Spring Modulith (`emme-service`) |
 | Audience | Salon owners, managers, staff |

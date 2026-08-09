@@ -6,8 +6,52 @@ description = "Install the locked web workspace dependencies"
 run = "bun install --frozen-lockfile"
 
 [tasks.dev]
-description = "Run the salon web application"
-run = "bun run dev"
+description = "Run salon-app with Vite HMR against the local backend"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:hmr"]
+description = "Explicit alias for the fast Vite HMR development loop"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:admin"]
+description = "Run admin-app with Vite HMR on localhost:3002"
+run = "bun run --filter admin-app dev"
+
+[tasks."dev:salon"]
+description = "Run salon-app with Vite HMR on localhost:3000"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:client"]
+description = "Run client-app with Vite HMR on localhost:3001"
+run = "bun run --filter client-app dev"
+
+[tasks."frontend:build:all"]
+description = "Build the three independent production frontend images"
+run = "bun run docker:build:all"
+
+[tasks."frontend:up"]
+description = "Build and run admin, salon, and client production-like containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml up --build -d"
+
+[tasks."frontend:down"]
+description = "Stop the local production-like frontend containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml down"
+
+[tasks."frontend:logs"]
+description = "Follow logs from all local production-like frontend containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml logs -f"
+
+[tasks."frontend:verify"]
+description = "Verify the local production-like frontend health endpoints"
+run = "curl --fail --silent --show-error http://localhost:8082/health && curl --fail --silent --show-error http://localhost:8080/health && curl --fail --silent --show-error http://localhost:8083/health"
+
+[tasks."test:e2e:real:deployed"]
+description = "Run real-provider Playwright against the deployed salon container using provisioned auth state"
+env = { E2E_MODE = "real", E2E_EXTERNAL_WEB = "true", E2E_BASE_URL = "http://localhost:8080", E2E_API_URL = "http://localhost:8081" }
+run = "bun run --filter @emme/e2e test:real"
 
 [tasks.typecheck]
 description = "Type-check all web workspace packages"
@@ -23,7 +67,7 @@ run = "bun run lint"
 
 [tasks.format]
 description = "Format frontend source files with Prettier"
-run = "bun run --filter @emme/emme-salon-app format"
+run = "bun run --filter salon-app format"
 
 [tasks.format-check]
 description = "Verify frontend formatting without changing files"

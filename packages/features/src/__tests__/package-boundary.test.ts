@@ -57,7 +57,7 @@ describe('@emme/features package boundary', () => {
     }
 
     for (const projectConfig of [
-      'apps/emme-salon-app/tsconfig.json',
+      'apps/salon-app/tsconfig.json',
       ...['api', 'application', 'core', 'domain', 'features', 'i18n', 'infrastructure', 'test-support', 'ui', 'validation'].map(
         (packageName) => `packages/${packageName}/tsconfig.json`,
       ),
@@ -66,10 +66,10 @@ describe('@emme/features package boundary', () => {
       expect(config.extends, projectConfig).toBe('../../configs/typescript/tsconfig.strict.json');
     }
 
-    expect(readFileSync(join(workspaceRoot, 'apps/emme-salon-app/eslint.config.js'), 'utf8')).toContain(
+    expect(readFileSync(join(workspaceRoot, 'apps/salon-app/eslint.config.js'), 'utf8')).toContain(
       '../../configs/eslint/react.config.mjs',
     );
-    expect(readFileSync(join(workspaceRoot, 'apps/emme-salon-app/vite.config.ts'), 'utf8')).toContain(
+    expect(readFileSync(join(workspaceRoot, 'apps/salon-app/vite.config.ts'), 'utf8')).toContain(
       '../../configs/vite/shared.config.ts',
     );
     expect(readFileSync(join(workspaceRoot, 'prettier.config.mjs'), 'utf8')).toContain(

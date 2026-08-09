@@ -77,14 +77,16 @@ is normative within its stated scope.
 | [Feature adapters](03-integration/feature-adapters.md) | Canonical | Feature-owned mappers and repository adapters. |
 | [End-to-end](03-integration/end-to-end.md) | Updated | Mock and real Playwright lanes and evidence policy. |
 | [Frontend–backend](03-integration/frontend-backend.md) | Updated | Detailed request, Problem Details, and service flow. |
+| [Real E2E auth artifacts](03-integration/real-e2e-auth-artifacts.md) | Canonical | Per-salon storage-state files and role selection. |
 
 ### Delivery
 
 | Page | Status | Scope |
 | --- | --- | --- |
 | [Continuous integration](04-delivery/ci.md) | Updated | Required CI lanes and workflow responsibilities. |
-| [Container](04-delivery/container.md) | Retained | Static image, proxy, scan, and runtime rules. |
-| [Release](04-delivery/release.md) | Updated | Immutable promotion, compatibility, smoke, and rollback. |
+| [Container](04-delivery/container.md) | Updated | Shared build recipe, three images, proxy, scan, and runtime rules. |
+| [Frontend deployments](04-delivery/frontend-deployments.md) | Canonical | Three images, deployments, services, ingress, and runtime configuration. |
+| [Release](04-delivery/release.md) | Updated | Independent app promotion, compatibility, smoke, and rollback. |
 | [Secrets](04-delivery/secrets.md) | Retained | Frontend secret and browser-safe configuration boundary. |
 | [Quality gates](04-delivery/quality-gates.md) | Canonical | Documentation through production-readiness gates. |
 

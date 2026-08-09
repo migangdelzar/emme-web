@@ -1,5 +1,5 @@
 {
-  "name": "@emme/emme-salon-app",
+  "name": "salon-app",
   "private": true,
   "version": "1.0.0",
   "type": "module",

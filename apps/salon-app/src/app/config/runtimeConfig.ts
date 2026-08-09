@@ -1,11 +1,19 @@
 type RuntimeConfigInput = Record<string, unknown>;
 
+interface BrowserRuntimeConfig {
+  apiUrl?: unknown;
+  environment?: unknown;
+  appName?: unknown;
+  webBaseDomain?: unknown;
+}
+
 export type AppEnvironment = 'local' | 'dev' | 'regression' | 'staging' | 'prod';
 
 export interface RuntimeConfig {
   appEnv: AppEnvironment;
   apiBaseUrl: string;
   webBaseDomain: string;
+  appName: string;
   sentryDsn: string | null;
 }
 
@@ -39,15 +47,23 @@ export function parseRuntimeConfig(input: RuntimeConfigInput): RuntimeConfig {
     appEnv: parseAppEnvironment(readString(input, 'VITE_APP_ENV') ?? 'local'),
     apiBaseUrl: readString(input, 'VITE_API_BASE_URL')!,
     webBaseDomain: readString(input, 'VITE_WEB_BASE_DOMAIN')!,
+    appName: readString(input, 'APP_NAME') ?? 'salon-app',
     sentryDsn: readString(input, 'VITE_SENTRY_DSN') ?? null,
   };
 }
 
 export function getRuntimeConfig(): RuntimeConfig {
+  const browserConfig = typeof window !== 'undefined' ? window.__EMME_RUNTIME_CONFIG__ : undefined;
+  const browserOrigin = typeof window !== 'undefined' ? window.location.origin : undefined;
+
   return parseRuntimeConfig({
-    VITE_APP_ENV: import.meta.env.VITE_APP_ENV,
-    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
-    VITE_WEB_BASE_DOMAIN: import.meta.env.VITE_WEB_BASE_DOMAIN,
+    VITE_APP_ENV: browserConfig?.environment ?? import.meta.env.VITE_APP_ENV ?? 'local',
+    VITE_API_BASE_URL: browserConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || browserOrigin,
+    VITE_WEB_BASE_DOMAIN:
+      browserConfig?.webBaseDomain ||
+      import.meta.env.VITE_WEB_BASE_DOMAIN ||
+      (typeof window !== 'undefined' ? window.location.hostname : 'localhost'),
+    APP_NAME: browserConfig?.appName,
     VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN,
   });
 }

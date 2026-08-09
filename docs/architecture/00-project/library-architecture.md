@@ -55,6 +55,6 @@ business validation, feature transport mapping, feature adapters, reusable
 presentation, translations, and tests are colocated inside each vertical
 feature. Existing global business packages are migration sources only.
 
-The active physical app remains `apps/emme-salon-app`; `client-app` and
-`platform-admin-app` are target composition roots implemented by their
+The active physical apps are `apps/salon-app`, `apps/client-app`, and
+`apps/admin-app`; they are independent composition roots implemented by their
 portfolio plans.

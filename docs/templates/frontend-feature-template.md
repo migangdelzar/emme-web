@@ -1,7 +1,7 @@
 # Frontend Feature Template
 
 ```text
-apps/emme-salon-app/src/features/<feature>/
+apps/salon-app/src/features/<feature>/
 ├── components/          # feature UI
 ├── hooks/                # feature state/query orchestration
 ├── api/                  # feature adapter to typed client

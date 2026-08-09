@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import { resolveRealAuthStatePath } from './setup/authState';
 
 const recordDemo = process.env.RECORD_DEMO === 'true';
 const isReal = process.env.E2E_MODE === 'real';
@@ -8,7 +9,7 @@ const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 const webServerConfig = useExternalWeb
   ? undefined
   : {
-      command: 'cd ../../apps/emme-salon-app && bun dev',
+      command: 'cd ../../apps/salon-app && bun dev',
       port: 3000,
       reuseExistingServer: !process.env.CI,
       env: {
@@ -31,7 +32,7 @@ const realProjects = isReal
         name: 'real',
         use: {
           browserName: 'chromium' as const,
-          storageState: '.auth/auth-state.json',
+          storageState: resolveRealAuthStatePath(),
         },
         dependencies: ['setup'],
         testIgnore: '**/setup/**',

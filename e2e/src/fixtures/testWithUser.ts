@@ -5,6 +5,7 @@ import { MockProvider } from '../providers/MockProvider';
 import { RealProvider } from '../providers/RealProvider';
 import type { ApiProvider, SeedData } from '../providers/ApiProvider';
 import { LoginPage } from '../pages/LoginPage';
+import { resolveRealE2ECredentials } from '../setup/provisionerCredentials';
 
 const MODE = process.env.E2E_MODE || 'mock';
 
@@ -41,8 +42,7 @@ function requiredRealEnvironment(name: string): string {
 async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   const provider = new RealProvider();
   const baseUrl = requiredRealEnvironment('E2E_BASE_URL');
-  const username = requiredRealEnvironment('E2E_KEYCLOAK_USERNAME');
-  const password = requiredRealEnvironment('E2E_KEYCLOAK_PASSWORD');
+  const { username, password } = resolveRealE2ECredentials();
 
   await page.addInitScript(() => {
     localStorage.setItem(

@@ -17,11 +17,12 @@ flowchart TD
 
 ## Rules
 
-- Record app identity, web commit, lockfile, artifact/image digest, target,
+- Record one app identity (`admin-app`, `salon-app`, or `client-app`),
+  web commit, lockfile, artifact/image digest, target,
   service revision/contract window, and verification evidence.
 - Promote the same immutable artifact between environments; `latest` is not
   release evidence.
-- Apps may release independently only while shared packages and service
+- The three frontend images release independently only while shared packages and service
   contracts remain compatible.
 - Breaking contracts require a coordinated compatibility window and migration.
 - Validate cache invalidation, deep links, and service-worker behavior.

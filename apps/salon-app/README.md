@@ -21,14 +21,14 @@ Production PWA for EmmeNails salon management.
 # Install (from monorepo root)
 pnpm install
 
-# Dev server
-bun run --filter @emme/emme-salon-app dev
+# Fast HMR development loop (from the repository root)
+mise run dev
 
 # Production build
-bun run --filter @emme/emme-salon-app build
+bun run --filter salon-app build
 
 # Preview production build
-bun run --filter @emme/emme-salon-app preview
+bun run --filter salon-app preview
 ```
 
 ## Environment
@@ -52,11 +52,25 @@ container starts.
 ## Docker
 
 ```bash
-docker compose -f apps/emme-salon-app/docker-compose.yml up --build
+docker build -f deploy/docker/frontend.Dockerfile \
+  --build-arg APP_NAME=salon-app \
+  -t emme/salon-frontend:local .
 ```
 
-The Compose example maps `host.docker.internal:8081` to the host backend. When
-the web container and backend share a Compose network, override
+Run all three frontend containers together with:
+
+```bash
+mise run frontend:up
+
+Stop them with:
+
+```bash
+mise run frontend:down
+```
+```
+
+The Compose services map `host.docker.internal:8081` to the host backend. When
+the frontend containers and backend share a Compose network, override
 `EMME_API_UPSTREAM` with the backend service name instead.
 
 ## PWA

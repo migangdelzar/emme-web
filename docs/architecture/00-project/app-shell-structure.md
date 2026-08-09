@@ -40,11 +40,14 @@ global infrastructure outside registration.
 
 ## Salon app workflows
 
-The physical application and package names remain `apps/emme-salon-app` and
-`@emme/emme-salon-app`.
+The three app shells are independent deployable roots:
+
+- `apps/admin-app` / package `admin-app`
+- `apps/salon-app` / package `salon-app`
+- `apps/client-app` / package `client-app`
 
 ```text
-apps/emme-salon-app/src/features/
+apps/salon-app/src/features/
 ├── appointments/
 │   ├── calendar/
 │   ├── manage/
@@ -109,7 +112,7 @@ capabilities but keeps the customer journey local.
 ## Platform-admin app workflows
 
 ```text
-apps/platform-admin-app/src/features/
+apps/admin-app/src/features/
 ├── search/
 │   ├── PlatformAppointmentsPage.tsx
 │   ├── TenantAppointmentFilters.tsx

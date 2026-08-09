@@ -2,16 +2,17 @@
 
 This is the canonical target tree. The compact root tree is an index; the
 package trees below are normative implementation and review checklists.
-`apps/emme-salon-app` and package name `@emme/emme-salon-app` are preserved;
-“salon app” is only the conceptual role name.
+The three applications are physical, independently deployable application
+roots. Their package names intentionally match their deployable directory
+names: `admin-app`, `salon-app`, and `client-app`.
 
 ## Repository root
 
 ```text
 emme-web/
 ├── apps/
-│   ├── platform-admin-app/
-│   ├── emme-salon-app/
+│   ├── admin-app/
+│   ├── salon-app/
 │   └── client-app/
 ├── packages/
 │   ├── kernel/
@@ -28,6 +29,9 @@ emme-web/
 │   ├── prettier/
 │   └── vite/
 ├── e2e/
+├── deploy/
+│   ├── docker/
+│   └── kubernetes/
 ├── docs/
 ├── scripts/
 ├── tasks/

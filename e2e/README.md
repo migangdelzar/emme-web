@@ -36,7 +36,8 @@ Artifacts are intentionally not committed to the repository.
 ## Real full-stack recordings
 
 The `test:real:recordings` command is intentionally separate from the mock demo
-command. It requires all of the following environment variables:
+command. It requires the runtime URLs and a provisioner-generated per-salon
+auth JSON file. Credentials are only an emergency bootstrap fallback:
 
 | Variable                | Meaning                                                          |
 | ----------------------- | ---------------------------------------------------------------- |
@@ -44,8 +45,11 @@ command. It requires all of the following environment variables:
 | `RECORD_DEMO=true`      | Retains videos, traces, screenshots, and the HTML report.        |
 | `E2E_BASE_URL`          | Web origin used by Playwright, normally `http://127.0.0.1:3000`. |
 | `E2E_API_URL`           | Reachable `emme-service` origin for provider setup/cleanup.      |
-| `E2E_KEYCLOAK_USERNAME` | Synthetic tenant-owner credential supplied out of band.          |
-| `E2E_KEYCLOAK_PASSWORD` | Synthetic tenant-owner credential supplied out of band.          |
+| `E2E_TENANT_SLUG` | Salon selected from the per-salon auth JSON file. | `e2e-studio` |
+| `E2E_USER_ROLE` | Role selected from the salon auth JSON file. | `owner` |
+| `E2E_PROVISIONER_AUTH_DIR` | Directory containing one provisioner-generated auth JSON file per salon. | `.auth/provisioned-auth/` |
+| `E2E_PROVISIONER_AUTH_FILE` | Optional explicit provisioner-generated auth JSON file override. | unset |
+| `E2E_KEYCLOAK_USERNAME` / `E2E_KEYCLOAK_PASSWORD` | Emergency bootstrap fallback when no provisioned storage state exists. | unset |
 
 The web workflow checks out the exact service ref, builds its immutable JVM
 image, starts the service-owned Compose stack, runs migrations, and invokes the
