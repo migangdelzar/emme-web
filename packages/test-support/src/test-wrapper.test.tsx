@@ -26,4 +26,16 @@ describe('createTestWrapper', () => {
       'ready|downtown|es-MX',
     );
   });
+
+  it('creates isolated provider state for separate wrappers', () => {
+    const first = createTestWrapper({ tenant: { slug: 'first' } });
+    const second = createTestWrapper({ tenant: { slug: 'second' } });
+
+    expect(renderToStaticMarkup(createElement(first, null, createElement(Probe)))).toContain(
+      'signedOut|first|en-US',
+    );
+    expect(renderToStaticMarkup(createElement(second, null, createElement(Probe)))).toContain(
+      'signedOut|second|en-US',
+    );
+  });
 });

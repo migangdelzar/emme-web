@@ -16,6 +16,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@emme/api": "workspace:*",
     "@emme/core": "workspace:*",
     "@emme/i18n": "workspace:*",
     "@emme/kernel": "workspace:*"
