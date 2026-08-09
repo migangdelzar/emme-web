@@ -10,6 +10,12 @@ export { useCurrentTenant } from "./tenancy/use-current-tenant.js";
 export { ApiContext } from "./runtime/api-context.js";
 export { ApiProvider, type ApiProviderProps } from "./runtime/api-provider.js";
 export { useApi } from "./runtime/use-api.js";
+export {
+  createRuntimeContracts,
+  type Logger,
+  type RuntimeContracts,
+  type RuntimeContractsInput,
+} from './runtime/runtime-contracts.js';
 export type { AuthActions, AuthContextValue, AuthState, AuthStatus } from "./auth/auth.types.js";
 export { AuthContext } from "./auth/auth-context.js";
 export { AuthProvider, type AuthProviderProps } from "./auth/auth-provider.js";
@@ -23,3 +29,6 @@ export { createSessionModel, selectDefaultTenant, type AppSession, type SessionM
 export { resolveTenantFromHost } from './tenancy/tenant-resolver.js';
 export { useAuth } from "./auth/use-auth.js";
 export { ApplicationError, AuthorizationError, type ErrorCode } from './errors/index.js';
+export * from './permissions/index.js';
+export * from './feature-flags/index.js';
+export * from './routing/index.js';
