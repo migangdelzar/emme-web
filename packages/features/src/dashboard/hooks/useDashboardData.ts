@@ -5,6 +5,8 @@ import { mapAppointmentView } from '../../appointments/mappers/appointmentViewMa
 import { mapNailServiceView } from '../../services/mappers/serviceViewMapper';
 import type { Appointment, Service } from '@emme/api';
 import { createDashboardStreamUrl } from './dashboardStream';
+import { createDashboardStreamRequest, parseDashboardStream } from './dashboardStream';
+import { useAuth } from '@emme/core';
 
 interface DashboardData {
   loading: boolean;
@@ -34,6 +36,7 @@ function isCurrentMonth(dateStr: string): boolean {
 }
 
 export function useDashboardData(): DashboardData {
+  const { accessToken, tenant } = useAuth();
   const today = getToday();
 
   const { data: aptData, isLoading: aptLoading, error: aptError } = useAppointmentsRest(today);
@@ -45,36 +48,60 @@ export function useDashboardData(): DashboardData {
   const [notifications, setNotifications] = useState<string[]>([]);
 
   useEffect(() => {
-    const isLocalDev = import.meta.env.VITE_APP_ENV === 'local';
-    // Skip SSE stream in local dev — Keycloak redirect causes CORS errors
-    if (isLocalDev) {
+    // Vite development mode is used by mock E2E tests and HMR. The production
+    // artifact is the environment where the authenticated stream is enabled.
+    if (!import.meta.env.PROD) {
       setConnected(false);
       return;
     }
 
-    // Same-origin EventSource requests can send the backend session cookie.
-    const source = new EventSource(createDashboardStreamUrl(window.location.origin));
+    if (!accessToken) return;
 
-    source.addEventListener('connected', () => setConnected(true));
+    const controller = new AbortController();
+    let active = true;
 
-    source.addEventListener('notification', (e: MessageEvent) => {
+    async function connect() {
       try {
-        const data = JSON.parse(e.data);
-        setNotifications((prev) => [...prev.slice(-9), data.message || 'New notification']);
-      } catch {
-        /* ignore malformed payloads */
-      }
-    });
+        const response = await fetch(
+          createDashboardStreamUrl(window.location.origin),
+          { ...createDashboardStreamRequest(accessToken, tenant?.tenantSlug ?? null), signal: controller.signal },
+        );
+        if (!response.ok || !response.body) throw new Error(`Dashboard stream failed: ${response.status}`);
 
-    source.onerror = () => {
-      setConnected(false);
-      // EventSource auto-reconnects — no manual intervention needed
-    };
+        setConnected(true);
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (active) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const parsed = parseDashboardStream(buffer);
+          buffer = parsed.remainder;
+          for (const event of parsed.events) {
+            if (event.type !== 'notification') continue;
+            try {
+              const data = JSON.parse(event.data) as { message?: string };
+              setNotifications((prev) => [...prev.slice(-9), data.message || 'New notification']);
+            } catch {
+              /* ignore malformed payloads */
+            }
+          }
+        }
+      } catch {
+        if (!controller.signal.aborted) setConnected(false);
+      }
+    }
+
+    void connect();
 
     return () => {
-      source.close();
+      active = false;
+      controller.abort();
+      setConnected(false);
     };
-  }, []);
+  }, [accessToken, tenant?.tenantSlug]);
 
   const appointments = useMemo(
     () => (aptData?.appointments || []).map(mapAppointmentView),

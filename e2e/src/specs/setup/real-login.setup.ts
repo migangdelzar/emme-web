@@ -11,6 +11,7 @@ import { resolveRealE2ECredentials } from '../../setup/provisionerCredentials';
 
 setup('real E2E login — save auth state for reuse', async () => {
   if (process.env.E2E_MODE !== 'real') return;
+  setup.setTimeout(120000);
 
   const baseUrl = process.env.E2E_BASE_URL?.trim() || 'http://localhost:3000';
   const authStatePath = resolveRealAuthStatePath();
@@ -67,7 +68,7 @@ setup('real E2E login — save auth state for reuse', async () => {
     } catch {
       await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 15000 });
     }
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     for (let attempt = 0; attempt < 5; attempt++) {
       token = await page.evaluate(() => localStorage.getItem('access_token'));
@@ -75,7 +76,7 @@ setup('real E2E login — save auth state for reuse', async () => {
       await page.waitForTimeout(500);
     }
   }
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   if (!token) throw new Error('Setup login failed — no access token in localStorage');
 

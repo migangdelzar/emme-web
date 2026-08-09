@@ -26,6 +26,7 @@ export function SessionProvider({ children, tokenStorage, tenantStorage }: Sessi
   const api = useApi();
   const [state, setState] = useState<AuthState>({
     status: 'loading',
+    accessToken: null,
     user: null,
     tenant: null,
     allTenants: [],
@@ -54,6 +55,7 @@ export function SessionProvider({ children, tokenStorage, tenantStorage }: Sessi
           setState((s) => ({
             ...s,
             status: 'ready',
+            accessToken: token,
             user,
             allTenants: user.memberships ?? [],
             tenant: firstMembership ?? null,
@@ -61,7 +63,7 @@ export function SessionProvider({ children, tokenStorage, tenantStorage }: Sessi
         }
       } catch {
         tokenStorage.clear();
-        if (!cancelled) setState((s) => ({ ...s, status: 'signedOut' }));
+        if (!cancelled) setState((s) => ({ ...s, status: 'signedOut', accessToken: null }));
       }
     }
 
@@ -89,6 +91,7 @@ export function SessionProvider({ children, tokenStorage, tenantStorage }: Sessi
         setState((s) => ({
           ...s,
           status: 'ready',
+          accessToken: token,
           user,
           allTenants: user.memberships ?? [],
           tenant: user.memberships?.[0] ?? null,
@@ -117,7 +120,7 @@ export function SessionProvider({ children, tokenStorage, tenantStorage }: Sessi
   const logout = useCallback(() => {
     tokenStorage.clear();
     tenantStorage.remove('tenant_slug');
-    setState((s) => ({ ...s, status: 'signedOut', user: null, tenant: null, allTenants: [] }));
+    setState((s) => ({ ...s, status: 'signedOut', accessToken: null, user: null, tenant: null, allTenants: [] }));
     window.location.href = '/';
   }, [tenantStorage, tokenStorage]);
 

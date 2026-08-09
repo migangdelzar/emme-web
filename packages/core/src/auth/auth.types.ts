@@ -4,6 +4,7 @@ export type AuthStatus = "loading" | "signedOut" | "tenantRequired" | "ready";
 
 export interface AuthState {
   status: AuthStatus;
+  accessToken: string | null;
   user: CurrentUser | null;
   tenant: TenantMembership | null;
   allTenants: TenantMembership[];

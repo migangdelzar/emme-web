@@ -14,6 +14,7 @@ describe('AuthProvider', () => {
   it('exposes the injected auth state and actions through useAuth', () => {
     const value: AuthContextValue = {
       status: 'ready',
+      accessToken: 'access-token',
       user: null,
       tenant: { tenantId: 'tenant-1', tenantSlug: 'studio', tenantName: 'Studio', displayName: 'Studio', role: 'OWNER', status: 'ACTIVE', permissions: [] },
       allTenants: [],

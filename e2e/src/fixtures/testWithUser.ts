@@ -58,7 +58,7 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   } catch {
     await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 5000 });
   }
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   let token: string | null = null;
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -70,7 +70,7 @@ async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
   provider.setToken(token);
   await provider.setup(page, user);
 
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   return provider;
 }
@@ -96,7 +96,7 @@ async function realSetupFromStorageState(page: Page, user: TestUser): Promise<Re
   } catch {
     await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 10000 });
   }
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   const token = await page.evaluate(() => localStorage.getItem('access_token'));
   if (!token) {
@@ -107,7 +107,7 @@ async function realSetupFromStorageState(page: Page, user: TestUser): Promise<Re
   provider.setToken(token);
   await provider.setup(page, user);
 
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   return provider;
 }
 
@@ -133,7 +133,7 @@ export const test = base.extend<Fixtures>({
       } else {
         provider = await realSetupFromStorageState(page, testUser);
 
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('domcontentloaded');
       }
 
       try {
@@ -162,7 +162,7 @@ export const test = base.extend<Fixtures>({
     async ({ page, provider: _provider }, use) => {
       if (MODE === 'real') {
         await page.reload();
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('domcontentloaded');
       }
       await use(page);
     },

@@ -36,6 +36,14 @@ export const APPOINTMENT_ROUTES = {
   APPOINTMENTS: "/api/appointments",
 } as const;
 
+function toInstant(date: string, time: string): string {
+  const instant = new Date(`${date}T${time}:00`);
+  if (Number.isNaN(instant.getTime())) {
+    throw new Error(`Invalid appointment date/time: ${date} ${time}`);
+  }
+  return instant.toISOString();
+}
+
 export interface AppointmentApi {
   list(params?: { date?: string }): Promise<Appointment[]>;
   create(data: CreateAppointment): Promise<Appointment>;
@@ -94,8 +102,8 @@ export function createAppointmentApi(http: HttpClient): AppointmentApi {
         customerId: data.clientId,
         serviceId: data.serviceId,
         artistId: data.artistId,
-        startsAt: `${data.date}T${data.startTime}:00`,
-        endsAt: `${data.date}T${data.endTime}:00`,
+        startsAt: toInstant(data.date, data.startTime),
+        endsAt: toInstant(data.date, data.endTime),
       };
       const raw = await http.post<unknown>(API.APPOINTMENTS, body);
       return mapAppointment(raw);

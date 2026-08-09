@@ -64,6 +64,35 @@ describe('contract API adapters', () => {
     }]);
   });
 
+  it('serializes appointment creation times as instants with an explicit UTC offset', async () => {
+    const http = new RecordingHttpClient({
+      id: 'appointment-1',
+      customerId: 'customer-1',
+      serviceId: 'service-1',
+      startsAt: '2026-07-31T16:00:00Z',
+      endsAt: '2026-07-31T17:00:00Z',
+      status: 'SCHEDULED',
+    });
+    const api = createAppointmentApi(http);
+
+    await api.create({
+      clientId: 'customer-1',
+      serviceId: 'service-1',
+      date: '2026-07-31',
+      startTime: '10:00',
+      endTime: '11:00',
+      status: 'pending',
+    });
+
+    const body = http.calls[0]?.body as Record<string, string>;
+    const startsAt = body.startsAt as string;
+    const endsAt = body.endsAt as string;
+    expect(startsAt).toMatch(/Z$/);
+    expect(endsAt).toMatch(/Z$/);
+    expect(new Date(startsAt).toISOString()).toBe(startsAt);
+    expect(new Date(endsAt).toISOString()).toBe(endsAt);
+  });
+
   it('exposes customer retirement as a typed capability operation', async () => {
     const http = new RecordingHttpClient(undefined);
     const api = createClientApi(http);
