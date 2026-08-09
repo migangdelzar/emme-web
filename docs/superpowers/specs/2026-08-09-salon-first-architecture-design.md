@@ -14,7 +14,7 @@ Emme keeps `admin-app`, `salon-app`, and `client-app` as separate deployable app
 
 The existing `@emme/features` package is too broad. It mixes React pages, hooks, feature state, business rules, API adapters, and application logic. It will become a temporary migration facade and will be retired after salon-owned presentation code has moved to `apps/salon-app/src/features`.
 
-The shared business boundary remains the existing `@emme/domain` and `@emme/application` packages. No new `@emme/business` package is introduced. This preserves useful domain/application separation without adding another workspace package.
+The shared business boundary is one `@emme/business` package. It preserves domain/application separation as internal capability folders without turning each architectural layer into a separate workspace package.
 
 ## 2. Architectural Decisions
 
@@ -36,13 +36,13 @@ Shared React code is not created speculatively. A component or hook may move to 
 
 ### 2.3 Shared business logic remains framework-independent
 
-Business rules and use cases that may eventually be used by the client application remain reusable:
+Business rules and use cases that may eventually be used by the client application remain reusable inside `@emme/business`:
 
-- `@emme/domain`: entities, value objects, rules, errors, and business types.
-- `@emme/application`: use cases, DTOs, ports, and application orchestration.
+- `@emme/business/*/domain`: entities, value objects, rules, errors, and business types.
+- `@emme/business/*/application`: use cases, DTOs, ports, and application orchestration.
 - `@emme/api`: transport contracts and typed API operations.
 
-The domain and application packages must not import React, browser APIs, routing, TanStack Query, or concrete infrastructure.
+The business package must not import React, browser APIs, routing, TanStack Query, or concrete infrastructure. Its internal dependency rule remains `application → domain → kernel`.
 
 ### 2.4 Technical layers are package responsibilities, not feature UI folders
 
@@ -99,9 +99,8 @@ emme/
 │   └── client-app/
 ├── packages/
 │   ├── api/
-│   ├── application/
+│   ├── business/       # shared domain rules and application use cases
 │   ├── core/
-│   ├── domain/
 │   ├── features/          # temporary migration facade; remove later
 │   ├── i18n/
 │   ├── infrastructure/
@@ -119,8 +118,7 @@ The `features` package is intentionally shown as temporary. The final architectu
 | Package | Owns | Must not own |
 |---|---|---|
 | `@emme/kernel` | Result types, base errors, brands, IDs, clocks | React, HTTP, browser APIs, business concepts |
-| `@emme/domain` | Pure business rules and models grouped by capability | React, API clients, query libraries, storage |
-| `@emme/application` | Use cases, ports, DTOs, orchestration grouped by capability | React, browser APIs, concrete HTTP clients |
+| `@emme/business` | Pure domain rules plus application use cases grouped by capability | React, browser APIs, query libraries, concrete infrastructure |
 | `@emme/api` | HTTP/API contracts, transport mappers, typed operations | Pages, React hooks, domain policy decisions |
 | `@emme/infrastructure` | Concrete HTTP, storage, auth, telemetry adapters | Business rules and page workflows |
 | `@emme/core` | Auth, tenant context, permissions, runtime providers, routing primitives | Appointment or salon-specific behavior |
@@ -129,25 +127,24 @@ The `features` package is intentionally shown as temporary. The final architectu
 | `@emme/validation` | Reusable schema primitives and contracts | Page-specific form orchestration |
 | `@emme/test-support` | Test providers, factories, fakes, fixtures | Production behavior |
 
-Capability code inside `domain` and `application` is organized vertically:
+Capability code inside `@emme/business` is organized vertically, with domain and application as internal layers:
 
 ```text
-packages/domain/src/appointments/
-├── appointment-status.ts
-├── appointment.rules.ts
-├── appointment.types.ts
-└── index.ts
-
-packages/application/src/appointments/
-├── cancel-appointment.ts
-├── salon/
-│   └── list-salon-appointments.ts
-├── ports/
-│   └── appointment-repository.ts
+packages/business/src/appointments/
+├── domain/
+│   ├── appointment-status.ts
+│   ├── appointment.rules.ts
+│   ├── appointment.types.ts
+│   └── index.ts
+├── application/
+│   ├── cancel-appointment.ts
+│   ├── salon/list-salon-appointments.ts
+│   ├── ports/appointment-repository.ts
+│   └── index.ts
 └── index.ts
 ```
 
-This keeps appointments, clients, and services together within each package instead of mixing all domains into global technical folders.
+This keeps appointments, clients, and services together inside one reusable business package instead of mixing all domains into global technical folders or multiplying workspace packages.
 
 ## 5. Salon Feature Responsibilities
 
@@ -185,15 +182,14 @@ The future client app may use the same domain rules and API contracts but should
 
 ```text
 salon app feature
-  → @emme/application
-  → @emme/domain
+  → @emme/business
   → @emme/api
   → @emme/core
   → @emme/ui
   → @emme/i18n
 
-@emme/application → @emme/domain → @emme/kernel
-@emme/infrastructure → @emme/api and @emme/application ports
+@emme/business/application → @emme/business/domain → @emme/kernel
+@emme/infrastructure → @emme/api and @emme/business application ports
 @emme/api → @emme/kernel (where needed)
 @emme/ui → no business packages
 ```
@@ -202,7 +198,7 @@ Additional rules:
 
 1. A salon feature imports another salon feature only through its public `index.ts` and only when the dependency represents a real business relationship.
 2. A feature never imports another feature's internal files.
-3. Domain and application code never imports from `apps/`.
+3. Business domain and application code never imports from `apps/`.
 4. API response shapes are mapped at the API/application boundary before reaching domain rules or view models.
 5. Backend authorization and tenant isolation remain authoritative. Frontend permission checks only control experience and navigation.
 6. Composition roots instantiate concrete infrastructure and provide runtime dependencies.
@@ -221,7 +217,7 @@ Migration is incremental and behavior-preserving:
 ### Phase 2: Migrate appointments
 
 - Move appointments pages, components, hooks, state, and salon validation into `apps/salon-app/src/features/appointments`.
-- Keep appointment rules, types, errors, and use cases in `@emme/domain` and `@emme/application`.
+- Keep appointment rules, types, errors, and use cases in `@emme/business`.
 - Keep transport operations in `@emme/api`.
 - Preserve existing route URLs and test selectors.
 
@@ -246,8 +242,8 @@ Every phase must preserve the existing mock and real-provider Playwright flows b
 
 | Area | Location | Focus |
 |---|---|---|
-| Domain rules | `packages/domain/src/**` | Pure business invariants and edge cases |
-| Application use cases | `packages/application/src/**` | Ports, orchestration, errors, and DTOs with fakes |
+| Business domain rules | `packages/business/src/**/domain/**` | Pure business invariants and edge cases |
+| Business application use cases | `packages/business/src/**/application/**` | Ports, orchestration, errors, and DTOs with fakes |
 | API contracts/mappers | `packages/api/src/**` | Serialization, request contracts, response mapping |
 | Salon feature logic | `apps/salon-app/src/features/**` | Hooks, view models, forms, state, and page behavior |
 | Generic UI | `packages/ui/src/**` | Accessibility and component behavior independent of salon concepts |
@@ -285,9 +281,9 @@ Rejected because it forces salon workflows into a package before a second consum
 
 Rejected because client and admin will eventually need appointment rules and API contracts. Keeping pure business code reusable now avoids duplicating policy later.
 
-### New `@emme/business` package
+### Separate `@emme/domain` and `@emme/application` packages
 
-Rejected for now because the existing `@emme/domain` and `@emme/application` boundaries already express the required separation. Adding another package would increase migration cost without adding a capability.
+Rejected for the current salon-first phase because package boundaries would duplicate the architectural layers without providing independent deployment or ownership. The layers remain explicit inside `@emme/business` and are enforced with import-boundary tests.
 
 ### Global technical layers containing every feature
 
@@ -297,10 +293,9 @@ Rejected because it mixes appointments, clients, services, and payments. Capabil
 
 - Salon pages, hooks, feature state, and salon-specific components are owned by `apps/salon-app/src/features`.
 - `@emme/features` contains no permanent salon presentation responsibility.
-- Shared business rules and use cases remain React-free.
+- Shared business rules and use cases remain React-free inside `@emme/business`.
 - `@emme/ui` has no business concepts.
 - Existing salon routes and behavior remain stable during migration.
 - Unit, typecheck, lint, build, mock Playwright, and real-provider Playwright verification pass for each completed slice.
 - The architecture documentation and migration plan describe the same structure.
 - A future client app can consume domain/application/API contracts without importing salon UI.
-

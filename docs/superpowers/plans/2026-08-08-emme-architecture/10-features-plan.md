@@ -4,7 +4,7 @@
 
 ## Goal
 
-Move salon pages, hooks, feature state, and salon-specific components from `@emme/features` into `apps/salon-app/src/features`, while preserving reusable rules, use cases, and API contracts in `@emme/domain`, `@emme/application`, and `@emme/api`.
+Move salon pages, hooks, feature state, and salon-specific components from `@emme/features` into `apps/salon-app/src/features`, while preserving reusable rules, use cases, and API contracts in `@emme/business` and `@emme/api`.
 
 ## Target ownership
 
@@ -19,8 +19,7 @@ apps/salon-app/src/features/
   settings/
   auth/
 
-packages/domain/       # pure business rules and types
-packages/application/  # use cases and ports
+packages/business/     # domain and application layers by capability
 packages/api/          # transport contracts and API operations
 packages/features/     # temporary compatibility facade; remove later
 ```
@@ -38,8 +37,8 @@ packages/features/     # temporary compatibility facade; remove later
 ## Rules
 
 - Do not create a shared React feature for hypothetical future consumers.
-- Do not move domain rules into the salon app.
-- Do not introduce a new `@emme/business` package.
+- Do not move business rules into the salon app.
+- Do not split `@emme/business` into separate domain/application packages without independent consumers or release requirements.
 - Do not add empty `pages`, `hooks`, `state`, or `validation` folders.
 - Preserve current routes, API behavior, test selectors, and real-provider flows.
 - Add a second consumer before extracting a React component or hook to a shared package.
@@ -58,4 +57,3 @@ bun run test:e2e:mock
 The detailed design is documented in:
 
 [`2026-08-09-salon-first-architecture-design.md`](../../specs/2026-08-09-salon-first-architecture-design.md)
-
