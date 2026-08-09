@@ -24,27 +24,27 @@
 
 ### Task 1: Shell, admin auth, and tenant lifecycle
 
-- [ ] **Step 1:** Write tests for platform-admin auth, permission denial, tenant list/filter/detail/create/update/suspend/reactivate/delete-hold, and provisioning status.
-- [ ] **Step 2:** Implement shell and `tenant-management` workflows using typed API contracts and safe confirmation dialogs.
-- [ ] **Step 3:** Run focused component/integration tests; expected result is PASS.
+- [x] **Step 1:** Write tests for platform-admin auth, permission denial, tenant list/filter/detail/create/update/suspend/reactivate/delete-hold, and provisioning status.
+- [x] **Step 2:** Implement shell and `tenant-management` workflows using typed API contracts and safe confirmation dialogs.
+- [x] **Step 3:** Run focused component/integration tests; expected result is PASS.
 
 ### Task 2: Feature flags and memberships
 
-- [ ] **Step 1:** Write tests for global flags, tenant overrides, effective-feature resolution, membership list/assign/revoke, and stale/forbidden responses.
-- [ ] **Step 2:** Implement app-local pages, schemas, query hooks, and permission guards.
-- [ ] **Step 3:** Run mocked browser journeys for `FR-WA008`–`FR-WA013`.
+- [x] **Step 1:** Write tests for global flags, tenant overrides, effective-feature resolution, membership list/assign/revoke, and stale/forbidden responses.
+- [x] **Step 2:** Implement app-local pages, schemas, query hooks, and permission guards.
+- [x] **Step 3:** Run mocked browser journeys for `FR-WA008`–`FR-WA013`.
 
 ### Task 3: Audit, operations, and subscriptions
 
-- [ ] **Step 1:** Write tests for audit filters/details, projection reconciliation status/rebuild confirmation, and subscription plan/status/entitlements.
-- [ ] **Step 2:** Implement pages and state mapping with explicit loading, empty, error, and destructive-action states.
-- [ ] **Step 3:** Run mocked browser journeys for `FR-WA014`–`FR-WA016`.
+- [x] **Step 1:** Write tests for audit filters/details, projection reconciliation status/rebuild confirmation, and subscription plan/status/entitlements.
+- [x] **Step 2:** Implement pages and state mapping with explicit loading, empty, error, and destructive-action states.
+- [x] **Step 3:** Run mocked browser journeys for `FR-WA014`–`FR-WA016`.
 
 ### Task 4: Contract and commit
 
-- [ ] **Step 1:** Add API fixtures for all `FR-WA001`–`FR-WA016` and a route-boundary test rejecting salon/client imports.
-- [ ] **Step 2:** Configure admin Playwright mocked and real-backend projects without credentials in source.
-- [ ] **Step 3:** Run typecheck, tests, build, architecture check, and mocked E2E.
+- [x] **Step 1:** Add API fixtures for all `FR-WA001`–`FR-WA016` and a route-boundary test rejecting salon/client imports.
+- [x] **Step 2:** Configure admin Playwright mocked and real-backend projects without credentials in source.
+- [x] **Step 3:** Run typecheck, tests, build, architecture check, and mocked E2E.
 
 ```bash
 git add apps/platform-admin-app e2e/src/specs/admin packages/core packages/api
@@ -53,6 +53,8 @@ git commit -m "feat(platform-admin): add tenant and platform operations app"
 
 ## Definition of Done
 
-- [ ] Every `FR-WA001`–`FR-WA016` maps to a route, state, contract, and test.
-- [ ] Destructive and permission-sensitive operations are explicit and backend-authoritative.
-- [ ] Admin app has no imports from other app internals.
+- [x] Every `FR-WA001`–`FR-WA016` maps to a route, state, contract, and test.
+- [x] Destructive and permission-sensitive operations are explicit and backend-authoritative.
+- [x] Admin app has no imports from other app internals.
+
+**Status:** Complete

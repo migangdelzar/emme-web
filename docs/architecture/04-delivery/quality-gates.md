@@ -28,8 +28,8 @@ gate.
 
 ## Gate checklist
 
-- [ ] Evidence identifies exact source/artifact revisions and applicable app.
-- [ ] Failure blocks promotion and points to an owner/action.
-- [ ] Exceptions include owner, scope, risk, control, expiry, and follow-up.
-- [ ] Real-environment gates declare credentials and data isolation policy.
-- [ ] Handbook and plan status are updated with final evidence.
+- [x] Evidence identifies exact source/artifact revisions and applicable app.
+- [x] Failure blocks promotion and points to an owner/action.
+- [x] Exceptions include owner, scope, risk, control, expiry, and follow-up.
+- [x] Real-environment gates declare credentials and data isolation policy.
+- [x] Handbook and plan status are updated with final evidence.

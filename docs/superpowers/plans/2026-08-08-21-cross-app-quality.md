@@ -23,33 +23,33 @@
 
 ### Task 1: Root quality orchestration
 
-- [ ] **Step 1:** Write a failing test that verifies the root quality command includes docs, i18n, architecture, typecheck, lint, test, coverage, build, and security stages.
-- [ ] **Step 2:** Implement deterministic root scripts with Bun filters and clear failure propagation.
-- [ ] **Step 3:** Run `bun run quality`; expected result is PASS or a documented environment-only real-E2E skip outside the default quality command.
+- [x] **Step 1:** Write a failing test that verifies the root quality command includes docs, i18n, architecture, typecheck, lint, test, coverage, build, and security stages.
+- [x] **Step 2:** Implement deterministic root scripts with Bun filters and clear failure propagation.
+- [x] **Step 3:** Run `bun run quality`; expected result is PASS or a documented environment-only real-E2E skip outside the default quality command.
 
 ### Task 2: Accessibility and responsive coverage
 
-- [ ] **Step 1:** Write component smoke tests for keyboard navigation, focus return, labels, dialog semantics, table alternatives, and responsive empty/error states.
-- [ ] **Step 2:** Add the shared test helpers and run them across `@emme/ui`, feature presentation, and app workflows.
-- [ ] **Step 3:** Run focused Vitest suites; expected result is PASS.
+- [x] **Step 1:** Write component smoke tests for keyboard navigation, focus return, labels, dialog semantics, table alternatives, and responsive empty/error states.
+- [x] **Step 2:** Add the shared test helpers and run them across `@emme/ui`, feature presentation, and app workflows.
+- [x] **Step 3:** Run focused Vitest suites; expected result is PASS.
 
 ### Task 3: Browser journeys
 
-- [ ] **Step 1:** Add deterministic mocked journeys for studio, client, and admin critical paths using explicit fixtures and route-boundary mocks.
-- [ ] **Step 2:** Add real-backend projects guarded by required environment variables and same-origin API routing.
-- [ ] **Step 3:** Run `bun run test:e2e:mock`; expected result is PASS with zero committed recordings.
+- [x] **Step 1:** Add deterministic mocked journeys for studio, client, and admin critical paths using explicit fixtures and route-boundary mocks.
+- [x] **Step 2:** Add real-backend projects guarded by required environment variables and same-origin API routing.
+- [x] **Step 3:** Run `bun run test:e2e:mock`; expected result is PASS with zero committed recordings.
 
 ### Task 4: Security, performance, and release
 
-- [ ] **Step 1:** Write checks for forbidden imports, secret patterns, tenant headers, cache scope, oversized route bundles, and error redaction.
-- [ ] **Step 2:** Implement checks and document thresholds in `docs/architecture/04-delivery/quality-gates.md` and `05-operations/security.md`.
-- [ ] **Step 3:** Run lint, `bun audit --audit-level=high`, build analysis, and smoke HTTP checks.
+- [x] **Step 1:** Write checks for forbidden imports, secret patterns, tenant headers, cache scope, oversized route bundles, and error redaction.
+- [x] **Step 2:** Implement checks and document thresholds in `docs/architecture/04-delivery/quality-gates.md` and `05-operations/security.md`.
+- [x] **Step 3:** Run lint, `bun audit --audit-level=high`, build analysis, and smoke HTTP checks.
 
 ### Task 5: Final verification and commit
 
-- [ ] **Step 1:** Run `bun run docs:check`, `bun run i18n:check`, `bun run architecture:check`, `bun run typecheck`, `bun run lint`, `bun test`, `bun run build`, and `bun run test:e2e:mock`.
-- [ ] **Step 2:** Record evidence and unresolved environment-only checks in the release checklist.
-- [ ] **Step 3:** Commit and push the complete verified program.
+- [x] **Step 1:** Run `bun run docs:check`, `bun run i18n:check`, `bun run architecture:check`, `bun run typecheck`, `bun run lint`, `bun test`, `bun run build`, and `bun run test:e2e:mock`.
+- [x] **Step 2:** Record evidence and unresolved environment-only checks in the release checklist.
+- [x] **Step 3:** Commit and push the complete verified program.
 
 ```bash
 git add package.json scripts docs/architecture .github e2e
@@ -59,6 +59,8 @@ git push origin feat/api-version-contract
 
 ## Definition of Done
 
-- [ ] All package and app plans have passing verification.
-- [ ] Architecture, accessibility, security, performance, CI, and release documentation is current.
-- [ ] The remote branch contains the complete plan and verification artifacts.
+- [x] All package and app plans have passing verification.
+- [x] Architecture, accessibility, security, performance, CI, and release documentation is current.
+- [x] The remote branch contains the complete plan and verification artifacts.
+
+**Status:** Complete

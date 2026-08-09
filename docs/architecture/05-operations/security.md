@@ -20,11 +20,11 @@ replace backend enforcement.
 
 ## Security checklist
 
-- [ ] No private credential appears in source, config, logs, artifacts, or UI.
-- [ ] Untrusted input/HTML/URLs and API responses are validated at boundaries.
-- [ ] Unauthorized, forbidden, and tenant-mismatch behavior is tested without
+- [x] No private credential appears in source, config, logs, artifacts, or UI.
+- [x] Untrusted input/HTML/URLs and API responses are validated at boundaries.
+- [x] Unauthorized, forbidden, and tenant-mismatch behavior is tested without
       exposing restricted data.
-- [ ] Session, storage, CSRF/CORS/header, cache, and logout behavior follows the
+- [x] Session, storage, CSRF/CORS/header, cache, and logout behavior follows the
       approved threat boundary.
-- [ ] Raw transport errors and stack traces never reach presentation.
-- [ ] Dependency/secret scans pass; exceptions have owner, control, and expiry.
+- [x] Raw transport errors and stack traces never reach presentation.
+- [x] Dependency/secret scans pass; exceptions have owner, control, and expiry.
