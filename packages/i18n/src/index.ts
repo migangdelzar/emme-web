@@ -15,6 +15,11 @@ export {
   type TranslationKey,
   type TranslationResources,
 } from './translation-catalog.js';
+export {
+  registerFeatureNamespace,
+  type FeatureTranslationCatalogs,
+  type FeatureTranslationNamespace,
+} from './translation-catalog.js';
 export { createTranslationLookup, type TranslationLookupOptions } from './translation-lookup.js';
 
 export const els = elements;
