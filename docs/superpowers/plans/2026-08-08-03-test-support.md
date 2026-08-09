@@ -48,10 +48,12 @@ it('returns queued responses in request order and records requests', async () =>
 ```bash
 git add packages/test-support
 git commit -m "test(support): add deterministic shared test doubles"
+
+- [x] Package implementation committed and pushed after package tests, typecheck, build, and architecture validation.
 ```
 
 ## Definition of Done
 
-- [ ] Every shared fake is deterministic and tested.
-- [ ] Test support is not present in production dependency lists.
-- [ ] Feature plans can use the fixtures and providers without importing app internals.
+- [x] Every shared fake is deterministic and tested.
+- [x] Test support is not present in production dependency lists.
+- [x] Feature plans can use the fixtures and providers without importing app internals.
