@@ -64,6 +64,14 @@
 - [x] Verify the browser reaches Google's authorization endpoint through Keycloak.
 - [x] Verify client and E2E typechecks/tests.
 
+### Client Google-only authentication page — 2026-08-10
+
+- [x] Match the salon authentication page composition and visual language.
+- [x] Keep Google as the only customer authentication action.
+- [x] Remove local credential and registration controls from the client page.
+- [x] Load the client Tailwind theme and verify the production build.
+- [x] Verify the HMR page visually and rerun the real-provider redirect test.
+
 ## Results
 
 ### Google-only customer login — 2026-08-10
@@ -106,3 +114,6 @@
   `https://accounts.google.com/o/oauth2/v2/auth` and verified the Keycloak
   customer broker callback. The focused check allows two minutes because the
   local Keycloak-to-Google broker can take longer than the default E2E timeout.
+- Client authentication now uses the salon page composition with a single
+  Google action; client verification reports 6 test files and 9 tests passing,
+  the production build succeeds, and the real-provider redirect test passes.

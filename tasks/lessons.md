@@ -155,3 +155,16 @@
 - Prevention rule: real-provider tests that cross an external identity boundary
   should intercept the provider request, avoid credentials, and use an explicit
   timeout that reflects the local provider startup and broker latency.
+
+## 2026-08-10 — Load the app theme before reusing a visual composition
+
+- Failure mode: the client authentication markup was changed to match the salon
+  page, but the client app had no theme stylesheet or Tailwind Vite plugin, so
+  the HMR page rendered as an unstyled placeholder and the production build
+  failed on `@import "tailwindcss"`.
+- Detection signal: Playwright showed the intended DOM but the screenshot lacked
+  the salon typography, spacing, and glass treatment; the build could not resolve
+  Tailwind from the client app boundary.
+- Prevention rule: when reusing an app-level visual composition, verify its CSS
+  entrypoint and build plugin dependencies in the consuming app, then validate
+  both a screenshot and a production build.
