@@ -1,51 +1,43 @@
 # Frontend Testing
 
-## Test levels
+> **Status: Updated.** Detailed presentation and browser guidance complements
+> the canonical [test-location matrix](../00-project/testing-architecture.md).
 
 | Level | Purpose | Boundary |
-|---|---|---|
-| Unit | Pure functions, reducers, validators, formatters | No browser or network |
-| Component | Rendering, interaction, accessibility semantics | DOM with mocked API boundary |
-| Integration | Feature flow with routing and data client | Browser-like test environment |
-| E2E | Critical user journey across real frontend/backend | Running application and infrastructure |
+| --- | --- | --- |
+| unit | pure functions, reducers, validators, formatters | no browser/network |
+| component/hook | rendering, interaction, accessibility, observable state | DOM with protocol fake |
+| integration | app/feature composition, routing, providers | real packages with fake transport |
+| contract/adapter | schema, mapping, request, retry, storage | deterministic protocol boundary |
+| E2E | critical journey | mock provider or configured running service |
 
-## Rules
-
-- Test user-visible behavior rather than implementation details.
-- Mock the API boundary, not internal React modules.
-- Cover loading, empty, validation, server error, authorization, and success states.
-- Use stable semantic queries and explicit test IDs only when semantics are insufficient.
-- Keep tests deterministic; control time, randomness, and network responses.
-- Reserve E2E for critical journeys and contract confidence, not every component state.
-
-## Minimum feature coverage
+## Minimum presentation suite
 
 ```text
-feature test suite
-├── renders initial/loading state
-├── shows empty state
-├── submits valid input
-├── displays validation failure
-├── displays server failure
-└── completes the primary user outcome
+feature presentation tests
+├── renders loading and ready states
+├── renders empty state
+├── completes the primary outcome
+├── rejects invalid input with associated errors
+├── renders conflict, forbidden, and unavailable states
+├── prevents duplicate action and stale result
+├── restores focus/keyboard flow
+└── cleans up on route, session, or tenant change
 ```
 
-## Quality gates
+Tests use semantic queries and mock owned protocols, not private React modules.
+Time, randomness, locale, network, tenant, session, and permissions are
+controlled. E2E proves only critical composition and does not replace focused
+state/error tests.
 
-- Unit and component tests run on every change.
-- Integration tests exercise routing, providers, API clients, and error states.
-- Contract tests detect API schema drift before E2E.
-- Critical E2E flows run against a production-like backend and deterministic identities/tenants.
-- Accessibility checks run for shared components and critical pages.
-- Visual regression is used only for stable, high-value surfaces; avoid brittle snapshots.
-- Test data is isolated, classified, and deleted after execution.
-- Flaky tests are quarantined with an owner and expiry date, never silently retried forever.
-
-## Frontend testing checklist
+## Frontend test checklist
 
 - [ ] Tests assert user-visible behavior rather than component internals.
-- [ ] API responses include validation, conflict, unauthorized, unavailable, and success cases.
-- [ ] Session expiry, tenant changes, and permission changes are covered.
-- [ ] Keyboard/focus and accessible-name behavior is covered for critical interactions.
-- [ ] Critical E2E flows produce artifacts, traces, and failure diagnostics.
-- [ ] Tests are deterministic and safe to run in parallel.
+- [ ] API outcomes include malformed, validation, conflict, unauthorized,
+      forbidden, unavailable, tenant mismatch, and success cases.
+- [ ] Session expiry, tenant change, permission change, and cleanup are covered.
+- [ ] Keyboard, focus, accessible names, and error association are covered.
+- [ ] Mock and real E2E lanes are explicitly identified.
+- [ ] Diagnostics contain no credentials, tokens, private response data, or
+      local paths.
+- [ ] Tests are deterministic, isolated, parallel-safe, and not skipped.

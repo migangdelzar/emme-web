@@ -12,6 +12,6 @@ export class FinancesPage {
   readonly revenueContent = () => this.page.locator(`text=${t('finances.currency')}`);
 
   async goto() {
-    await this.page.goto(PAGE.FINANCES);
+    await this.page.goto(PAGE.FINANCES)
   }
 }

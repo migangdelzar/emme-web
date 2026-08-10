@@ -1,7 +1,7 @@
 export interface TestUser {
   userId: string;
   tenantId: string;
-  memberships: { tenantId: string; tenantName: string; role: string }[];
+  memberships: { tenantId: string; tenantName: string; tenantSlug: string; role: string }[];
   name: string;
   email: string;
 }
@@ -9,10 +9,11 @@ export interface TestUser {
 const POOL_SIZE = 10;
 
 function createUser(index: number): TestUser {
+  const name = `Studio ${index}`;
   return {
     userId: `e2e-user-${index}`,
     tenantId: `e2e-tenant-${index}`,
-    memberships: [{ tenantId: `e2e-tenant-${index}`, tenantName: `Studio ${index}`, role: 'OWNER' }],
+    memberships: [{ tenantId: `e2e-tenant-${index}`, tenantName: name, tenantSlug: name.toLowerCase().replace(/\s+/g, '-'), role: 'OWNER' }],
     name: `E2E User ${index}`,
     email: `e2e-${index}@emme.app`,
   };

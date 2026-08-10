@@ -1,68 +1,52 @@
 # Frontend Module
 
-## Purpose
+> **Status: Updated.** A reusable module is now a complete vertical feature,
+> not an app `modules/` technical grouping.
 
-A frontend module is a cohesive product capability that may contain routes, components, state, data access, and tests. It is organized around what users do rather than around technical file types.
-
-## Module shape
-
-```text
-src/modules/<capability>/
-├── routes/
-├── components/
-├── state/
-├── api/
-├── model/
-└── __tests__/
-```
-
-Use `features/` when the code is a focused user flow and `modules/` when it is a larger capability with multiple flows. Do not create both layers by default.
+A module is a cohesive business capability organized around user outcomes. The
+current product modules live under `apps/salon-app/src/features`. Their
+framework-free rules and use cases may be consumed from
+`packages/business/src/<capability>`. `@emme/auth` provides the shared auth
+gate, while each app owns its login and tenant-selection presentation.
 
 ```mermaid
 flowchart LR
-    APP[App shell] --> PUBLIC[Module public exports]
-    PUBLIC --> ROUTE[Routes]
-    PUBLIC --> UI[Feature components]
-    PUBLIC --> STATE[Feature state]
-    PUBLIC --> CLIENT[Typed API client]
-    INTERNAL[Module internals] -.not imported by.-> OTHER[Other modules]
+    App[app workflow] --> Salon[local salon feature]
+    Salon --> Business["@emme/business capability"]
+    Salon --> API["@emme/api"]
+    Salon --> UI["@emme/ui"]
+    Auth["@emme/auth gate"] --> Core["@emme/core"]
 ```
 
-## Boundary rules
-
-- A module owns its feature state and API mapping.
-- Cross-module imports use public exports only.
-- Shared UI primitives live in a platform/shared area; business-specific components stay with their module.
-- API types are generated or centrally defined, then adapted to view models where necessary.
-- A module should be removable without leaving unrelated imports throughout the app.
-
-## Frontend module boundary
-
-Each frontend module records:
+## Boundary record
 
 | Concern | Required decision |
-|---|---|
-| Owner | Team and product capability |
-| Routes | Public/protected routes and deep-link behavior |
-| State | Server cache, form state, local UI state, persistence policy |
-| API | Endpoints, schemas, auth/tenant requirements, error codes |
-| Security | Role/permission UX and backend authority |
-| Performance | Bundle, render, network, and interaction budgets |
-| Testing | Unit, component, integration, and E2E coverage |
-| Removal | Public exports and dependency cleanup plan |
+| --- | --- |
+| owner | business capability and responsible plan |
+| public exports | stable contracts, factories, types, presentation |
+| app consumers | which app workflows compose the capability |
+| state | server, URL, workflow, local, and persistence ownership |
+| API | contracts, schemas, tenant/auth requirements, error codes |
+| dependencies | allowed packages/features and injected ports |
+| testing | domain through E2E locations and scenario matrix |
+| removal | consumer migration and export cleanup sequence |
 
-### Boundary enforcement
+## Rules
 
-- Export only deliberate public module APIs from an index/barrel.
-- Do not import another module's internal components, hooks, stores, or API implementation.
-- Keep route-level code thin and delegate to feature components.
-- Keep cross-module UI workflows coordinated by the app shell or an explicit orchestration feature.
-- Treat generated API types as transport contracts, not automatically as view models.
+- Cross-feature imports use local public exports only.
+- Generated API types are transport contracts, not automatic domain/view models.
+- Route-level code stays thin and delegates to app workflows and feature APIs.
+- Cross-feature workflows are coordinated by an app or explicit orchestration
+  feature, never private imports.
+- A module is independently testable through protocol fakes.
+- Shared login presentation is intentionally app-local; only the auth gate
+  primitive is shared.
 
-### Module checklist
+## Module checklist
 
-- [ ] Public exports are explicit and internal imports are rejected by lint/tests.
-- [ ] Loading, empty, error, unauthorized, and success states are defined.
-- [ ] State ownership and cache invalidation are documented.
-- [ ] Bundle/performance impact is measured for substantial features.
-- [ ] The module can be tested without booting unrelated features.
+- [ ] Public exports are explicit and deep imports are rejected.
+- [ ] All Hexagonal layers and ownership decisions are represented.
+- [ ] State and cache invalidation have one authoritative owner.
+- [ ] Loading, empty, error, forbidden, and success states are defined.
+- [ ] The module tests without booting unrelated features or apps.
+- [ ] App routes and role workflows are absent from reusable modules.

@@ -15,17 +15,18 @@ export class AppointmentsPage {
     this.page
       .getByRole('button', { name: /\b(lun|mar|mié|jue|vie|sáb|dom)\s+\d+\b/i })
       .first();
-  readonly projectedIncomeCard = () =>
-    this.page.getByTestId(tid('appointments.projectedIncome')!).or(
-      this.page.getByText(t('appointments.projectedIncome')));
+  readonly todayAppointmentsSummary = () =>
+    this.page.getByText(/\d+\s+citas para hoy/i);
   readonly appointmentCard = (customerName: string) =>
     this.page.getByText(customerName).first();
   readonly dialogByRole = () => this.page.locator('[role="dialog"]');
   readonly dialogServiceLabel = () => this.dialogByRole().getByText('Servicio');
   readonly dialogCloseBtn = () => this.dialogByRole().locator('button').first();
-  readonly stepIndicator = () =>
-    this.page.getByTestId(tid('appointments.stepIndicator')!).or(
-      this.page.getByText(t('appointments.step01')));
+  readonly stepIndicator = (label?: string) => {
+    const indicator = this.page.getByTestId(tid('appointments.step01')!);
+    const currentStep = this.page.getByText(/Paso\s+0?1/i);
+    return label ? indicator.or(this.page.getByText(label)).or(currentStep) : indicator.or(currentStep);
+  };
   readonly step1Label = () => this.stepIndicator(t('appointments.step01'));
   readonly step2Label = () => this.stepIndicator(t('appointments.step02'));
   readonly stepQuestion = (q: string) => this.page.getByText(q);
@@ -40,10 +41,10 @@ export class AppointmentsPage {
     this.page.locator('button svg.lucide-x').first();
 
   async goto() {
-    await this.page.goto(PAGE.AGENDA);
+    await this.page.goto(PAGE.AGENDA)
   }
 
   async gotoNewAppointment() {
-    await this.page.goto(PAGE.AGENDA + '?add=true');
+    await this.page.goto(PAGE.AGENDA + '?add=true')
   }
 }

@@ -1,4 +1,4 @@
-import type { Client } from '@emme/contracts';
+import type { Client } from '@emme/api';
 
 export const makeClient = (overrides?: Partial<Client>): Client => ({
   id: `cust-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,

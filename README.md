@@ -57,18 +57,24 @@ bun run dev
 ```
 
 The Vite application runs at `http://localhost:3000`. Copy
-`apps/emme-salon-app/.env.example` to a local `.env` and set only public
+`apps/salon-app/.env.example` to a local `.env` and set only public
 browser configuration. Never put private provider keys in `VITE_*` variables.
 
 ## Repository structure
 
 ```text
-apps/emme-salon-app/  Main React/Vite/PWA application
-packages/api-client/  HTTP transport and client boundary
-packages/contracts/   Typed API/domain transport contracts
+apps/salon-app/       Tenant-owner/staff React/Vite/PWA application
+apps/client-app/      Public client booking application
+apps/admin-app/       Platform administration application
+packages/infrastructure/ Concrete HTTP, auth, storage, and external adapters
+packages/api/          Typed backend contracts and API boundary
+packages/core/         Auth, tenancy, permissions, and runtime providers
+packages/domain/       Pure business rules and models
+packages/application/  Use cases and application ports
 packages/i18n/        Locale catalogs and translation helpers
 packages/ui/          Reusable presentational primitives
 packages/validation/  Shared boundary validation
+packages/test-support/ Shared test fixtures and factories
 e2e/src/              Playwright journeys and test providers
 docs/                 Frontend and integration architecture
 ```
@@ -76,7 +82,7 @@ docs/                 Frontend and integration architecture
 ## Frontend boundaries
 
 ```text
-apps/emme-salon-app/src/
+apps/salon-app/src/
 ├── app/          Composition root, routes, and providers
 ├── auth/         Session and tenant selection behavior
 ├── features/     User-facing capabilities
@@ -89,7 +95,7 @@ apps/emme-salon-app/src/
 Features own user outcomes and feature state. The app shell owns routing and
 cross-feature providers. Shared code must be stable and genuinely reused.
 Backend internals are never imported; all communication crosses the typed HTTP
-contract through `@emme/api-client` and `@emme/contracts`.
+contract through `@emme/infrastructure` and `@emme/api`.
 
 ## Container image
 
@@ -117,6 +123,11 @@ For real browser verification, start the sibling backend and run:
 ```bash
 E2E_MODE=real bun run --filter @emme/e2e test:real
 ```
+
+For deterministic product-flow videos, run `bun run --filter @emme/e2e
+test:demo` locally or manually dispatch the `Playwright demo recordings`
+GitHub Actions workflow. Videos and reports are uploaded as a 14-day artifact;
+they are not committed.
 
 The default `test` command is intentionally limited to unit/component tests.
 Run `bun run test:e2e` for Playwright; critical real journeys require the

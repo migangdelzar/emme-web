@@ -1,4 +1,4 @@
-import type { Client, Service, Appointment } from '@emme/contracts';
+import type { Client, Service, Appointment } from '@emme/api';
 
 // ── Functional in-memory store — simulates a DB table ──
 
@@ -9,11 +9,13 @@ const store = <T extends Entity>() => {
   let items: T[] = [];
 
   return {
-    seed: (data: T[]) => { items = [...data]; },
+    seed: (data: T[]) => {
+      items = [...data];
+    },
 
     all: (): readonly T[] => items,
 
-    find: (id: string): T | undefined => items.find(i => i.id === id),
+    find: (id: string): T | undefined => items.find((i) => i.id === id),
 
     insert: (item: T): T => {
       items = [...items, item];
@@ -21,31 +23,36 @@ const store = <T extends Entity>() => {
     },
 
     update: (id: string, patch: Partial<T>): T | undefined => {
-      const idx = items.findIndex(i => i.id === id);
+      const idx = items.findIndex((i) => i.id === id);
       if (idx === -1) return undefined;
-      items = [
-        ...items.slice(0, idx),
-        { ...items[idx], ...patch },
-        ...items.slice(idx + 1),
-      ];
+      items = [...items.slice(0, idx), { ...items[idx], ...patch }, ...items.slice(idx + 1)];
       return items[idx];
     },
 
     remove: (id: string): boolean => {
       const len = items.length;
-      items = items.filter(i => i.id !== id);
+      items = items.filter((i) => i.id !== id);
       return items.length < len;
     },
 
-    clear: () => { items = []; },
+    clear: () => {
+      items = [];
+    },
   };
 };
 
-/** Composed in-memory database — one table per domain entity. */
-export const db = {
+/** The isolated in-memory database owned by one mock-provider instance. */
+export type MockDatabase = {
+  customers: Store<Client>;
+  services: Store<Service>;
+  appointments: Store<Appointment>;
+};
+
+/** Creates one isolated in-memory database — one table per domain entity. */
+export const createMockDatabase = (): MockDatabase => ({
   customers: store<Client>(),
   services: store<Service>(),
   appointments: store<Appointment>(),
-};
+});
 
 export type Store<T extends Entity> = ReturnType<typeof store<T>>;

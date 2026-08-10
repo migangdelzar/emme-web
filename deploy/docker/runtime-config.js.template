@@ -1,0 +1,6 @@
+window.__EMME_RUNTIME_CONFIG__ = {
+  apiUrl: '${EMME_API_BASE_URL}',
+  environment: '${EMME_APP_ENV}',
+  appName: '${EMME_APP_NAME}',
+  webBaseDomain: '${EMME_WEB_BASE_DOMAIN}'
+};

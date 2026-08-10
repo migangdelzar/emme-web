@@ -1,73 +1,63 @@
 # Frontend Feature
 
-## Purpose
+> **Status: Updated.** Product feature presentation, hooks, and workflows are
+> salon-app local; framework-free reusable behavior belongs in `@emme/business`.
 
-A feature is a user-facing slice that delivers one coherent outcome, such as booking an appointment, managing customers, or reviewing notifications.
+A feature delivers one coherent user outcome, such as booking an appointment,
+managing availability, or reviewing an audit timeline.
 
-## Feature structure
-
-```text
-features/booking/
-├── BookingPage.tsx
-├── booking.routes.tsx
-├── booking.api.ts
-├── booking.types.ts
-├── components/
-├── hooks/
-└── __tests__/
-```
+## State contract
 
 ```mermaid
 stateDiagram-v2
     [*] --> Idle
-    Idle --> Loading: load route
+    Idle --> Loading: enter workflow
     Loading --> Ready: data received
     Loading --> Unavailable: timeout/provider failure
     Ready --> Empty: no results
-    Ready --> Editing: user starts mutation
+    Ready --> Editing: begin action
     Editing --> Submitting: valid submit
     Submitting --> Success: committed
-    Submitting --> Conflict: concurrency/business conflict
-    Submitting --> Error: validation/server failure
-    Error --> Editing: recover
-    Conflict --> Editing: refresh/reconcile
+    Submitting --> Conflict: business/concurrency conflict
+    Submitting --> Forbidden: permission denied
+    Submitting --> Error: validation/transport failure
+    Error --> Editing: correct/recover
+    Conflict --> Loading: refresh/reconcile
+    Unavailable --> Loading: safe retry
 ```
 
-## Feature rules
+## Rules
 
-- Start from the user outcome and keep the feature boundary visible.
-- Keep server state, UI state, and form state distinct.
-- Validate user input at the edge and preserve server validation as authoritative.
-- Represent loading, empty, error, and success states explicitly.
-- Keep mutations idempotent where retries or double submits are possible.
-- Prefer composition over a feature-wide component with many boolean props.
-- Add a focused test for the primary flow and error states.
+- Begin with the user outcome and make the ownership boundary visible.
+- Keep server, URL, workflow, form, and transient UI state distinct.
+- Validate at the UI edge while preserving backend validation as authoritative.
+- Preserve stable error categories for validation, conflict, permission, tenant,
+  and availability behavior.
+- Prevent duplicate mutations or rely on an explicit idempotency contract.
+- Cancel or ignore stale requests when route, session, or tenant context changes.
+- Define rollback before enabling optimistic UI.
+- Keep sensitive values out of URLs, logs, analytics, and persisted caches.
+- Test keyboard, focus, screen-reader names, error association, and reduced
+  motion for interactive flows.
 
-## Feature state contract
+## Ownership split
 
-Document the feature as a state machine rather than only a component tree:
+| Concern | Owner |
+| --- | --- |
+| reusable policy/use case/contract | capability in `@emme/business` |
+| salon component/hook/page/workflow | `apps/salon-app/src/features/<feature>` |
+| shared authentication gate | `@emme/auth`; login pages remain app-local |
+| role page, route, form, filter, multi-step orchestration | app workflow |
+| generic visual primitive | `@emme/ui` |
+| auth/tenant/permission/runtime | `@emme/core` |
+| concrete global browser/provider behavior | `@emme/infrastructure` |
 
-```text
-idle → loading → ready
-                 ├── empty
-                 ├── editing → submitting → success
-                 │                         └── conflict/error
-                 └── unavailable/retry
-```
+## Feature checklist
 
-Rules:
-
-- Prevent duplicate mutations while a command is pending, or make the command idempotent.
-- Preserve server error codes so the UI can distinguish validation, conflict, authorization, and availability failures.
-- Cancel or ignore stale requests when route parameters or selected tenants change.
-- Define optimistic-update rollback behavior before enabling optimistic UI.
-- Keep sensitive data out of URLs, analytics events, browser logs, and persisted caches.
-- Test keyboard, focus, screen-reader name, error association, and reduced-motion behavior for interactive flows.
-
-### Feature checklist
-
-- [ ] Primary, empty, loading, validation, conflict, unauthorized, and unavailable states exist.
+- [ ] Primary, empty, loading, validation, conflict, forbidden, unavailable, and
+      success states exist.
 - [ ] Duplicate submit and stale response behavior is safe.
 - [ ] Server truth wins over optimistic or cached state.
-- [ ] Sensitive data is not exposed in client telemetry or URLs.
-- [ ] User-visible accessibility and error behavior is tested.
+- [ ] No private feature path or raw transport is imported.
+- [ ] Sensitive data is absent from telemetry and URLs.
+- [ ] User-visible accessibility and recovery behavior is tested.

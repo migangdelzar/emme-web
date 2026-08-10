@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: emme-frontends
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [admin.emme.com, app.emme.com, book.emme.com]
+      secretName: emme-web-tls
+  rules:
+    - host: admin.emme.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-frontend-service
+                port: { number: 80 }
+    - host: app.emme.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: salon-frontend-service
+                port: { number: 80 }
+    - host: book.emme.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-frontend-service
+                port: { number: 80 }

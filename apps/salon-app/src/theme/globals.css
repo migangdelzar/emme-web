@@ -1,0 +1,310 @@
+@import 'tailwindcss';
+@source '../../../../apps/salon-app/src';
+@source '../../../../packages/auth/src';
+@source '../../../../packages/ui/src';
+
+/* ─── shadcn/ui compatible CSS variables ─── */
+:root {
+  --background: #fbfbfd;
+  --foreground: #1d1d1f;
+  --card: #ffffff;
+  --card-foreground: #1d1d1f;
+  --popover: #ffffff;
+  --popover-foreground: #1d1d1f;
+  --primary: #0071e3;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f5f5f7;
+  --muted-foreground: #86868b;
+  --accent: #f5f5f7;
+  --accent-foreground: #1d1d1f;
+  --destructive: #ff3b30;
+  --destructive-foreground: #ffffff;
+  --border: #d2d2d7;
+  --input: #d2d2d7;
+  --ring: #0071e3;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
+  --popover: #1c1c1e;
+  --popover-foreground: #f5f5f7;
+  --primary: #0a84ff;
+  --primary-foreground: #ffffff;
+  --secondary: #2c2c2e;
+  --secondary-foreground: #f5f5f7;
+  --muted: #2c2c2e;
+  --muted-foreground: #98989d;
+  --accent: #2c2c2e;
+  --accent-foreground: #f5f5f7;
+  --destructive: #ff453a;
+  --destructive-foreground: #ffffff;
+  --border: #38383a;
+  --input: #38383a;
+  --ring: #0a84ff;
+}
+
+/* ─── Tailwind v4 @theme ─── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/* ─── Design tokens (legacy custom properties - still used by body and glass effects) ─── */
+:root {
+  --color-bg: #fbfbfd;
+  --color-surface: #ffffff;
+  --color-text: #1d1d1f;
+  --color-text-muted: #86868b;
+  --color-primary: #0071e3;
+  --color-primary-hover: #0077ed;
+  --color-border: #d2d2d7;
+  --color-danger: #ff3b30;
+  --color-success: #34c759;
+  --color-warning: #ff9500;
+}
+
+.dark {
+  --color-bg: #000000;
+  --color-surface: #1c1c1e;
+  --color-text: #f5f5f7;
+  --color-text-muted: #98989d;
+  --color-primary: #0a84ff;
+  --color-primary-hover: #409cff;
+  --color-border: #38383a;
+  --color-danger: #ff453a;
+  --color-success: #30d158;
+  --color-warning: #ff9f0a;
+}
+
+/* ─── Base ─── */
+body {
+  margin: 0;
+  font-family:
+    'SF Pro Text',
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Glass effects ─── */
+.glass-thin {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+.glass-thick {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+}
+.dark .glass-thin {
+  background: rgba(28, 28, 30, 0.6);
+}
+.dark .glass-thick {
+  background: rgba(28, 28, 30, 0.8);
+}
+
+/* Material glass layers — heavier blur, higher opacity for overlay surfaces */
+.material-thick {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(210, 210, 215, 0.3);
+}
+.dark .material-thick {
+  background: rgba(28, 28, 30, 0.92);
+  border-color: rgba(56, 56, 58, 0.3);
+}
+
+.material-regular {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(210, 210, 215, 0.2);
+}
+.dark .material-regular {
+  background: rgba(28, 28, 30, 0.82);
+  border-color: rgba(56, 56, 58, 0.2);
+}
+
+.material-thin {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(210, 210, 215, 0.15);
+}
+.dark .material-thin {
+  background: rgba(28, 28, 30, 0.65);
+  border-color: rgba(56, 56, 58, 0.15);
+}
+
+/* Dark glass for dropdowns/popovers */
+.glass-dark {
+  background: rgba(29, 29, 31, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dark .glass-dark {
+  background: rgba(44, 44, 46, 0.92);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Neumorphic surfaces ─── */
+.neumorph {
+  background: var(--color-bg);
+  box-shadow:
+    6px 6px 16px rgba(0, 0, 0, 0.06),
+    -6px -6px 16px rgba(255, 255, 255, 0.8);
+}
+.dark .neumorph {
+  background: var(--color-bg);
+  box-shadow:
+    6px 6px 16px rgba(0, 0, 0, 0.3),
+    -6px -6px 16px rgba(255, 255, 255, 0.03);
+}
+
+.neumorph-inner {
+  background: var(--color-bg);
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.04),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.7);
+}
+.dark .neumorph-inner {
+  background: var(--color-bg);
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.25),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.02);
+}
+
+/* ─── Premium form elements ─── */
+.premium-card {
+  background: var(--color-surface);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+.premium-card:hover {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.premium-input {
+  height: 3.5rem;
+  border-radius: 1.5rem;
+  padding: 0 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.25s ease;
+  outline: none;
+}
+.premium-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.08);
+  background: var(--color-surface);
+}
+.premium-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.3;
+}
+.dark .premium-input {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+.dark .premium-input:focus {
+  box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.12);
+}
+
+/* ─── Apple-style button ─── */
+.apple-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+.apple-button:active {
+  transform: scale(0.97);
+}
+.apple-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Custom scrollbar ─── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+.dark .custom-scrollbar {
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ─── No scrollbar (hide scrollbar, keep scroll) ─── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

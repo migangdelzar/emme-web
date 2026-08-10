@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+set -eu
+
+(cd apps/salon-app && bunx lint-staged)
+bun run i18n:check
