@@ -8,6 +8,11 @@ interface HttpClient {
   delete<T>(path: string): Promise<T>;
 }
 
+interface Artist {
+  id: string;
+  name: string;
+}
+
 export const SEEDS: {
   services: Service[];
   customers: Client[];
@@ -62,9 +67,23 @@ export async function provisionTestData(token: string, tenantSlug: string): Prom
     console.log('[Seed] Test data already provisioned, skipping');
     const services = await servicesApi.list().catch(() => []);
     const appointments = await appointmentsApi.list().catch(() => []);
+    const artist = await ensureArtist(http);
+    const today = new Date().toISOString().split('T')[0];
+    const seededAppointments = [...appointments];
+    for (let index = seededAppointments.length; index < 2 && index < services.length; index += 1) {
+      seededAppointments.push(await appointmentsApi.create({
+        clientId: existing[index].id,
+        serviceId: services[index].id,
+        artistId: artist.id,
+        date: today,
+        startTime: index === 0 ? '10:00' : '11:00',
+        endTime: index === 0 ? '10:45' : '11:45',
+        status: 'confirmed',
+      }));
+    }
     SEEDS.customers = existing.slice(0, 3);
     SEEDS.services = services.slice(0, 3);
-    SEEDS.appointments = appointments.slice(0, 2);
+    SEEDS.appointments = seededAppointments.slice(0, 2);
     return SEEDS;
   }
 
@@ -75,6 +94,7 @@ export async function provisionTestData(token: string, tenantSlug: string): Prom
   const s2 = await servicesApi.create({ name: 'E2E Manicure Rusa', category: 'Manicura y Cuidado Natural', duration: 90, price: 750 });
   const s3 = await servicesApi.create({ name: 'E2E Soft Gel Premium', category: 'Extensiones y Estructura', duration: 120, price: 1200 });
   SEEDS.services = [s1, s2, s3];
+  const artist = await ensureArtist(http);
 
   // 3 customers
   const c1 = await customersApi.create({ name: 'E2E Valeria Arriaza', phone: '555-0101', email: 'valeria@e2e.test' });
@@ -84,10 +104,16 @@ export async function provisionTestData(token: string, tenantSlug: string): Prom
 
   // 2 appointments for today
   const today = new Date().toISOString().split('T')[0];
-  const a1 = await appointmentsApi.create({ clientId: c1.id, serviceId: s1.id, date: today, startTime: '10:00', endTime: '10:45', status: 'confirmed' });
-  const a2 = await appointmentsApi.create({ clientId: c2.id, serviceId: s2.id, date: today, startTime: '11:00', endTime: '11:45', status: 'confirmed' });
+  const existingAppointments = await appointmentsApi.list().catch(() => []);
+  const a1 = existingAppointments[0] ?? await appointmentsApi.create({ clientId: c1.id, serviceId: s1.id, artistId: artist.id, date: today, startTime: '10:00', endTime: '10:45', status: 'confirmed' });
+  const a2 = existingAppointments[1] ?? await appointmentsApi.create({ clientId: c2.id, serviceId: s2.id, artistId: artist.id, date: today, startTime: '11:00', endTime: '11:45', status: 'confirmed' });
   SEEDS.appointments = [a1, a2];
 
   console.log(`[Seed] Done — ${SEEDS.services.length} services, ${SEEDS.customers.length} customers, ${SEEDS.appointments.length} appointments`);
   return SEEDS;
+}
+
+async function ensureArtist(http: HttpClient): Promise<Artist> {
+  const artists = await http.get<Artist[]>('/api/artists').catch(() => []);
+  return artists[0] ?? http.post<Artist>('/api/artists', { name: 'E2E Artist' });
 }

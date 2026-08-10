@@ -39,7 +39,7 @@ Copy `.env.example` to `.env` and configure:
 VITE_API_BASE_URL=http://localhost:3000
 API_PROXY_TARGET=http://localhost:8081
 VITE_OIDC_ISSUER=http://localhost:8081/realms/emme
-VITE_OIDC_CLIENT_ID=emme-salon-app
+VITE_OIDC_CLIENT_ID=salon-app
 VITE_WEB_BASE_DOMAIN=localhost
 ```
 

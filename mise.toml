@@ -24,6 +24,14 @@ description = "Run salon-app with Vite HMR on localhost:3000"
 env = { API_PROXY_TARGET = "http://localhost:8081" }
 run = "bun run --filter salon-app dev"
 
+[tasks."dev:local"]
+description = "Start the local backend provider, provision E2E data, and run salon HMR"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = """
+(cd ../emme-service && mise run e2e:bootstrap) && \
+bun run --filter salon-app dev
+"""
+
 [tasks."dev:client"]
 description = "Run client-app with Vite HMR on localhost:3001"
 run = "bun run --filter client-app dev"
@@ -47,6 +55,21 @@ run = "docker-compose -f deploy/compose/frontend.compose.yaml logs -f"
 [tasks."frontend:verify"]
 description = "Verify the local production-like frontend health endpoints"
 run = "curl --fail --silent --show-error http://localhost:8082/health && curl --fail --silent --show-error http://localhost:8080/health && curl --fail --silent --show-error http://localhost:8083/health"
+
+[tasks."stack:up"]
+description = "Start the local backend and all three production-like frontend apps"
+run = """
+(cd ../emme-service && mise run e2e:bootstrap) && \
+mise run frontend:up && \
+mise run frontend:verify
+"""
+
+[tasks."stack:down"]
+description = "Stop all local frontend containers and the backend E2E stack"
+run = """
+mise run frontend:down || true
+(cd ../emme-service && mise run platform:down)
+"""
 
 [tasks."test:e2e:real:deployed"]
 description = "Run real-provider Playwright against the deployed salon container using provisioned auth state"

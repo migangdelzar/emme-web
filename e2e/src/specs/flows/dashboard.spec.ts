@@ -16,7 +16,7 @@ test.describe('UC-003 — Dashboard', { tag: [Tag.CRITICAL, Tag.DASHBOARD] }, ()
     await expect(dashboard.newClientsCard()).toBeVisible();
     await expect(dashboard.goalCard()).toBeVisible();
     await expect(dashboard.goalLabel()).toBeVisible();
-    await expect(dashboard.emptyAgenda()).toBeVisible();
+    await expect(dashboard.emptyAgenda().or(dashboard.agendaAppointment())).toBeVisible();
     await expect(page.getByText(t('dashboard.studioLevel'), { exact: true })).toBeVisible();
   });
 });

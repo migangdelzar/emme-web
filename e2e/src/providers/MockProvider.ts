@@ -257,7 +257,7 @@ export class MockProvider implements ApiProvider, DomainDataProvider {
             JSON.stringify({ access_token: 'test-token', expires_in: 3600 })
           );
           sessionStorage.setItem(
-            'oidc.user:http://localhost:8180/realms/emme:emme-salon-app',
+            'oidc.user:http://localhost:8180/realms/emme:salon-app',
             JSON.stringify({
               id_token: 'fake-id-token',
               access_token: 'test-token',

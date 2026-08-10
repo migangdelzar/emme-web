@@ -31,6 +31,7 @@ export class DashboardPage {
     this.page
       .getByTestId(tid('dashboard.emptyAgenda')!)
       .or(this.page.getByRole('heading', { name: 'Agenda despejada' }));
+  readonly agendaAppointment = () => this.agendaSection().locator('h4').first();
   readonly agendaHeading = () =>
     this.page.getByRole('heading', { name: t('appointments.header'), exact: true });
   readonly viewAllBtn = () => this.page.getByRole('button', { name: 'Ver todo' });

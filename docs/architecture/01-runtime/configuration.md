@@ -37,7 +37,7 @@ import { catalogModule } from '../features/catalog/module';
 import { customersModule } from '../features/customers/module';
 
 export const appConfig = defineAppConfig({
-  id: 'emme-salon-app',
+  id: 'salon-app',
   api: {
     baseUrl: import.meta.env.VITE_API_BASE_URL,
     version: import.meta.env.VITE_API_VERSION,
