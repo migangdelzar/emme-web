@@ -28,7 +28,9 @@
   API boundary instead of spreading transport terminology into the domain.
 - Use `salon-app` for the tenant-owner/staff deployable application and
   `admin-app` / `client-app` for the other deployable roots.
-- Use `platform-admin` for platform-only permissions and workflows.
+- Use `admin-app` for the platform administration deployable. Use `admin` for
+  its core-realm role. Reserve `platform-admin` for historical documents or
+  migration identifiers; it is not a runtime role name.
 - Error names describe the failed invariant or category, not the component that
   happened to display them.
 - Route, navigation, permission, and module files use the exact names

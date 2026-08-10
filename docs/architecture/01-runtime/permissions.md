@@ -19,6 +19,21 @@ Permission denial exposes no restricted payload and does not imply that a
 hidden action is secure. Session/tenant changes recompute capabilities and
 invalidate stale protected work.
 
+## Realm-scoped role vocabulary
+
+Role names are interpreted together with the token issuer:
+
+| Issuer | Role | Meaning |
+| --- | --- | --- |
+| `emme-core` | `admin` | Platform administration and tenant metadata. |
+| tenant realm | `tenant_owner` | Full salon access for the current tenant. |
+| tenant realm | `tenant_staff` | Staff workflows allowed by the tenant policy. |
+| `emme-customers` | `customer` | Customer identity used by client booking. |
+
+The shared customer role does not grant salon administration. Tenant access is
+derived from the authenticated customer identity plus a tenant-scoped
+membership, and the backend remains the final authorization decision point.
+
 ## Permission checklist
 
 - [ ] Every protected route/action names its required capability.

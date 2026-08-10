@@ -1,9 +1,19 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { parseProvisionedSalonAuthFile } from './authState';
 
 export interface E2ECredentials {
   username: string;
   password: string;
+}
+
+function provisionedAuthFilePath(env: NodeJS.ProcessEnv, tenantSlug: string): string {
+  const explicitFile = env.E2E_PROVISIONER_AUTH_FILE?.trim();
+  if (explicitFile) return explicitFile;
+  const directory =
+    env.E2E_PROVISIONER_AUTH_DIR?.trim() ||
+    resolve(import.meta.dirname, '../.auth/provisioned-auth');
+  return resolve(directory, `${tenantSlug}.json`);
 }
 
 function extractValue(source: string, key: string): string | undefined {
@@ -13,23 +23,50 @@ function extractValue(source: string, key: string): string | undefined {
   return match?.[1] ?? match?.[2] ?? match?.[3];
 }
 
-export function parseProvisionerCredentials(source: string, tenantSlug: string): E2ECredentials {
-  const ownerUsername = extractValue(
-    source,
-    'APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_USERNAME'
-  );
-  const password = extractValue(source, 'APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_PASSWORD');
+export function parseProvisionerCredentials(
+  source: string,
+  tenantSlug: string,
+  role: 'admin' | 'owner' = 'owner'
+): E2ECredentials {
+  const prefix = role === 'owner' ? 'OWNER' : 'ADMIN';
+  const username =
+    extractValue(source, `APP_KEYCLOAK_PROVISIONING_INITIAL_${prefix}_USERNAME`) ??
+    (role === 'owner'
+      ? extractValue(source, 'APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_USERNAME')
+      : undefined);
+  const password =
+    extractValue(source, `APP_KEYCLOAK_PROVISIONING_INITIAL_${prefix}_PASSWORD`) ??
+    (role === 'owner'
+      ? extractValue(source, 'APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_PASSWORD')
+      : undefined);
 
-  if (!ownerUsername || !password) {
+  if (!username || !password) {
     throw new Error(
       'E2E provisioner credentials were not found; start emme-service provisioning or set E2E_KEYCLOAK_USERNAME and E2E_KEYCLOAK_PASSWORD.'
     );
   }
 
   return {
-    username: ownerUsername.includes('@') ? ownerUsername : `${ownerUsername}@${tenantSlug}.local`,
+    username: username.includes('@') ? username : `${username}@${tenantSlug}.local`,
     password,
   };
+}
+
+export function readProvisionedSalonCredentials(
+  env: NodeJS.ProcessEnv = process.env,
+  tenantSlug = env.E2E_TENANT_SLUG?.trim() || 'e2e-studio'
+): E2ECredentials | null {
+  const authFilePath = provisionedAuthFilePath(env, tenantSlug);
+  if (!existsSync(authFilePath)) return null;
+
+  const authFile = parseProvisionedSalonAuthFile(readFileSync(authFilePath, 'utf8'));
+  if (authFile.tenantSlug !== tenantSlug) {
+    throw new Error(
+      `Provisioned auth file is for ${authFile.tenantSlug}, not selected tenant ${tenantSlug}.`
+    );
+  }
+  const role = env.E2E_USER_ROLE?.trim() === 'admin' ? 'admin' : 'owner';
+  return authFile.users[role]?.credentials ?? null;
 }
 
 export function resolveRealE2ECredentials(
@@ -39,6 +76,9 @@ export function resolveRealE2ECredentials(
   const username = env.E2E_KEYCLOAK_USERNAME?.trim();
   const password = env.E2E_KEYCLOAK_PASSWORD?.trim();
   if (username && password) return { username, password };
+
+  const provisionedCredentials = readProvisionedSalonCredentials(env, tenantSlug);
+  if (provisionedCredentials) return provisionedCredentials;
 
   const composeFile =
     env.E2E_PROVISIONER_COMPOSE_FILE?.trim() ||
@@ -50,5 +90,9 @@ export function resolveRealE2ECredentials(
     );
   }
 
-  return parseProvisionerCredentials(readFileSync(composeFile, 'utf8'), tenantSlug);
+  return parseProvisionerCredentials(
+    readFileSync(composeFile, 'utf8'),
+    tenantSlug,
+    env.E2E_USER_ROLE?.trim() === 'admin' ? 'admin' : 'owner'
+  );
 }

@@ -171,7 +171,7 @@ TEST 2: Backend Health (real-only)
 | Shared auth | `storageState` reuse — all real tests skip login (0s per test) |
 | Providers | `ApiProvider` interface — MockProvider (in-memory) / RealProvider (fetch-based) |
 | No seed data | Real mode: no DEFAULT_SEED. Tests create/provision what they verify |
-| Backend fix | Removed `@PreAuthorize("hasRole('platform_admin')")` from appointments GET |
+| Backend fix | Removed `@PreAuthorize("hasRole('admin')")` from appointments GET |
 | Workers | Mock: 4 parallel. Real: 1 serial (webServer: reuseExistingServer) |
 
 ---
@@ -191,7 +191,7 @@ E2E_MODE=real E2E_TENANT_SLUG=e2e-studio \
 
 ## Key Fixes Applied
 
-1. **Backend**: Removed `@PreAuthorize("hasRole('platform_admin')")` from `AppointmentController.list()` — tenant owners couldn't access appointments
+1. **Backend**: Removed `@PreAuthorize("hasRole('admin')")` from `AppointmentController.list()` — tenant owners couldn't access appointments
 2. **Page objects**: `serviceName()` uses `.first()` to avoid strict mode with duplicate names
 3. **StorageState**: `realSetupFromStorageState()` navigates first, then reads token (fixes about:blank SecurityError)
 4. **Pagination**: API-seeded customers searched by unique name instead of expected on page 1

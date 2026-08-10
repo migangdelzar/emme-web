@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useAuth } from '@emme/core';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@emme/ui';
+import { startClientSocialLogin } from './clientOidc.js';
 
 export function ClientLoginPage() {
   const { login, error } = useAuth();
@@ -24,6 +25,9 @@ export function ClientLoginPage() {
           <CardTitle>Book your next Emme visit</CardTitle>
         </CardHeader>
         <CardContent>
+          <Button type="button" className="mb-4 w-full" onClick={() => void startClientSocialLogin()}>
+            Continue with social login
+          </Button>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <Input name="email" type="email" placeholder="Your email" required />
             <Input name="password" type="password" placeholder="Password" required />

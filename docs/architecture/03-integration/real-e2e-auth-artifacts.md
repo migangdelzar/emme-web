@@ -15,19 +15,23 @@ The provisioner writes one file per salon, for example
   "version": 1,
   "tenantSlug": "e2e-studio",
   "users": {
+    "admin": {
+      "credentials": {
+        "username": "admin",
+        "password": "not-committed"
+      },
+      "storageState": {
+        "cookies": [],
+        "origins": []
+      }
+    },
     "owner": {
       "storageState": {
         "cookies": [],
         "origins": []
       }
     },
-    "staff": {
-      "storageState": {
-        "cookies": [],
-        "origins": []
-      }
-    },
-    "client": {
+    "customer": {
       "storageState": {
         "cookies": [],
         "origins": []
@@ -38,10 +42,16 @@ The provisioner writes one file per salon, for example
 ```
 
 The same shape is written separately as `e2e-salon.json` for `e2e-salon`.
-Each salon receives its own role matrix. At minimum, provision the tenant
-owner and staff/reception role. Add a client/customer identity when the client
-booking flow requires authenticated customer behavior. Platform-admin users
-are global and belong outside the per-salon files.
+Each salon receives its own admin/owner role matrix by default. A staff state
+can be added when staff workflows are introduced, but it is not part of the
+default seed. The provisioner may also include a customer login artifact for
+that salon, but the customer
+identity is issued by the shared `emme-customers` realm rather than by the salon
+realm. Platform admin users are global and belong outside the per-salon files.
+
+Credential fields are optional and local-only. Browser storage state is the
+preferred Playwright input; when credentials are present they are consumed by
+setup code and never imported into application bundles or committed artifacts.
 
 Each embedded `storageState` must contain the browser origin used by
 `E2E_BASE_URL`. The salon JSON files must be disposable, local-only artifacts

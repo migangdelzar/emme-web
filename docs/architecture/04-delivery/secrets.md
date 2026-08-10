@@ -21,6 +21,9 @@ created manually.
 |---|---|---|---|---|
 | `E2E_KEYCLOAK_PASSWORD` | `regression` environment secret | `real-e2e-recordings.yml` | Real regression or recording execution | Disposable tenant-owner password |
 | `E2E_KEYCLOAK_ADMIN_PASSWORD` | `regression`, `staging`, or `prod` environment secret | `real-e2e-recordings.yml` | Compose, k3d, or k3s real execution | Disposable Keycloak admin password; protect `prod` |
+| `APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_PASSWORD` | deployment secret manager | backend provisioner | Provisioning the tenant `admin` bootstrap user | Never expose to browser builds |
+| `APP_KEYCLOAK_PROVISIONING_INITIAL_OWNER_PASSWORD` | deployment secret manager | backend provisioner | Provisioning the tenant `owner` bootstrap user | Never expose to browser builds |
+| customer social-provider client secrets | deployment secret manager | Keycloak `emme-customers` realm | One-time shared customer social login configuration | Configure through Keycloak administration; never commit |
 
 The repository uses the shared environment vocabulary `local`, `dev`,
 `regression`, `staging`, and `prod`. `local` is developer-only; GitHub Actions
@@ -45,6 +48,11 @@ the web build when needed:
 Never place API keys, client secrets, refresh tokens, signing keys, database
 credentials, or provider tokens in `VITE_*` variables. In particular,
 `VITE_GEMINI_API_KEY` is forbidden.
+
+The public customer OIDC settings are intentionally limited to the issuer URL
+and browser client ID. `client-app` uses the shared `emme-customers` issuer;
+Google/Apple/etc. credentials remain inside Keycloak and are configured once
+per environment.
 
 ## Safe setup commands
 

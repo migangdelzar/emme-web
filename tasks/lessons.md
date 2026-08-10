@@ -123,3 +123,24 @@
   `@eslint/js` from `configs/eslint`.
 - Prevention rule: shared workspace config factories must receive toolchain
   dependencies from the consuming package, whose manifest owns those dependencies.
+
+## 2026-08-10 — Distinguish platform admin from tenant owner
+
+- Failure mode: a tenant `admin` bootstrap username was easy to confuse with
+  the global `emme-core` administrator role, and explicit endpoint checks could
+  accidentally make tenant owners narrower than intended.
+- Detection signal: the approved identity model requires both tenant bootstrap
+  users to have full salon access while the global admin remains platform-only.
+- Prevention rule: use issuer plus role as the authorization boundary: core
+  `admin` is platform scope, tenant `tenant_owner` is full current-tenant scope,
+  and tenant `tenant_staff` is the restricted role. Test each scope directly.
+
+## 2026-08-10 — Keep excluded infrastructure boundaries represented in test contexts
+
+- Failure mode: module tests excluded tenancy infrastructure but still loaded
+  listeners requiring the named `bootstrapJdbcTemplate` boundary.
+- Detection signal: Spring context startup failed before the authorization tests
+  ran with `NoSuchBeanDefinitionException` for `bootstrapJdbcTemplate`.
+- Prevention rule: when a test composition root excludes production infrastructure,
+  provide an explicit protocol boundary double with the same bean name and verify
+  the module context loads before asserting endpoint behavior.

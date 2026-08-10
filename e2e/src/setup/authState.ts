@@ -21,7 +21,13 @@ export interface StorageState {
 export interface ProvisionedSalonAuthFile {
   version: 1;
   tenantSlug: string;
-  users: Record<string, { storageState: StorageState }>;
+  users: Record<
+    string,
+    {
+      credentials?: { username: string; password: string };
+      storageState: StorageState;
+    }
+  >;
 }
 
 function defaultAuthDirectory(): string {

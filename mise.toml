@@ -76,6 +76,11 @@ description = "Run real-provider Playwright against the deployed salon container
 env = { E2E_MODE = "real", E2E_EXTERNAL_WEB = "true", E2E_BASE_URL = "http://localhost:8080", E2E_API_URL = "http://localhost:8081" }
 run = "bun run --filter @emme/e2e test:real"
 
+[tasks."test:e2e:real:local"]
+description = "Run one-worker real-provider Playwright against salon HMR and the local backend"
+env = { E2E_MODE = "real", E2E_BASE_URL = "http://localhost:3000", E2E_API_URL = "http://localhost:8081", E2E_EXTERNAL_WEB = "false" }
+run = "bun run --filter @emme/e2e test:real -- --workers=1"
+
 [tasks.typecheck]
 description = "Type-check all web workspace packages"
 run = "bun run typecheck"

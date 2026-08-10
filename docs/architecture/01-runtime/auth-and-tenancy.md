@@ -26,6 +26,40 @@ sequenceDiagram
 The invariant is explicit context: tenant identity comes from trusted session
 and backend capabilities, never arbitrary component or URL input.
 
+## Realm ownership
+
+Authentication is split by security boundary, not by frontend package:
+
+```mermaid
+flowchart LR
+    Admin[admin-app] --> CoreRealm[Keycloak emme-core]
+    CoreRealm --> CoreAdmin[admin user]
+    Salon[salon-app] --> TenantRealm[one Keycloak realm per salon]
+    TenantRealm --> TenantUsers[admin + owner + staff]
+    Client[client-app] --> CustomerRealm[Keycloak emme-customers]
+    CustomerRealm --> Social[Google / Apple / other social providers]
+    CustomerRealm --> Customer[customer identity]
+    Customer --> Membership[tenant customer membership]
+```
+
+`emme-core` is the platform realm and has the global `admin` role. Each salon
+realm is provisioned at runtime and receives an `admin` bootstrap account and
+an `owner` bootstrap account; both have the `tenant_owner` capability for now.
+Staff accounts use the narrower `tenant_staff` capability. The same username
+in different realms is a different identity.
+
+`emme-customers` is one shared realm configured once for social login. It is
+not a shared salon data store: the backend creates or resolves a global
+customer identity and records each salon relationship as a tenant-scoped
+customer/membership row. A customer token is accepted only when its issuer is
+the customer realm and its audience is `client-app`. Social-provider client
+secrets are deployment-managed Keycloak configuration and never belong in the
+frontend repository.
+
+The `client-app` may use a tenant slug to select a salon before sign-in, but the
+backend validates that context and the customer membership on every protected
+operation. A slug is routing input, not authorization.
+
 ## Recovery behavior
 
 | Condition | Required behavior |

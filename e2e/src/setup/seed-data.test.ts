@@ -43,6 +43,7 @@ describe('provisionTestData', () => {
 
     expect(appointments).toHaveLength(2);
     expect(appointments.every((appointment) => appointment.artistId === 'artist-1')).toBe(true);
+    expect(appointments.every((appointment) => Date.parse(String(appointment.startsAt)) > Date.now())).toBe(true);
   });
 });
 

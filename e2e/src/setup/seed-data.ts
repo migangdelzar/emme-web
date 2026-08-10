@@ -13,6 +13,12 @@ interface Artist {
   name: string;
 }
 
+interface AppointmentTimeWindow {
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+
 export const SEEDS: {
   services: Service[];
   customers: Client[];
@@ -22,6 +28,21 @@ export const SEEDS: {
   customers: [],
   appointments: [],
 };
+
+function futureAppointmentTimeWindow(offsetMinutes: number): AppointmentTimeWindow {
+  const startsAt = new Date(Date.now() + offsetMinutes * 60_000);
+  const endsAt = new Date(startsAt.getTime() + 45 * 60_000);
+  const formatDate = (value: Date) =>
+    `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
+  const formatTime = (value: Date) =>
+    `${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}`;
+
+  return {
+    date: formatDate(startsAt),
+    startTime: formatTime(startsAt),
+    endTime: formatTime(endsAt),
+  };
+}
 
 function createHttp(token: string, tenantSlug: string): HttpClient {
   const baseUrl = process.env.E2E_API_URL || 'http://localhost:8081';
@@ -68,16 +89,14 @@ export async function provisionTestData(token: string, tenantSlug: string): Prom
     const services = await servicesApi.list().catch(() => []);
     const appointments = await appointmentsApi.list().catch(() => []);
     const artist = await ensureArtist(http);
-    const today = new Date().toISOString().split('T')[0];
     const seededAppointments = [...appointments];
     for (let index = seededAppointments.length; index < 2 && index < services.length; index += 1) {
+      const timeWindow = futureAppointmentTimeWindow(index === 0 ? 60 : 120);
       seededAppointments.push(await appointmentsApi.create({
         clientId: existing[index].id,
         serviceId: services[index].id,
         artistId: artist.id,
-        date: today,
-        startTime: index === 0 ? '10:00' : '11:00',
-        endTime: index === 0 ? '10:45' : '11:45',
+        ...timeWindow,
         status: 'confirmed',
       }));
     }
@@ -102,11 +121,12 @@ export async function provisionTestData(token: string, tenantSlug: string): Prom
   const c3 = await customersApi.create({ name: 'E2E Maria Jose', phone: '555-0103', email: 'maria@e2e.test' });
   SEEDS.customers = [c1, c2, c3];
 
-  // 2 appointments for today
-  const today = new Date().toISOString().split('T')[0];
+  // 2 appointments in the near future so real-backend validation remains valid all day.
   const existingAppointments = await appointmentsApi.list().catch(() => []);
-  const a1 = existingAppointments[0] ?? await appointmentsApi.create({ clientId: c1.id, serviceId: s1.id, artistId: artist.id, date: today, startTime: '10:00', endTime: '10:45', status: 'confirmed' });
-  const a2 = existingAppointments[1] ?? await appointmentsApi.create({ clientId: c2.id, serviceId: s2.id, artistId: artist.id, date: today, startTime: '11:00', endTime: '11:45', status: 'confirmed' });
+  const firstTimeWindow = futureAppointmentTimeWindow(60);
+  const secondTimeWindow = futureAppointmentTimeWindow(120);
+  const a1 = existingAppointments[0] ?? await appointmentsApi.create({ clientId: c1.id, serviceId: s1.id, artistId: artist.id, ...firstTimeWindow, status: 'confirmed' });
+  const a2 = existingAppointments[1] ?? await appointmentsApi.create({ clientId: c2.id, serviceId: s2.id, artistId: artist.id, ...secondTimeWindow, status: 'confirmed' });
   SEEDS.appointments = [a1, a2];
 
   console.log(`[Seed] Done — ${SEEDS.services.length} services, ${SEEDS.customers.length} customers, ${SEEDS.appointments.length} appointments`);
