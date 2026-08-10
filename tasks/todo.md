@@ -9,7 +9,7 @@
 - [x] Update frontend client authentication configuration and E2E/provider contracts.
 - [x] Update architecture documentation and naming diagrams.
 - [x] Run focused backend/frontend tests, full suites, builds, and real-provider verification.
-- [ ] Commit and push all intended changes while preserving unrelated worktree changes.
+- [x] Commit and push all intended changes while preserving unrelated worktree changes.
 
 ### Working notes
 
@@ -31,7 +31,7 @@
 - [x] Run the complete quality, build, coverage, and Playwright verification.
 - [x] Verify the latest salon app with the real backend/provider deployment.
 - [x] Build/validate the three independent frontend artifacts and compose setup.
-- [ ] Commit and push all remaining changes.
+- [x] Commit and push all remaining changes.
 
 ## Acceptance criteria
 
