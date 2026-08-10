@@ -56,6 +56,14 @@
 - Real E2E requires the provisioner-generated per-salon auth storage state and a
   running `emme-service` backend.
 
+### Client Google redirect verification — 2026-08-10
+
+- [x] Start client HMR on `http://localhost:3001` with the customer realm configuration.
+- [x] Fix the client API base URL so the unauthenticated page renders under HMR.
+- [x] Add a Playwright real-provider check for the client Google redirect.
+- [x] Verify the browser reaches Google's authorization endpoint through Keycloak.
+- [x] Verify client and E2E typechecks/tests.
+
 ## Results
 
 ### Google-only customer login — 2026-08-10
@@ -93,3 +101,8 @@
 - Client ownership test passed after localizing its two placeholder components.
 - Architecture validator passes after adding the retired-feature and business
   package boundaries.
+- Client Google redirect verification passed with `bun run --filter @emme/e2e
+  test:client-google`; Playwright observed the request to
+  `https://accounts.google.com/o/oauth2/v2/auth` and verified the Keycloak
+  customer broker callback. The focused check allows two minutes because the
+  local Keycloak-to-Google broker can take longer than the default E2E timeout.

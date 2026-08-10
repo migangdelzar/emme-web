@@ -144,3 +144,14 @@
 - Prevention rule: when a test composition root excludes production infrastructure,
   provide an explicit protocol boundary double with the same bean name and verify
   the module context loads before asserting endpoint behavior.
+
+## 2026-08-10 — Give external identity-provider checks their own timeout
+
+- Failure mode: the real client Google redirect was incorrectly reported as
+  failing because the Keycloak-to-Google broker exceeded Playwright's default
+  30-second test timeout.
+- Detection signal: the browser had already requested Keycloak's authorization
+  endpoint, but the test timed out while waiting for the external Google request.
+- Prevention rule: real-provider tests that cross an external identity boundary
+  should intercept the provider request, avoid credentials, and use an explicit
+  timeout that reflects the local provider startup and broker latency.
