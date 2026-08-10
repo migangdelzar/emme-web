@@ -23,7 +23,7 @@ created manually.
 | `E2E_KEYCLOAK_ADMIN_PASSWORD` | `regression`, `staging`, or `prod` environment secret | `real-e2e-recordings.yml` | Compose, k3d, or k3s real execution | Disposable Keycloak admin password; protect `prod` |
 | `APP_KEYCLOAK_PROVISIONING_INITIAL_ADMIN_PASSWORD` | deployment secret manager | backend provisioner | Provisioning the tenant `admin` bootstrap user | Never expose to browser builds |
 | `APP_KEYCLOAK_PROVISIONING_INITIAL_OWNER_PASSWORD` | deployment secret manager | backend provisioner | Provisioning the tenant `owner` bootstrap user | Never expose to browser builds |
-| customer social-provider client secrets | deployment secret manager | Keycloak `emme-customers` realm | One-time shared customer social login configuration | Configure through Keycloak administration; never commit |
+| customer social-provider client ID/secret | deployment secret manager | Keycloak `emme-customers` realm | One-time shared Google customer login configuration | Use `GOOGLE_SOCIAL_CLIENT_ID` and `GOOGLE_SOCIAL_CLIENT_SECRET`; never expose the secret through `VITE_*` |
 
 The repository uses the shared environment vocabulary `local`, `dev`,
 `regression`, `staging`, and `prod`. `local` is developer-only; GitHub Actions

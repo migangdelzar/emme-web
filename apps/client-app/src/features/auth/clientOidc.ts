@@ -23,6 +23,7 @@ export function createClientOidcSettings(
     post_logout_redirect_uri: `${normalizedOrigin}/`,
     response_type: 'code',
     scope: 'openid profile email',
+    extraQueryParams: { kc_idp_hint: 'google' },
   };
 }
 

@@ -56,6 +56,22 @@ the customer realm and its audience is `client-app`. Social-provider client
 secrets are deployment-managed Keycloak configuration and never belong in the
 frontend repository.
 
+For the current phase, `client-app` requests the `google` identity-provider
+hint and offers Google as its only customer sign-in option. The browser still
+returns to the OIDC callback in `client-app`; Google first redirects to the
+Keycloak broker endpoint:
+
+```text
+http://localhost:18080/realms/emme-customers/broker/google/endpoint
+```
+
+Production uses the same path below the public Keycloak hostname. The Google
+OAuth web client must allow each environment's exact broker endpoint. Configure
+the provider with `mise run keycloak:configure-google` from `emme-service`,
+supplying `GOOGLE_SOCIAL_CLIENT_ID` and `GOOGLE_SOCIAL_CLIENT_SECRET` from a
+secret manager. These are separate from the Google Calendar integration
+credentials.
+
 The `client-app` may use a tenant slug to select a salon before sign-in, but the
 backend validates that context and the customer membership on every protected
 operation. A slug is routing input, not authorization.

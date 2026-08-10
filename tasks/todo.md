@@ -58,6 +58,20 @@
 
 ## Results
 
+### Google-only customer login — 2026-08-10
+
+- [x] Force the customer OIDC request to Keycloak's `google` provider.
+- [x] Remove the client email/password login form and show `Continue with Google`.
+- [x] Add the secure `emme-service` Mise command that configures the Google
+      provider without committing client secrets.
+- [x] Document local and production Google broker callback URLs.
+- [ ] Supply Google Cloud web OAuth client ID/secret and configure the local
+      `emme-customers` realm.
+
+- Focused OIDC tests pass, the client app typechecks and builds, and workspace
+  architecture/docs validation passes. Real Google browser login remains
+  dependent on Google OAuth credentials being supplied to Keycloak.
+
 - Fresh local Compose state was reprovisioned with real Keycloak, Postgres, Redis,
   and the backend image containing the tenant realm session configuration.
 - The provisioner created separate `admin` and `owner` credentials for both
