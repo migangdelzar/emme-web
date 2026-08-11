@@ -10,4 +10,31 @@ describe('application style source boundary', () => {
     expect(globalStyles).toContain("@source '../../../../packages/auth/src';");
     expect(globalStyles).toContain("@source '../../../../packages/ui/src';");
   });
+
+  it('defines the complete Rosé semantic token set', () => {
+    expect(globalStyles).toContain('.rose {');
+    for (const token of [
+      '--background:',
+      '--foreground:',
+      '--card:',
+      '--primary:',
+      '--primary-foreground:',
+      '--secondary:',
+      '--muted:',
+      '--accent:',
+      '--border:',
+      '--input:',
+      '--ring:',
+      '--color-bg:',
+      '--color-surface:',
+      '--color-text:',
+      '--color-primary:',
+      '--color-border:',
+    ]) {
+      expect(globalStyles).toContain(token);
+    }
+    expect(globalStyles).toContain('.rose .material-thick');
+    expect(globalStyles).toContain('.rose .material-regular');
+    expect(globalStyles).toContain('.rose .material-thin');
+  });
 });

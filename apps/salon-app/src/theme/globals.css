@@ -99,6 +99,38 @@
   --color-warning: #ff9f0a;
 }
 
+.rose {
+  --background: #fff8fb;
+  --foreground: #3b1828;
+  --card: #ffffff;
+  --card-foreground: #3b1828;
+  --popover: #ffffff;
+  --popover-foreground: #3b1828;
+  --primary: #c84f7d;
+  --primary-foreground: #ffffff;
+  --secondary: #fce8f0;
+  --secondary-foreground: #6f2947;
+  --muted: #fdf0f5;
+  --muted-foreground: #8b6172;
+  --accent: #f8d7e4;
+  --accent-foreground: #6f2947;
+  --destructive: #c23b4a;
+  --destructive-foreground: #ffffff;
+  --border: #edc4d3;
+  --input: #dfadbf;
+  --ring: #c84f7d;
+  --color-bg: #fff8fb;
+  --color-surface: #ffffff;
+  --color-text: #3b1828;
+  --color-text-muted: #8b6172;
+  --color-primary: #c84f7d;
+  --color-primary-hover: #b9416d;
+  --color-border: #edc4d3;
+  --color-danger: #c23b4a;
+  --color-success: #2f8f68;
+  --color-warning: #a86d2f;
+}
+
 /* ─── Base ─── */
 body {
   margin: 0;
@@ -163,6 +195,25 @@ body {
   border-color: rgba(56, 56, 58, 0.15);
 }
 
+.rose .glass-thin {
+  background: rgba(255, 248, 251, 0.6);
+}
+.rose .glass-thick {
+  background: rgba(255, 255, 255, 0.82);
+}
+.rose .material-thick {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(237, 196, 211, 0.45);
+}
+.rose .material-regular {
+  background: rgba(255, 248, 251, 0.84);
+  border-color: rgba(237, 196, 211, 0.38);
+}
+.rose .material-thin {
+  background: rgba(255, 248, 251, 0.7);
+  border-color: rgba(237, 196, 211, 0.34);
+}
+
 /* Dark glass for dropdowns/popovers */
 .glass-dark {
   background: rgba(29, 29, 31, 0.88);
@@ -173,6 +224,10 @@ body {
 .dark .glass-dark {
   background: rgba(44, 44, 46, 0.92);
   border-color: rgba(255, 255, 255, 0.06);
+}
+.rose .glass-dark {
+  background: rgba(111, 41, 71, 0.92);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 /* ─── Neumorphic surfaces ─── */
@@ -200,6 +255,18 @@ body {
   box-shadow:
     inset 3px 3px 8px rgba(0, 0, 0, 0.25),
     inset -3px -3px 8px rgba(255, 255, 255, 0.02);
+}
+.rose .neumorph {
+  background: var(--color-bg);
+  box-shadow:
+    6px 6px 16px rgba(157, 69, 102, 0.12),
+    -6px -6px 16px rgba(255, 255, 255, 0.9);
+}
+.rose .neumorph-inner {
+  background: var(--color-bg);
+  box-shadow:
+    inset 3px 3px 8px rgba(157, 69, 102, 0.08),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.8);
 }
 
 /* ─── Premium form elements ─── */
@@ -237,6 +304,9 @@ body {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.08);
   background: var(--color-surface);
+}
+.rose .premium-input:focus {
+  box-shadow: 0 0 0 4px rgba(200, 79, 125, 0.14);
 }
 .premium-input::placeholder {
   color: var(--color-text-muted);

@@ -5,6 +5,7 @@ import { useBusinessProfileContext, type BusinessProfile } from '../context/Busi
 import { useClientData } from '../../clients/hooks/useClientData';
 import { useAppointmentData } from '../../appointments/hooks/useAppointmentData';
 import { useSettingsData } from '../hooks/useSettingsData';
+import { themeOptions } from '../theme-options';
 import { useAuth } from '@emme/core';
 import { Button } from '@emme/ui';
 import { Input } from '@emme/ui';
@@ -44,9 +45,6 @@ import {
   ShieldCheck,
   Layout,
   Languages,
-  Moon,
-  Sun,
-  Monitor,
   Zap,
   Settings2,
   Palmtree,
@@ -55,7 +53,6 @@ import {
   StickyNote,
   CircleX,
   TrendingUp,
-  Sparkles,
   Sparkle,
   CalendarOff,
   CalendarClock,
@@ -2622,27 +2619,24 @@ export function Settings() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {[
-                        { id: 'light', name: 'Claro', icon: Sun },
-                        { id: 'dark', name: 'Oscuro', icon: Moon },
-                        { id: 'system', name: 'Sistema', icon: Monitor },
-                      ].map((t) => (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      {themeOptions.map((option) => (
                         <button
                           type="button"
-                          key={t.id}
+                          key={option.id}
+                          aria-pressed={theme === option.id}
                           className={cn(
                             'relative overflow-hidden cursor-pointer group material-thin rounded-[32px] p-8 border transition-all duration-300 w-full text-left',
-                            theme === t.id
+                            theme === option.id
                               ? 'border-primary shadow-lg shadow-primary/10'
                               : 'border-border dark:border-white/[0.04] hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5'
                           )}
-                          onClick={() => setTheme(t.id)}
+                          onClick={() => setTheme(option.id)}
                         >
                           <div
                             className={cn(
                               'absolute inset-0 opacity-0 transition-opacity duration-300',
-                              theme === t.id ? 'opacity-10 dark:opacity-20' : ''
+                              theme === option.id ? 'opacity-10 dark:opacity-20' : ''
                             )}
                           />
 
@@ -2650,34 +2644,32 @@ export function Settings() {
                             <div
                               className={cn(
                                 'size-16 rounded-[20px] flex items-center justify-center transition-transform duration-300 group-hover:scale-110',
-                                theme === t.id
+                                theme === option.id
                                   ? 'bg-primary text-primary-foreground'
                                   : 'bg-black/5 dark:bg-card/5 text-foreground/50'
                               )}
                             >
-                              <t.icon className="size-8 stroke-[1.5]" />
+                              <option.icon className="size-8 stroke-[1.5]" />
                             </div>
 
                             <div className="text-center space-y-1">
                               <h3 className="font-display text-xl font-semibold tracking-tight">
-                                {t.name}
+                                {t(option.labelKey)}
                               </h3>
                               <p className="text-sm text-foreground/50 font-medium">
-                                {t.id === 'system'
-                                  ? 'Se adapta al dispositivo'
-                                  : `Forzar modo ${t.name.toLowerCase()}`}
+                                {t(option.descriptionKey)}
                               </p>
                             </div>
 
                             <div
                               className={cn(
                                 'size-6 rounded-full border-2 flex items-center justify-center mt-2 transition-colors',
-                                theme === t.id
+                                theme === option.id
                                   ? 'border-primary bg-primary'
                                   : 'border-border dark:border-white/10'
                               )}
                             >
-                              {theme === t.id && (
+                              {theme === option.id && (
                                 <Check className="size-3.5 text-primary-foreground stroke-[3]" />
                               )}
                             </div>
