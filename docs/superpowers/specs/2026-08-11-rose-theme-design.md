@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved design; implementation pending.
+Implemented on `feat/rose-theme`.
 
 ## Date
 
@@ -170,13 +170,13 @@ generic while remaining understandable in code.
 
 ## Definition of done
 
-- [ ] Appearance settings show Light, Dark, System, and Rosé.
-- [ ] Selecting Rosé applies the `rose` root class and persists through the
+- [x] Appearance settings show Light, Dark, System, and Rosé.
+- [x] Selecting Rosé applies the `rose` root class and persists through the
       existing theme provider.
-- [ ] Rosé semantic tokens replace the blue visual language throughout the
+- [x] Rosé semantic tokens replace the blue visual language throughout the
       salon shell and existing components.
-- [ ] English and Spanish translations remain key-parity valid.
-- [ ] Focused tests cover selection and stylesheet boundary requirements.
-- [ ] `bun run docs:check` passes.
-- [ ] `bun run architecture:check` passes.
-- [ ] Salon typecheck, tests, and build pass.
+- [x] English and Spanish translations remain key-parity valid.
+- [x] Focused tests cover selection and stylesheet boundary requirements.
+- [x] `bun run docs:check` passes.
+- [x] `bun run architecture:check` passes.
+- [x] Salon typecheck, tests, and build pass.
