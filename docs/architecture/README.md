@@ -16,6 +16,12 @@ gate primitive. Each app owns its own login page and authentication
 presentation. The backend remains authoritative for authorization, tenant
 isolation, validation, persistence, and business invariants.
 
+For an AI Studio-ready consolidated explanation of the current structure, use
+the [Project Architecture Specification](PROJECT-ARCHITECTURE-SPEC.md). It
+captures the current branch topology, the FSD-inspired/Hexagonal/DDD/Component-
+Driven Development scopes, package boundaries, and the client/admin replication
+contract in one document.
+
 ## Handbook status key
 
 | Status | Meaning |
