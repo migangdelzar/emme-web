@@ -7,16 +7,16 @@
 
 | Artifact | Purpose |
 | --- | --- |
-| [Complete monorepo design](../../superpowers/specs/2026-08-08-complete-monorepo-architecture-and-plan-portfolio-design.md) | Approved target and ownership source of truth |
+| [Project architecture specification](../PROJECT-ARCHITECTURE-SPEC.md) | Current architecture index and ownership map |
 | Architecture handbook page | Durable repeated structure, boundary, and quality rule |
 | ADR | Consequential decision and its lifecycle |
 | [Master plan portfolio](../../superpowers/plans/2026-08-08-00-complete-monorepo-index.md) | Implementation sequence and status |
 | Service contract | Executable API/event compatibility source |
 | Test/evidence record | Proof that behavior and delivery gates passed |
 
-The handbook preserves the complete canonical trees; it must not replace them
-with a conceptual summary. Earlier migration plans and superseded pages remain
-historical evidence and are not silently rewritten into competing guidance.
+The handbook preserves the current canonical trees. Earlier migration plans and
+superseded decisions are archived outside the active handbook and must not be
+used as competing implementation guidance.
 
 ## ADR lifecycle and triggers
 

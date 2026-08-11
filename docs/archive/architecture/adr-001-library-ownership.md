@@ -10,9 +10,10 @@
 > **Historical / superseded.** This ADR is retained as decision history. Its
 > global `@emme/domain`, `@emme/application`, and `@emme/validation` ownership
 > must not guide new implementation. Use
-> [package ownership](package-ownership.md),
-> [dependency rules](dependency-rules.md), and
-> [feature module structure](feature-module-structure.md) instead.
+> the current [package ownership](../../architecture/00-project/package-ownership.md),
+> [dependency rules](../../architecture/00-project/dependency-rules.md), and
+> [feature module structure](../../architecture/00-project/feature-module-structure.md)
+> instead.
 
 ## Historical context
 

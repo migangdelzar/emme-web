@@ -1,12 +1,8 @@
 # EMME Web Architecture Handbook
 
-This handbook is the normative target architecture for the EMME Bun workspace.
-It preserves the complete structure approved in the
-[complete monorepo design](../superpowers/specs/2026-08-08-complete-monorepo-architecture-and-plan-portfolio-design.md)
-and is established by
-[Plan 01](../superpowers/plans/2026-08-08-01-workspace-and-architecture-handbook.md).
-The [master plan index](../superpowers/plans/2026-08-08-00-complete-monorepo-index.md)
-maps this structure to implementation plans `01` through `21`.
+This handbook is the normative architecture for the EMME Bun workspace. The
+[project architecture specification](PROJECT-ARCHITECTURE-SPEC.md) is its
+index; the pages below own the detailed rules for each boundary.
 
 The handbook governs the current salon-first ownership model. The three apps
 remain independently deployable, but `salon-app` is the only app that owns
@@ -34,12 +30,11 @@ importing the repository into another coding agent.
 | Canonical | Normative target structure or rule. |
 | Updated | A retained reference reconciled with the canonical vertical-feature model. |
 | Retained | Compatible operational detail that remains normative in its stated scope. |
-| Historical / superseded | Preserved decision context only; it must not guide new implementation. |
 
 ## Handbook map
 
-Every retained architecture page is indexed here. A page not marked historical
-is normative within its stated scope.
+Every page listed here is active guidance. Archived decisions are outside this
+handbook and must not guide new implementation.
 
 ### Project
 
@@ -51,6 +46,7 @@ is normative within its stated scope.
 | [Naming conventions](00-project/naming-conventions.md) | Canonical | Directory, file, symbol, schema, test, and barrel names. |
 | [Architecture patterns](00-project/architecture-patterns.md) | Canonical | FSD-inspired, Hexagonal/Clean, DDD, and CDD scope mapping. |
 | [AI Studio handoff](00-project/ai-studio-handoff.md) | Canonical | Import links, prompts, exclusions, and agent invariants. |
+| [Boundary verification](00-project/boundary-verification.md) | Canonical | Boundary-to-test and architecture-validator coverage. |
 | [Feature module structure](00-project/feature-module-structure.md) | Updated | Salon-local feature structure and business package boundary. |
 | [App shell structure](00-project/app-shell-structure.md) | Canonical | Salon, client, and admin workflow trees. |
 | [Testing architecture](00-project/testing-architecture.md) | Canonical | Test locations, lanes, doubles, and completion checklist. |
@@ -58,8 +54,6 @@ is normative within its stated scope.
 | [Documentation and decisions](00-project/documentation-and-decisions.md) | Updated | Source hierarchy, ADR lifecycle, and review policy. |
 | [Frontend architecture model](00-project/architecture-model.md) | Updated | Two-repository and vertical-feature overview. |
 | [Bun workspace and toolchain](00-project/frontend-build-bun.md) | Updated | Workspace ownership, hooks, and commands. |
-| [ADR-001: cohesive library ownership](00-project/adr-001-library-ownership.md) | Historical / superseded | The previous global domain/application package decision. |
-| [Shared library architecture](00-project/library-architecture.md) | Historical / superseded | Snapshot of the superseded package topology. |
 
 ### Runtime
 

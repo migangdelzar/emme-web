@@ -2,11 +2,8 @@
 
 > **Status: Historical / superseded.** This page preserves the 2026-08-07
 > global technical-layer topology for migration archaeology only. It conflicts
-> with the canonical vertical-feature model and is not normative. Use
-> [repository structure](repository-structure.md),
-> [package ownership](package-ownership.md),
-> [dependency rules](dependency-rules.md), and
-> [feature module structure](feature-module-structure.md).
+> with the canonical vertical-feature model and is not normative. Use the
+> current pages in [`docs/architecture`](../../architecture/README.md).
 
 ## Superseded package topology
 

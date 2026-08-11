@@ -25,6 +25,95 @@ apps/salon-app/src/features/<feature>/
 └── index.ts                     # local public barrel
 ```
 
+The template is a canonical ownership guide, not a requirement that every
+feature contain every directory. The salon app was migrated incrementally from
+an older layout, so some current route-level screens live in `components/`
+rather than a dedicated `pages/` directory, and some features do not yet need
+local `state/`, `infrastructure/`, or `application/` folders.
+
+That is intentional:
+
+| If a feature needs... | Put it in... |
+| --- | --- |
+| A route-level screen | `pages/` when the feature has multiple screens; an existing route-level component may remain in `components/` during incremental migration. |
+| Server query/mutation composition | `api/` and `hooks/` |
+| Form, URL, or filter rules | `validation/` |
+| Feature-local workflow state | `state/` or a focused hook |
+| App-only business rule | `domain/` |
+| A use case or protocol | `application/` |
+| A concrete adapter for that protocol | `infrastructure/` |
+| Reusable feature presentation | `presentation/` or `shared/` |
+
+The goal is clear ownership, not empty symmetry. A new feature starts with the
+smallest applicable subset and adds a folder when a real responsibility
+appears. A migration may introduce `pages/` or split a large component only
+when it improves ownership without changing the workflow contract.
+
+## What it means for a feature to own its workflow
+
+The app shell owns global composition and route registration. The feature owns
+everything that makes one user outcome work from route entry to completion.
+
+For example, appointment management looks like this:
+
+```text
+apps/salon-app/src/
+├── app/router.tsx                         # registers /agenda and /appointments
+└── features/appointments/
+    ├── pages/                             # route-level feature screens when needed
+    │   └── AppointmentsPage.tsx
+    ├── components/                        # calendar, table, form, status UI
+    ├── hooks/
+    │   └── useSalonAppointments.ts         # workflow/query orchestration
+    ├── api/
+    │   ├── appointments.queries.ts         # TanStack Query composition
+    │   └── appointment-mapper.ts            # API DTO → feature input
+    ├── mappers/
+    │   └── appointmentViewMapper.ts         # feature data → view model
+    ├── validation/
+    │   └── appointment-input.ts             # form/filter validation
+    ├── state/                              # only when workflow state needs it
+    ├── presentation/                      # feature-specific view pieces
+    ├── shared/                             # appointment-local reusable UI
+    └── index.ts                            # public feature boundary
+```
+
+The runtime flow is:
+
+```text
+app/router.tsx
+  → appointments/AppointmentsPage
+  → useSalonAppointments
+  → appointments/api/appointments.queries
+  → @emme/api contract
+  → injected @emme/infrastructure HTTP adapter
+  → backend response
+  → feature mapper/view model
+  → appointments components
+```
+
+The feature owns:
+
+- the page or screen composition for its outcome;
+- loading, empty, error, forbidden, unavailable, and success states;
+- form and filter schemas specific to the workflow;
+- query keys, mutation orchestration, cache invalidation, and stale-response
+  handling;
+- view-model mapping and business-specific UI;
+- feature-local permissions/navigation metadata when applicable;
+- feature tests for behavior and recovery.
+
+The feature does not own:
+
+- global session, tenant, or permission providers;
+- the concrete HTTP client or browser storage;
+- generic buttons, tables, dialogs, or design tokens;
+- reusable domain rules that have a second application consumer;
+- backend authorization or tenant isolation.
+
+Those responsibilities remain in `@emme/core`, `@emme/infrastructure`,
+`@emme/ui`, `@emme/business`, and the backend respectively.
+
 Pages, routes, navigation, permissions, workflow state, and role-specific
 forms remain in this tree or the nearest salon app shell directory. A salon
 feature may depend on `@emme/business/<capability>`, `@emme/api`,

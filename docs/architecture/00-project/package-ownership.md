@@ -40,10 +40,9 @@ package boundaries. Their content moves as follows:
 | one-app form schemas | owning salon app workflow |
 | generic schema helper with no business ownership | explicitly documented shared boundary only |
 
-The historical
-[ADR-001](adr-001-library-ownership.md) and
-[shared library architecture](library-architecture.md) describe the superseded
-global-package model and are not normative for new work.
+The superseded global-package decision is retained outside the active handbook
+in [`docs/archive/architecture`](../../archive/architecture/). It is not
+normative for new work.
 
 ## Ownership checklist
 
