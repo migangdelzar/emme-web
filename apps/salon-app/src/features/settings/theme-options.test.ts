@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { translations } from '@emme/i18n';
+import { t } from '@emme/i18n';
 import { themeOptions } from './theme-options';
 
 describe('salon theme options', () => {
@@ -25,12 +25,8 @@ describe('salon theme options', () => {
   it('has translated copy for every theme option in both supported locales', () => {
     for (const locale of ['en-US', 'es-MX'] as const) {
       for (const option of themeOptions) {
-        expect(translations[locale].settings[option.labelKey.replace('settings.', '')]).toBeTypeOf(
-          'string'
-        );
-        expect(
-          translations[locale].settings[option.descriptionKey.replace('settings.', '')]
-        ).toBeTypeOf('string');
+        expect(t(option.labelKey, locale)).not.toBe(option.labelKey);
+        expect(t(option.descriptionKey, locale)).not.toBe(option.descriptionKey);
       }
     }
   });
