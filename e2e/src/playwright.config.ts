@@ -1,14 +1,57 @@
 import { defineConfig } from '@playwright/test';
+import { resolveRealAuthStatePath } from './setup/authState';
+
+const recordDemo = process.env.RECORD_DEMO === 'true';
+const isReal = process.env.E2E_MODE === 'real';
+const useExternalWeb = process.env.E2E_EXTERNAL_WEB === 'true';
+const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
+
+const webServerConfig = useExternalWeb
+  ? undefined
+  : {
+      command: 'cd ../../apps/salon-app && bun dev',
+      port: 3000,
+      reuseExistingServer: !process.env.CI,
+      env: {
+        VITE_APP_ENV: process.env.VITE_APP_ENV ?? 'local',
+        VITE_API_BASE_URL: process.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
+        API_PROXY_TARGET: process.env.API_PROXY_TARGET ?? 'http://localhost:8081',
+        VITE_WEB_BASE_DOMAIN: process.env.VITE_WEB_BASE_DOMAIN ?? 'localhost',
+      },
+    };
+
+const realProjects = isReal
+  ? [
+      {
+        name: 'setup',
+        testDir: './specs/setup',
+        testMatch: /real-login\.setup\.ts/,
+        metadata: { mode: 'real' },
+      },
+      {
+        name: 'real',
+        use: {
+          browserName: 'chromium' as const,
+          storageState: resolveRealAuthStatePath(),
+        },
+        dependencies: ['setup'],
+        testIgnore: '**/setup/**',
+        timeout: 120000,
+        expect: { timeout: 40000 },
+        metadata: { mode: 'real', description: 'Real backend + Keycloak (shared login)' },
+      },
+    ]
+  : [];
 
 export default defineConfig({
   testDir: './specs',
   timeout: 30000,
   expect: { timeout: 8000 },
-  retries: 0,
-  fullyParallel: true,
+  retries: process.env.CI ? 1 : (isReal ? 2 : 0),
+  fullyParallel: !isReal,
   maxFailures: 0,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.CI ? 4 : (isReal ? 4 : undefined),
 
   reporter: [
     ['list'],
@@ -16,12 +59,17 @@ export default defineConfig({
     ['json', { outputFile: 'test-results.json' }],
   ],
 
+  outputDir: recordDemo
+    ? isReal ? 'test-results/real-recordings' : 'test-results/mock-recordings'
+    : 'test-results',
+
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL,
     headless: true,
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    locale: 'es-MX',
+    video: recordDemo ? 'on' : isReal ? 'retain-on-failure' : 'off',
+    trace: recordDemo ? 'on' : 'on-first-retry',
+    screenshot: recordDemo ? 'on' : 'only-on-failure',
   },
 
   projects: [
@@ -30,17 +78,8 @@ export default defineConfig({
       use: { browserName: 'chromium' },
       metadata: { mode: 'mock', description: 'Mock API — fast, no backend' },
     },
-    {
-      name: 'real',
-      use: { browserName: 'chromium' },
-      timeout: 30000,               // real backend + OAuth2 needs more time
-      metadata: { mode: 'real', description: 'Real backend + Keycloak' },
-    },
+    ...realProjects,
   ],
 
-  webServer: {
-    command: 'cd ../../apps/emme-salon-app && bun dev',
-    port: 3000,
-    reuseExistingServer: true,
-  },
+  ...(webServerConfig ? { webServer: webServerConfig } : {}),
 });

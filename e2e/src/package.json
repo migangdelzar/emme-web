@@ -8,18 +8,29 @@
     "test:critical": "bunx playwright test --project=mock --grep '@smoke|@critical'",
     "test:headed": "bunx playwright test --project=mock --headed",
     "test:retry": "bunx playwright test --project=mock --last-failed",
-    "test:real": "bunx playwright test --project=real",
-    "test:real:headed": "bunx playwright test --project=real --headed",
+    "test:real": "E2E_MODE=real bunx playwright test --project=real",
+    "test:real:built": "bun run --filter salon-app build && (cd ../../apps/salon-app && bun preview --port 3000 &) && sleep 3 && E2E_MODE=real E2E_EXTERNAL_WEB=true bunx playwright test --project=real; kill $(lsof -t -i:3000) 2>/dev/null",
+    "test:real:headed": "E2E_MODE=real E2E_HEADED=true bunx playwright test --project=real --headed",
+    "test:client-google": "E2E_CLIENT_REAL=true E2E_BASE_URL=http://localhost:3001 E2E_EXTERNAL_WEB=true bunx playwright test specs/flows/client-google-redirect.spec.ts --project=mock --workers=1",
+    "test:unit": "bun test setup/*.test.ts",
+    "test:demo": "RECORD_DEMO=true bunx playwright test --project=mock --grep @demo --retries=0",
+    "test:demo:mock": "RECORD_DEMO=true bunx playwright test specs/demo/demo-recordings.spec.ts --project=mock --workers=1 --retries=0",
+    "test:demo:real": "E2E_MODE=real RECORD_DEMO=true bunx playwright test specs/demo/demo-recordings.spec.ts --project=real --workers=1 --retries=0",
+    "test:record:mock": "RECORD_DEMO=true bunx playwright test --project=mock --workers=1 --retries=0",
+    "test:record:real": "E2E_MODE=real RECORD_DEMO=true bunx playwright test --project=real --workers=1 --retries=0",
     "test:services": "bunx playwright test --project=mock --grep @services",
     "test:clients": "bunx playwright test --project=mock --grep @clients",
     "test:appointments": "bunx playwright test --project=mock --grep @appointments",
     "test:errors": "bunx playwright test --project=mock --grep @error-state",
     "test:debug": "bunx playwright test --project=mock --debug",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "bun run typecheck",
     "report": "bunx playwright show-report"
   },
   "devDependencies": {
-    "@emme/contracts": "workspace:*",
+    "@emme/api": "workspace:*",
     "@emme/i18n": "workspace:*",
-    "@playwright/test": "^1.60.0"
+    "@playwright/test": "^1.60.0",
+    "typescript": "^5.8.0"
   }
 }

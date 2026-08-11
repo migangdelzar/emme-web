@@ -43,6 +43,7 @@ coverage/
 playwright-report/
 test-results/
 e2e/src/hars/
+e2e/src/.auth/
 
 # Local Superpowers visual brainstorming sessions
 .superpowers/

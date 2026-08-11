@@ -6,11 +6,11 @@ export class ServicesPage {
   constructor(readonly page: Page) {}
 
   // Primary: testId
-  readonly header = () => this.page.getByTestId(tid('services.header')!);
-  readonly searchInput = () => this.page.getByTestId(tid('services.search')!);
-  readonly emptyState = () => this.page.getByTestId(tid('services.empty')!);
-  readonly addButton = () => this.page.getByTestId(tid('services.addButton')!);
-  readonly dialog = () => this.page.getByTestId(tid('services.dialog')!);
+  readonly header = () => this.page.getByTestId(tid('services.header'));
+  readonly searchInput = () => this.page.getByTestId(tid('services.search'));
+  readonly emptyState = () => this.page.getByTestId(tid('services.empty'));
+  readonly addButton = () => this.page.getByTestId(tid('services.addButton'));
+  readonly dialog = () => this.page.getByTestId(tid('services.dialog'));
 
   // Fallback: text-based (i18n coverage)
   readonly activeCountBadge = () =>
@@ -22,13 +22,15 @@ export class ServicesPage {
   readonly serviceCard = (name: string) =>
     this.page.locator('.group').filter({ hasText: name }).first();
   readonly serviceName = (name: string) =>
-    this.page.locator('h3').filter({ hasText: name });
+    this.page.locator('h3').filter({ hasText: name }).first();
   readonly servicePrice = (price: string) =>
     this.page.locator('p').filter({ hasText: `$${price}` });
   readonly editBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>
     serviceCardLocator.getByRole('button', { name: new RegExp('^' + 'Editar ') });
   readonly toggleBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>
     serviceCardLocator.locator('button').filter({ has: this.page.locator('svg.lucide-power') });
+  readonly deleteBtn = (serviceCardLocator: ReturnType<Page['locator']>) =>
+    serviceCardLocator.locator('button').filter({ has: this.page.locator('svg.lucide-trash2, svg.lucide-trash') });
   readonly addDialogByRole = () => this.page.locator('[role="dialog"]');
   readonly addDialogHeading = () =>
     this.addDialogByRole().getByRole('heading', { name: /^(Nuevo Servicio|Editar Servicio|Diseñar Tratamiento)$/ });
@@ -49,7 +51,7 @@ export class ServicesPage {
   readonly discardBtn = () =>
     this.addDialogByRole().getByRole('button', { name: 'Descartar' });
   readonly emptySearchMsg = () =>
-    this.page.getByText(t('services.empty'));
+    this.emptyState();
   readonly noServicesMsg = () =>
     this.page.getByText('EL TELÓN ESTÁ CERRADO');
   readonly deleteDialog = () =>
@@ -83,6 +85,11 @@ export class ServicesPage {
     this.page.locator('h3').filter({ hasText: name });
 
   async goto() {
-    await this.page.goto(PAGE.SERVICES);
+    await this.page.goto(PAGE.SERVICES)
+  }
+
+  async editService(name: string): Promise<void> {
+    await this.serviceCard(name).getByRole('button', { name: `Editar ${name}` }).click();
+    await this.addDialogByRole().waitFor({ state: 'visible' });
   }
 }

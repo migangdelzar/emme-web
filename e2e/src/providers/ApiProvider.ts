@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import type { TestUser } from '@fixtures/userPool';
-import type { Client, Service, Appointment } from '@emme/contracts';
+import type { Client, Service, Appointment } from '@emme/api';
 
 export interface SeedData {
   appointments?: Appointment[];
@@ -34,6 +34,6 @@ export interface ApiProvider {
   /** Whether this provider is mock or real. */
   readonly mode: 'mock' | 'real';
 
-  /** Configure a route. Pattern: 'GET /api/v1/services' or 'GET /api/v1/**'. */
+  /** Configure a route. Pattern: 'GET /api/services' or 'GET /api/**'. */
   route(pattern: string): RouteConfig;
 }

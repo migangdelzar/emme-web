@@ -7,25 +7,40 @@
     "e2e/*"
   ],
   "scripts": {
-    "dev": "bun run --filter @emme/salon-app dev",
+    "dev": "bun run --filter salon-app dev",
     "typecheck": "bun run --filter '*' typecheck",
     "build": "bun run --filter '*' build",
+    "docker:build:admin": "docker build -f deploy/docker/frontend.Dockerfile --build-arg APP_NAME=admin-app -t emme/admin-frontend:local .",
+    "docker:build:salon": "docker build -f deploy/docker/frontend.Dockerfile --build-arg APP_NAME=salon-app -t emme/salon-frontend:local .",
+    "docker:build:client": "docker build -f deploy/docker/frontend.Dockerfile --build-arg APP_NAME=client-app -t emme/client-frontend:local .",
+    "docker:build:all": "bun run docker:build:admin && bun run docker:build:salon && bun run docker:build:client",
     "lint": "bun run --filter '*' lint",
-    "test": "bun run --filter @emme/i18n test && bun run --filter @emme/emme-salon-app test && bun run --filter @emme/api-client test",
+  "test": "bun run --filter @emme/ui test && bun run --filter @emme/validation test && bun run --filter @emme/i18n test && bun run --filter @emme/core test && bun run --filter @emme/business test && bun run --filter @emme/auth test && bun run --filter @emme/api test && bun run --filter @emme/infrastructure test && bun run --filter @emme/test-support test && bun run --filter salon-app test && bun run --filter client-app test && bun run --filter admin-app test",
+    "test:coverage": "bun run --filter salon-app test:coverage",
     "test:e2e": "bun run --filter @emme/e2e test",
+    "test:e2e:mock": "bun run --filter @emme/e2e test",
+    "architecture:check": "node scripts/validate-architecture.mjs",
     "docs:check": "node scripts/validate-markdown.mjs",
+    "i18n:check": "node scripts/validate-i18n-usage.mjs && bun run --filter @emme/i18n validate",
+    "format:check": "bun run --filter salon-app format:check",
     "security:check": "bun audit --audit-level=high --ignore GHSA-qwww-vcr4-c8h2 --ignore GHSA-mh99-v99m-4gvg",
-    "quality": "bun run docs:check && bun run typecheck && bun run lint && bun run test && bun run build && bun run security:check"
+    "quality": "bun run architecture:check && bun run docs:check && bun run i18n:check && bun run format:check && bun run typecheck && bun run lint && bun run test && bun run test:coverage && bun run build && bun run security:check",
+    "prepare": "husky"
   },
   "engines": {
     "bun": ">=1.2"
   },
   "packageManager": "bun@1.3.14",
   "overrides": {
-    "fast-uri": "4.1.1",
-    "postcss": "8.5.25"
+    "fast-uri": "4.1.2",
+    "ip-address": "10.4.0",
+    "js-yaml": "4.3.1",
+    "nanoid": "3.3.17",
+    "postcss": "8.5.25",
+    "undici": "7.29.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "husky": "^9.1.7"
   }
 }

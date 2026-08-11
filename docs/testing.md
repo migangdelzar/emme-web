@@ -19,6 +19,8 @@ flowchart TB
 
 Use the lowest-cost lane that proves the behavior. Browser tests must be
 deterministic, isolated, condition-based, and free of committed recordings.
+The manual `Playwright demo recordings` workflow may archive deterministic
+mock-mode videos and reports as short-lived GitHub Actions artifacts.
 
 Required coverage includes success, empty, loading, error, permission-denied,
 offline, retry, duplicate action, responsive, keyboard, and focus behavior when

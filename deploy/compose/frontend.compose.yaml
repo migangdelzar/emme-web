@@ -1,0 +1,57 @@
+services:
+  admin-frontend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/frontend.Dockerfile
+      args:
+        APP_NAME: admin-app
+    image: emme/admin-frontend:local
+    ports:
+      - "8082:8080"
+    environment:
+      EMME_API_UPSTREAM: host.docker.internal:8081
+      EMME_API_BASE_URL: ""
+      EMME_APP_ENV: local
+      EMME_APP_NAME: admin-app
+      EMME_WEB_BASE_DOMAIN: localhost
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  salon-frontend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/frontend.Dockerfile
+      args:
+        APP_NAME: salon-app
+    image: emme/salon-frontend:local
+    ports:
+      - "8080:8080"
+    environment:
+      EMME_API_UPSTREAM: host.docker.internal:8081
+      EMME_API_BASE_URL: ""
+      EMME_APP_ENV: local
+      EMME_APP_NAME: salon-app
+      EMME_WEB_BASE_DOMAIN: localhost
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  client-frontend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/frontend.Dockerfile
+      args:
+        APP_NAME: client-app
+    image: emme/client-frontend:local
+    ports:
+      - "8083:8080"
+    environment:
+      EMME_API_UPSTREAM: host.docker.internal:8081
+      EMME_API_BASE_URL: ""
+      EMME_APP_ENV: local
+      EMME_APP_NAME: client-app
+      EMME_WEB_BASE_DOMAIN: localhost
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

@@ -1,0 +1,170 @@
+# Engineering Lessons
+
+## 2026-08-09 — Keep shared React scope explicit
+
+- Failure mode: a broad shared feature package made salon UI, business rules,
+  API adapters, and application logic appear to have the same owner.
+- Detection signal: app ownership tests found imports from `@emme/features` in
+  client placeholders and the salon shell.
+- Prevention rule: keep current product UI in `apps/salon-app/src/features`,
+  keep reusable framework-free behavior in `@emme/business`, and introduce a
+  shared React package only for an explicitly approved cross-app concern such
+  as authentication.
+
+## 2026-08-08 — Publish NodeNext-safe internal ESM specifiers
+
+- Failure mode: shared package source used extensionless relative imports that
+  passed bundler resolution but failed NodeNext typechecking.
+- Detection signal: TS2835 reported the missing emitted `.js` extension from a
+  public barrel re-export.
+- Prevention rule: for published ESM package internals, use `.js` relative
+  specifiers and keep implementation modules from importing runtime values back
+  through their own public barrel.
+
+## 2026-08-03 — Validate package-specific test selectors
+
+- Failure mode: the first API-client test command passed a repository path to a
+  package-scoped Vitest script, so Vitest discovered no test files.
+- Detection signal: the command exited non-zero with a “no test files found”
+  message even though the targeted test file existed.
+- Prevention rule: inspect the package script first and invoke the test runner
+  from the package root or pass only arguments supported by that script.
+
+## 2026-08-03 — Provide runtime configuration to browser test servers
+
+- Failure mode: Playwright launched Vite without the required `VITE_API_BASE_URL`
+  and `VITE_WEB_BASE_DOMAIN` values, producing a blank application page and
+  cascading UI failures.
+- Detection signal: unrelated tests failed to find the first page controls,
+  while the screenshot showed an entirely white page.
+- Prevention rule: define deterministic runtime environment variables in the
+  Playwright `webServer.env` configuration and restart any reused dev server
+  after changing them.
+
+## 2026-08-03 — Match mock API routes at the URL boundary
+
+- Failure mode: a glob catch-all for `**/api/**` matched Vite source modules
+  under `/src/api/` and returned a mock 401 before the application could boot.
+- Detection signal: the browser loaded the document but React rendered a blank
+  page, and the failed request was a JavaScript module rather than an API call.
+- Prevention rule: constrain browser mock routes to URLs whose path begins at
+  the host root (`/api/`), and keep a smoke test that proves the app boots.
+
+## 2026-08-03 — Verify library exports and generic test inputs
+
+- Failure mode: the first generic mutation implementation imported a
+  `mutationOptions` helper that is not exported by the installed TanStack Query
+  version, and the first query test invoked a parameterized query with unrelated
+  arguments.
+- Detection signal: the focused test failed at runtime before exercising the
+  mutation, followed by a query assertion that received the wrong parameters.
+- Prevention rule: verify the installed library's runtime exports before using
+  convenience helpers, and make generic tests invoke the exact input captured
+  by each resource factory.
+
+## 2026-08-03 — Avoid overloaded domain names in frontend transport
+
+- Failure mode: the first name for a path-scoped HTTP wrapper was
+  `DomainClient`, which blurred the distinction between a DDD domain model and
+  an HTTP resource boundary.
+- Detection signal: the name did not communicate whether it represented a
+  business domain, an external provider, or a transport helper.
+- Prevention rule: keep `HttpClient` as the shared transport and use existing
+  capability API adapters rather than introducing another scoped-client layer;
+  reserve `Provider` for replaceable external adapters.
+
+## 2026-08-03 — Keep browser locale and test locale aligned
+
+- Failure mode: changing the application default locale to English made legacy
+  E2E page-object assertions look for Spanish labels, causing unrelated auth,
+  navigation, and form failures.
+- Detection signal: the UI rendered valid translated content, but selectors
+  built from the shared E2E catalog did not match it.
+- Prevention rule: define one documented default locale for the application and
+  derive browser assertions from the same typed catalog; when changing it,
+  update the E2E runtime contract in the same slice.
+
+## 2026-08-08 — Keep subagents on the controller branch
+
+- Failure mode: an implementation subagent changed the shared checkout to a
+  different feature branch while the controller was executing the migration.
+- Detection signal: `git branch --show-current` changed even though the
+  controller had not requested a branch transition.
+- Prevention rule: verify the branch before and after every delegated task;
+  interrupt and close any subagent that performs an unsolicited checkout, then
+  restore the approved branch before continuing.
+
+## 2026-08-08 — Keep shared dialog positioning on canonical utilities
+
+- Failure mode: dialog primitives used arbitrary percentage utility classes
+  that were not emitted in the application stylesheet, leaving tall dialogs
+  below the viewport and making their controls unclickable.
+- Detection signal: Playwright reported a visible dialog control as outside
+  the viewport; measured geometry showed `top: 720px` and `transform: none`.
+- Prevention rule: use canonical Tailwind positioning utilities in shared UI
+  primitives (`top-1/2`, `left-1/2`, `-translate-x-1/2`, and
+  `-translate-y-1/2`) and protect them with a component regression test plus
+  an end-to-end dialog flow.
+
+## 2026-08-08 — Audit composition roots for legacy transport seams
+
+- Failure mode: feature hooks had been migrated, but authentication and the
+  app composition root still retained direct fetch and legacy client wrappers.
+- Detection signal: source scans found `fetch('/api/...')`, `restClient`, and
+  unused `platformClient`/`apiClientInstance` files despite green feature tests.
+- Prevention rule: audit composition roots and auth/session code separately from
+  feature consumers; enforce the public API boundary with source-level tests.
+
+## 2026-08-08 — Keep shared tooling factories dependency-injected
+
+- Failure mode: moving ESLint imports into a root-level shared config changed
+  Node's package-resolution boundary and made app-local lint dependencies unavailable.
+- Detection signal: `bun run lint` failed with `ERR_MODULE_NOT_FOUND` for
+  `@eslint/js` from `configs/eslint`.
+- Prevention rule: shared workspace config factories must receive toolchain
+  dependencies from the consuming package, whose manifest owns those dependencies.
+
+## 2026-08-10 — Distinguish platform admin from tenant owner
+
+- Failure mode: a tenant `admin` bootstrap username was easy to confuse with
+  the global `emme-core` administrator role, and explicit endpoint checks could
+  accidentally make tenant owners narrower than intended.
+- Detection signal: the approved identity model requires both tenant bootstrap
+  users to have full salon access while the global admin remains platform-only.
+- Prevention rule: use issuer plus role as the authorization boundary: core
+  `admin` is platform scope, tenant `tenant_owner` is full current-tenant scope,
+  and tenant `tenant_staff` is the restricted role. Test each scope directly.
+
+## 2026-08-10 — Keep excluded infrastructure boundaries represented in test contexts
+
+- Failure mode: module tests excluded tenancy infrastructure but still loaded
+  listeners requiring the named `bootstrapJdbcTemplate` boundary.
+- Detection signal: Spring context startup failed before the authorization tests
+  ran with `NoSuchBeanDefinitionException` for `bootstrapJdbcTemplate`.
+- Prevention rule: when a test composition root excludes production infrastructure,
+  provide an explicit protocol boundary double with the same bean name and verify
+  the module context loads before asserting endpoint behavior.
+
+## 2026-08-10 — Give external identity-provider checks their own timeout
+
+- Failure mode: the real client Google redirect was incorrectly reported as
+  failing because the Keycloak-to-Google broker exceeded Playwright's default
+  30-second test timeout.
+- Detection signal: the browser had already requested Keycloak's authorization
+  endpoint, but the test timed out while waiting for the external Google request.
+- Prevention rule: real-provider tests that cross an external identity boundary
+  should intercept the provider request, avoid credentials, and use an explicit
+  timeout that reflects the local provider startup and broker latency.
+
+## 2026-08-10 — Load the app theme before reusing a visual composition
+
+- Failure mode: the client authentication markup was changed to match the salon
+  page, but the client app had no theme stylesheet or Tailwind Vite plugin, so
+  the HMR page rendered as an unstyled placeholder and the production build
+  failed on `@import "tailwindcss"`.
+- Detection signal: Playwright showed the intended DOM but the screenshot lacked
+  the salon typography, spacing, and glass treatment; the build could not resolve
+  Tailwind from the client app boundary.
+- Prevention rule: when reusing an app-level visual composition, verify its CSS
+  entrypoint and build plugin dependencies in the consuming app, then validate
+  both a screenshot and a production build.

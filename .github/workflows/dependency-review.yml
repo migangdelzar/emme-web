@@ -1,6 +1,7 @@
+---
 name: Dependency Review
 
-on:
+on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 permissions:
@@ -9,10 +10,11 @@ permissions:
 jobs:
   dependency-review:
     # GitHub Dependency Graph is not enabled for this repository configuration.
-    # Run manually after an administrator enables it; Bun audit remains blocking.
+    # Run manually after an administrator enables it; Bun audit remains the
+    # blocking dependency check.
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high

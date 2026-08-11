@@ -1,4 +1,4 @@
-import type { Service, CreateService } from '@emme/contracts';
+import type { Service, CreateService } from '@emme/api';
 
 /** Create a single service fixture */
 export const makeService = (overrides?: Partial<Service>): Service => ({

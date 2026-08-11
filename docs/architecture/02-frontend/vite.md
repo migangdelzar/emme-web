@@ -1,53 +1,39 @@
-# Vite
+# Vite and Build Boundary
 
-## Purpose
-
-Vite is the frontend development server and production bundler. It provides fast local feedback while keeping build configuration explicit and environment-aware.
+> **Status: Updated.** Detailed build/proxy guidance remains normative and is
+> reconciled with package public-export boundaries.
 
 ```mermaid
 flowchart LR
-    SOURCE[TypeScript + React] --> VITE[Vite config]
-    VITE --> DEV[Dev server + API proxy]
-    VITE --> TEST[Vitest transform]
-    VITE --> BUILD[Production bundle]
-    BUILD --> PREVIEW[Production-like preview]
+    Source[TypeScript + React] --> Vite[shared + app Vite config]
+    Vite --> Dev[dev server + API proxy]
+    Vite --> Test[Vitest transform]
+    Vite --> Build[production bundles]
+    Build --> Preview[production-like preview]
 ```
 
-## Responsibilities
-
-- Resolve TypeScript and React modules.
-- Provide development server behavior and proxy configuration.
-- Build static production assets.
-- Load only `VITE_*` values intended for browser exposure.
-- Define test and coverage integration when the project uses Vitest.
+Shared stable config belongs in `configs/vite`; app entries own identity and
+public runtime needs. Aliases may not bypass package exports or point from a
+package into an app.
 
 ## Rules
 
-1. Keep the Vite config small and composable.
-2. Proxy local API calls to the backend without embedding environment-specific URLs in components.
-3. Treat all browser-exposed environment variables as public.
-4. Fail early for missing required build-time configuration.
-5. Keep aliases aligned with TypeScript compiler paths.
-6. Verify production builds in CI, not only the dev server.
-
-## Runtime configuration
-
-If configuration must vary after the static bundle is built, use a deliberate runtime configuration endpoint or generated configuration file. Do not put private credentials in Vite environment variables.
-
-## Build guardrails
-
-- Keep lockfiles and the approved package manager version under version control.
-- Fail CI on type errors, lint failures, dependency vulnerabilities, and production build failures.
-- Keep aliases, TypeScript paths, test transforms, and Vite resolution aligned.
-- Pin or audit third-party plugins; do not execute arbitrary post-install scripts without review.
-- Generate source maps according to the production security policy and protect them if they reveal implementation details.
-- Define bundle-size and chunk-size budgets for critical applications.
-- Validate base paths, asset URLs, CSP, and cache headers in a production-like preview.
+1. Keep Vite config small and composable.
+2. Keep `VITE_API_BASE_URL` browser-safe and use server-only
+   `API_PROXY_TARGET` for the local backend target.
+3. Treat every browser-exposed environment variable as public.
+4. Fail early for invalid app config without embedding secrets.
+5. Keep Vite aliases, TypeScript paths, Vitest transforms, and export maps
+   aligned.
+6. Verify production builds and deep-link refresh behavior in CI/preview.
+7. Pin/audit plugins and review post-install execution.
+8. Define bundle/chunk budgets and source-map protection by release policy.
 
 ## Vite checklist
 
 - [ ] `dev`, `test`, `build`, `preview`, and CI commands are deterministic.
-- [ ] Public environment variables are validated and documented.
-- [ ] API proxy behavior matches local authentication and CORS behavior.
-- [ ] Production preview verifies deep links, refreshes, asset caching, and error pages.
-- [ ] Bundle and dependency checks run in CI.
+- [ ] Public variables and local proxy behavior are validated and documented.
+- [ ] `/api`, OAuth, and `/q` remain same-origin where required.
+- [ ] Package aliases cannot deep-import or cross app boundaries.
+- [ ] Preview verifies deep links, assets, cache headers, CSP, and error pages.
+- [ ] Bundle, dependency, and production-build checks run in CI.

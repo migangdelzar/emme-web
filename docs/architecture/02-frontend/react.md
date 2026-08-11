@@ -1,75 +1,39 @@
-# React
+# React Boundary
 
-## Component boundaries
-
-```text
-page / route
-    ↓ composes
-feature components
-    ↓ use
-hooks and typed API clients
-    ↓ render
-shared presentational primitives
-```
+> **Status: Updated.** React remains in app shells, core runtime providers, and
+> feature presentation. Kernel, feature domain/application, API contracts, and
+> infrastructure protocols are React-free.
 
 ```mermaid
 flowchart TB
-    PAGE[Page / route] --> FEATURE[Feature component]
-    FEATURE --> HOOK[Hook / feature state]
-    HOOK --> CLIENT[Typed API client]
-    FEATURE --> PRIMITIVE[Shared presentational primitive]
-    CLIENT --> SERVER[(Backend contract)]
+    Page[app page/route] --> Workflow[app workflow component]
+    Workflow --> Feature[feature presentation]
+    Feature --> Hook[feature hook/view model]
+    Hook --> PublicAPI[feature public API]
+    Feature --> UI["@emme/ui primitive"]
+    PublicAPI --> Port[application/API protocol]
 ```
 
 ## Rules
 
-- Keep components focused on rendering and interaction orchestration.
-- Keep domain decisions in feature/application hooks or pure functions, not duplicated in JSX.
-- Keep effects explicit and cancelable where requests can outlive a component.
-- Use stable keys and predictable state transitions.
-- Make error and empty states first-class UI states.
-- Keep accessibility semantics and keyboard behavior part of component contracts.
-- Avoid global state for state that belongs to one route or feature.
+- Components focus on rendering and interaction orchestration.
+- Business decisions remain in feature domain/application behavior, not JSX.
+- Effects are explicit, cancelable, and cleaned up on route/session/tenant
+  changes; derive values during render when possible.
+- Server, URL, workflow, form, and local state follow the state ownership page.
+- Accessibility semantics, keyboard behavior, focus, and reduced motion are
+  component contracts.
+- Untrusted rich content and URLs are sanitized/validated.
+- Tokens, personal data, and provider payloads stay out of browser logs and
+  telemetry.
+- Large routes/capabilities are lazy-loaded; lists paginate or virtualize only
+  when measurement justifies it.
 
-## State ownership
+## React checklist
 
-| State | Owner |
-|---|---|
-| Route/query parameters | Router/app shell |
-| Auth/session | App shell/session module |
-| Server cache | Data-access layer |
-| Form draft | Feature/form component |
-| Cross-feature preference | Explicit shared store |
-| Pure business calculation | Feature/domain function |
-
-## Component and data guardrails
-
-### Data and side effects
-
-- Use one approved data-access/cache strategy per application.
-- Give queries stable keys, bounded parameters, and explicit invalidation rules.
-- Handle aborts, stale responses, retries, and offline transitions deliberately.
-- Keep mutations aligned with backend idempotency and concurrency semantics.
-- Avoid effects that synchronize state redundantly; derive values during render when possible.
-
-### Security and privacy
-
-- Render authorization-aware UI, but rely on backend authorization for enforcement.
-- Escape or sanitize untrusted rich content before rendering.
-- Do not inject arbitrary HTML or interpolate untrusted values into URLs without validation.
-- Do not expose tokens, personal data, or provider responses in client telemetry.
-
-### Performance
-
-- Measure route-level bundle size, initial load, interaction latency, and render cost.
-- Lazy-load large routes and optional capabilities.
-- Virtualize genuinely large lists and paginate server data.
-- Avoid global state updates that re-render unrelated feature trees.
-
-### React checklist
-
-- [ ] Async states and cancellation are tested.
+- [ ] Loading, empty, error, forbidden, and success render states are explicit.
+- [ ] Async cancellation and stale-response behavior is tested.
 - [ ] Backend authorization remains authoritative.
-- [ ] Untrusted content is safely rendered.
-- [ ] State ownership avoids unnecessary global stores.
-- [ ] Performance budgets and critical-user-flow metrics are tracked.
+- [ ] State ownership avoids unnecessary global stores and re-renders.
+- [ ] Keyboard/focus/semantic behavior is tested with user-observable queries.
+- [ ] Bundle, interaction, and render budgets are measured for substantial work.

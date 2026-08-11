@@ -9,7 +9,7 @@ export interface RouteOverride {
   forceStatus?: number;
 }
 
-/** Match a route pattern against a method+path. Pattern format: 'GET /api/v1/services/*' or 'POST /api/v1/**'. */
+/** Match a route pattern against a method+path. Pattern format: 'GET /api/services/*' or 'POST /api/**'. */
 export function matchPattern(pattern: string, method: string, path: string): boolean {
   const [pMethod, pPath] = pattern.split(' ');
   if (!pMethod || !pPath) return false;

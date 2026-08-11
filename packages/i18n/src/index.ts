@@ -1,56 +1,59 @@
 import elements from './data/elements.json' with { type: 'json' };
-import enUS from './data/translations/en-US.json' with { type: 'json' };
-import esMX from './data/translations/es-MX.json' with { type: 'json' };
+import {
+  readPath,
+  resources,
+  translations,
+  type Locale as TranslationLocale,
+  type TranslationKey as CatalogTranslationKey,
+} from './translation-catalog.js';
 
-export type Locale = 'en-US' | 'es-MX';
-export type TranslationCatalog = typeof enUS;
-
-export const translations: Record<Locale, TranslationCatalog> = {
-  'en-US': enUS,
-  'es-MX': esMX,
-};
+export {
+  translations,
+  type Locale,
+  type TranslationCatalog,
+  type TranslationCatalogs,
+  type TranslationKey,
+  type TranslationResources,
+} from './translation-catalog.js';
+export {
+  registerFeatureNamespace,
+  type FeatureTranslationCatalogs,
+  type FeatureTranslationNamespace,
+} from './translation-catalog.js';
+export { createTranslationLookup, type TranslationLookupOptions } from './translation-lookup.js';
 
 export const els = elements;
 
-type LeafPaths<T, Prefix extends string = ''> = {
-  [Key in keyof T & string]: T[Key] extends string
-    ? `${Prefix}${Key}`
+type ElementReference = { testId: string; i18nKey?: string };
+type JoinPath<Prefix extends string, Key extends string> = Prefix extends ''
+  ? Key
+  : `${Prefix}.${Key}`;
+type ElementPaths<T, Prefix extends string = ''> = {
+  [Key in keyof T & string]: T[Key] extends string | ElementReference
+    ? JoinPath<Prefix, Key>
     : T[Key] extends Record<string, unknown>
-      ? LeafPaths<T[Key], `${Prefix}${Key}.`>
+      ? ElementPaths<T[Key], JoinPath<Prefix, Key>>
       : never;
 }[keyof T & string];
 
-export type TranslationKey = LeafPaths<TranslationCatalog>;
+export type ElementKey = ElementPaths<typeof els>;
 
-export type TranslationResources = Record<
-  Locale,
-  Record<keyof TranslationCatalog, TranslationCatalog[keyof TranslationCatalog]>
->;
-
-export function getResources(): TranslationResources {
-  return {
-    'en-US': enUS,
-    'es-MX': esMX,
-  };
+export function getResources(): typeof resources {
+  return resources;
 }
 
-export function t(key: TranslationKey, locale: Locale = 'es-MX'): string {
+export function t(key: CatalogTranslationKey, locale: TranslationLocale = 'es-MX'): string {
   const value = readPath(translations[locale], key);
   return typeof value === 'string' ? value : key;
 }
 
-export function tid(key: string): string | undefined {
+export function tid(key: ElementKey): string {
   const value = readPath(els, key);
-  return typeof value === 'object' && value !== null && 'testId' in value
-    ? (value as { testId?: string }).testId
-    : undefined;
-}
-
-function readPath(root: unknown, path: string): unknown {
-  return path.split('.').reduce<unknown>((value, key) => {
-    if (typeof value !== 'object' || value === null) return undefined;
-    return (value as Record<string, unknown>)[key];
-  }, root);
+  return typeof value === 'string'
+    ? value
+    : typeof value === 'object' && value !== null && 'testId' in value
+    ? (value as { testId?: string }).testId ?? key
+    : key;
 }
 
 /**
@@ -72,3 +75,38 @@ export function findTestId(i18nKey: string): string | undefined {
   }
   return search(els);
 }
+
+export { I18nProvider, type I18nProviderProps } from './i18n-provider.js';
+export { LocaleContext, type LocaleContextValue, type TranslationLookup } from './locale-context.js';
+export { useTranslation } from './use-translation.js';
+export { useAppTranslation } from './use-app-translation.js';
+export {
+  changeLanguage,
+  getAvailableLocales,
+  getResources as getApplicationResources,
+  setApplicationLocale,
+} from './application-i18n.js';
+export {
+  detectLocale,
+  getInitialLocale,
+  normalizeLocale,
+  persistLocale,
+  type LocaleStorage,
+} from './locale.js';
+export { default as i18n } from './application-i18n.js';
+export { I18nTestProvider, type I18nTestProviderProps } from './testing/i18n-test-provider.js';
+
+export {
+  formatDate,
+  formatTime,
+  formatRelativeTime,
+  formatCurrency,
+  formatNumber,
+  formatValidationMessage,
+  type CurrencyFormatOptions,
+  type DateFormatOptions,
+  type DateFormatterOptions,
+  type FormatContext,
+  type NumberFormatOptions,
+  type NumberFormatterOptions,
+} from './formatters/index.js';

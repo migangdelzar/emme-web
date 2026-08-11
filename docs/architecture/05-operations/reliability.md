@@ -1,16 +1,7 @@
 # Frontend Reliability
 
-## Rules
-
-- Bound network timeouts and retries at one layer; do not multiply retries across
-  hooks, clients, and UI actions.
-- Cancel or suppress stale requests when a feature state changes.
-- Mutations require idempotency or an explicit disabled/retry policy.
-- Loading, empty, error, offline, and permission-denied states are first-class UI
-  states, not exceptional styling.
-- Service-worker caching MUST never make an authenticated mutation appear to have
-  succeeded or serve stale private data.
-- Error boundaries protect unrelated routes without hiding the failure signal.
+> **Status: Updated.** Detailed timeout, retry, stale-work, and recovery rules
+> apply across all app workflows and feature adapters.
 
 ```mermaid
 stateDiagram-v2
@@ -20,13 +11,30 @@ stateDiagram-v2
     Loading --> Empty
     Loading --> Error
     Loading --> Offline
-    Error --> Retry
-    Offline --> Retry
+    Loading --> Stale: session/tenant/route changed
+    Error --> Retry: safe + bounded
+    Offline --> Retry: connectivity restored
     Retry --> Loading
+    Stale --> Idle: discard result
 ```
 
-## Verification
+## Rules
 
-- [ ] Dependency timeout and retry behavior is tested.
-- [ ] Duplicate-click and stale-response behavior is tested.
-- [ ] Offline and recovery states are user-observable.
+- Bound timeout and retry at one adapter layer; never multiply retries across
+  hooks, feature repositories, and global clients.
+- Retry only safe/idempotent operations and expose exhaustion to presentation.
+- Prevent duplicate mutations or use an explicit backend idempotency contract.
+- Cancel or suppress stale work on route, session, tenant, or permission change.
+- Loading, empty, error, offline, conflict, and permission-denied are first-class
+  accessible states.
+- Service-worker/cache behavior never makes an authenticated mutation appear
+  successful or serves stale private tenant data.
+- Error boundaries isolate unrelated routes without hiding telemetry.
+
+## Reliability checklist
+
+- [ ] Timeout, offline, bounded retry, and retry exhaustion are tested.
+- [ ] Duplicate-click/idempotency and stale-response behavior are tested.
+- [ ] Session expiry and tenant switch clear protected caches and in-flight work.
+- [ ] Recovery is user-observable and preserves unsaved input when safe.
+- [ ] Health/smoke, telemetry, safe degradation, and rollback evidence exist.

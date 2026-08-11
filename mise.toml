@@ -1,13 +1,85 @@
 [tools]
-bun = "1.2"
+bun = "1.3.14"
 
 [tasks.install]
 description = "Install the locked web workspace dependencies"
 run = "bun install --frozen-lockfile"
 
 [tasks.dev]
-description = "Run the salon web application"
-run = "bun run dev"
+description = "Run salon-app with Vite HMR against the local backend"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:hmr"]
+description = "Explicit alias for the fast Vite HMR development loop"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:admin"]
+description = "Run admin-app with Vite HMR on localhost:3002"
+run = "bun run --filter admin-app dev"
+
+[tasks."dev:salon"]
+description = "Run salon-app with Vite HMR on localhost:3000"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = "bun run --filter salon-app dev"
+
+[tasks."dev:local"]
+description = "Start the local backend provider, provision E2E data, and run salon HMR"
+env = { API_PROXY_TARGET = "http://localhost:8081" }
+run = """
+(cd ../emme-service && mise run e2e:bootstrap) && \
+bun run --filter salon-app dev
+"""
+
+[tasks."dev:client"]
+description = "Run client-app with Vite HMR on localhost:3001"
+run = "bun run --filter client-app dev"
+
+[tasks."frontend:build:all"]
+description = "Build the three independent production frontend images"
+run = "bun run docker:build:all"
+
+[tasks."frontend:up"]
+description = "Build and run admin, salon, and client production-like containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml up --build -d"
+
+[tasks."frontend:down"]
+description = "Stop the local production-like frontend containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml down"
+
+[tasks."frontend:logs"]
+description = "Follow logs from all local production-like frontend containers"
+run = "docker-compose -f deploy/compose/frontend.compose.yaml logs -f"
+
+[tasks."frontend:verify"]
+description = "Verify the local production-like frontend health endpoints"
+run = "curl --fail --silent --show-error http://localhost:8082/health && curl --fail --silent --show-error http://localhost:8080/health && curl --fail --silent --show-error http://localhost:8083/health"
+
+[tasks."stack:up"]
+description = "Start the local backend and all three production-like frontend apps"
+run = """
+(cd ../emme-service && mise run e2e:bootstrap) && \
+mise run frontend:up && \
+mise run frontend:verify
+"""
+
+[tasks."stack:down"]
+description = "Stop all local frontend containers and the backend E2E stack"
+run = """
+mise run frontend:down || true
+(cd ../emme-service && mise run platform:down)
+"""
+
+[tasks."test:e2e:real:deployed"]
+description = "Run real-provider Playwright against the deployed salon container using provisioned auth state"
+env = { E2E_MODE = "real", E2E_EXTERNAL_WEB = "true", E2E_BASE_URL = "http://localhost:8080", E2E_API_URL = "http://localhost:8081" }
+run = "bun run --filter @emme/e2e test:real"
+
+[tasks."test:e2e:real:local"]
+description = "Run one-worker real-provider Playwright against salon HMR and the local backend"
+env = { E2E_MODE = "real", E2E_BASE_URL = "http://localhost:3000", E2E_API_URL = "http://localhost:8081", E2E_EXTERNAL_WEB = "false" }
+run = "bun run --filter @emme/e2e test:real -- --workers=1"
 
 [tasks.typecheck]
 description = "Type-check all web workspace packages"
@@ -21,9 +93,21 @@ run = "bun run docs:check"
 description = "Lint all frontend packages"
 run = "bun run lint"
 
+[tasks.format]
+description = "Format frontend source files with Prettier"
+run = "bun run --filter salon-app format"
+
+[tasks.format-check]
+description = "Verify frontend formatting without changing files"
+run = "bun run format:check"
+
 [tasks.test]
 description = "Run frontend unit and component tests"
 run = "bun run test"
+
+[tasks.test-coverage]
+description = "Run the web application tests with the V8 coverage gate"
+run = "bun run test:coverage"
 
 [tasks.test-e2e]
 description = "Run Playwright journeys; requires the sibling backend for real mode"
@@ -32,6 +116,10 @@ run = "bun run test:e2e"
 [tasks.security-check]
 description = "Audit frontend dependencies for high and critical vulnerabilities"
 run = "bun run security:check"
+
+[tasks.hooks-install]
+description = "Install the repository Husky hooks"
+run = "bun install --frozen-lockfile && bun run prepare"
 
 [tasks.quality]
 description = "Run documentation, lint, type, test, build, and security gates"

@@ -4,36 +4,23 @@ import { acquireUser, releaseUser, type TestUser } from './userPool';
 import { MockProvider } from '../providers/MockProvider';
 import { RealProvider } from '../providers/RealProvider';
 import type { ApiProvider, SeedData } from '../providers/ApiProvider';
+import { LoginPage } from '../pages/LoginPage';
+import { resolveRealE2ECredentials } from '../setup/provisionerCredentials';
 
 const MODE = process.env.E2E_MODE || 'mock';
 
 const DEFAULT_SEED: SeedData = {
-  services: [{
-    id: 'svc-default', name: 'Manicure Clásica', price: 350, duration: 45,
-    category: 'Manicura', isActive: true,
-  }],
-  customers: [{
-    id: 'cust-default', name: 'Cliente Demo', phone: '555-0000', email: 'demo@emme.app',
-  }],
+  services: [
+    { id: 's1', name: 'Manicure Clasica', price: 350, duration: 45, category: 'Manicura y Cuidado Natural', isActive: true },
+    { id: 's2', name: 'Manicure Rusa', price: 750, duration: 90, category: 'Manicura y Cuidado Natural', isActive: true },
+    { id: 's3', name: 'Soft Gel Premium', price: 1200, duration: 120, category: 'Extensiones y Estructura', isActive: true },
+  ],
+  customers: [
+    { id: 'c1', name: 'Valeria Arriaza', phone: '555-0101', email: 'valeria@test.com' },
+    { id: 'c2', name: 'Elena Garcia', phone: '555-0102', email: 'elena@test.com' },
+    { id: 'c3', name: 'Maria Jose', phone: '555-0103', email: 'maria@test.com' },
+  ],
 };
-
-// Shared instances: set by authenticatedPage, used by provider fixture
-let sharedRealProvider: RealProvider | null = null;
-let sharedMockProvider: MockProvider | null = null;
-
-/**
- * Authenticated page fixture. Same API for mock and real:
- * - Mock: injects fake tokens via localStorage, intercepts API with page.route()
- * - Real: does BFF OAuth2 flow through Keycloak, hits real backend
- *
- * Usage:
- * ```
- * test('flow', async ({ authenticatedPage }) => {
- *   await authenticatedPage.goto('/#/dashboard');
- *   // ... test UI flows
- * });
- * ```
- */
 
 interface Fixtures {
   testUser: TestUser;
@@ -42,78 +29,145 @@ interface Fixtures {
   unauthenticatedPage: Page;
 }
 
-async function mockLogin(page: Page, user: TestUser) {
-  const provider = new MockProvider();
+function requiredRealEnvironment(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(
+      `Real E2E requires ${name} to be configured; refusing to use an implicit environment.`
+    );
+  }
+  return value;
+}
+
+async function realLogin(page: Page, user: TestUser): Promise<RealProvider> {
+  const provider = new RealProvider();
+  const baseUrl = requiredRealEnvironment('E2E_BASE_URL');
+  const { username, password } = resolveRealE2ECredentials();
+
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'emme-ui-state',
+      JSON.stringify({ state: { isFirstTime: false }, version: 0 })
+    );
+  });
+  await page.goto(baseUrl);
+  const login = new LoginPage(page);
+  await login.login(username, password);
+  try {
+    await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 5000 });
+  } catch {
+    await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 5000 });
+  }
+  await page.waitForLoadState('domcontentloaded');
+
+  let token: string | null = null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    token = await page.evaluate(() => localStorage.getItem('access_token'));
+    if (token) break;
+    await page.waitForTimeout(500);
+  }
+  if (!token) throw new Error('Real E2E login completed without an access token.');
+  provider.setToken(token);
   await provider.setup(page, user);
+
+  await page.waitForLoadState('domcontentloaded');
+
   return provider;
 }
 
-async function realLogin(page: Page): Promise<RealProvider> {
+/**
+ * Real mode setup using shared storageState auth.
+ * Skips the expensive OAuth2 Keycloak flow — token is already in localStorage.
+ */
+async function realSetupFromStorageState(page: Page, user: TestUser): Promise<RealProvider> {
   const provider = new RealProvider();
+  const baseUrl = requiredRealEnvironment('E2E_BASE_URL');
 
-  await page.goto('http://localhost:3000/');
-  await page.getByRole('button', { name: /Ingresar|Iniciar/i }).click();
-  await page.waitForTimeout(500);
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'emme-ui-state',
+      JSON.stringify({ state: { isFirstTime: false }, version: 0 })
+    );
+  });
+  await page.goto(baseUrl);
 
-  const username = process.env.E2E_KEYCLOAK_USERNAME || 'owner';
-  const password = process.env.E2E_KEYCLOAK_PASSWORD || 'owner123';
-  await page.getByPlaceholder(/email|usuario|correo/i).fill(username);
-  await page.getByRole('textbox', { name: /contraseña|password/i }).fill(password);
-  await page.getByRole('button', { name: /Iniciar|Ingresar/i }).click();
+  try {
+    await page.getByTestId('sidebar-container').waitFor({ state: 'visible', timeout: 10000 });
+  } catch {
+    await page.getByRole('complementary').waitFor({ state: 'visible', timeout: 10000 });
+  }
+  await page.waitForLoadState('domcontentloaded');
 
-  // Wait for OAuth2 redirect + app load
-  await page.waitForTimeout(4000);
-  await page.goto('http://localhost:3000/#/dashboard');
-  await page.waitForTimeout(1000);
-
-  // Extract access token from browser localStorage → pass to RealProvider for Node.js API calls
   const token = await page.evaluate(() => localStorage.getItem('access_token'));
-  if (token) provider.setToken(token);
+  if (!token) {
+    console.warn('[Provider] No token found after navigation, falling back to full OAuth2 login');
+    return realLogin(page, user);
+  }
 
-  sharedRealProvider = provider;
+  provider.setToken(token);
+  await provider.setup(page, user);
+
+  await page.waitForLoadState('domcontentloaded');
   return provider;
 }
 
 export const test = base.extend<Fixtures>({
-  testUser: [async ({}, use) => {
-    const user = acquireUser();
-    await use(user);
-    releaseUser(user.userId);
-  }, { scope: 'test' }],
+  testUser: [
+    async ({}, use) => {
+      const user = acquireUser();
+      await use(user);
+      releaseUser(user.userId);
+    },
+    { scope: 'test' },
+  ],
 
-  provider: [async ({ page }, use) => {
-    if (MODE === 'mock') {
-      // Use the shared MockProvider set up by authenticatedPage (depends on it running first)
-      await use(sharedMockProvider!);
-      await sharedMockProvider!.teardown();
-      sharedMockProvider = null;
-    } else {
-      // Use the shared RealProvider set up by authenticatedPage (depends on it running first)
-      await use(sharedRealProvider!);
-      await sharedRealProvider!.teardown();
-      sharedRealProvider = null;
-    }
-  }, { scope: 'test' }],
+  provider: [
+    async ({ page, testUser }, use) => {
+      let provider: ApiProvider;
 
-  unauthenticatedPage: [async ({ page }, use) => {
-    const provider = new MockProvider();
-    await provider.setup(page, undefined);
-    await use(page);
-  }, { scope: 'test' }],
+      if (MODE === 'mock') {
+        const mockProvider = new MockProvider();
+        await mockProvider.setup(page, testUser);
+        await mockProvider.seed(DEFAULT_SEED);
+        provider = mockProvider;
+      } else {
+        provider = await realSetupFromStorageState(page, testUser);
 
-  authenticatedPage: [async ({ page, testUser }, use) => {
-    if (MODE === 'mock') {
+        await page.waitForLoadState('domcontentloaded');
+      }
+
+      try {
+        await use(provider);
+      } finally {
+        await provider.teardown();
+      }
+    },
+    { scope: 'test' },
+  ],
+
+  unauthenticatedPage: [
+    async ({ page }, use) => {
       const provider = new MockProvider();
-      await provider.setup(page, testUser);
-      await provider.seed(DEFAULT_SEED);
-      sharedMockProvider = provider;
+      await provider.setup(page, undefined);
+      try {
+        await use(page);
+      } finally {
+        await provider.teardown();
+      }
+    },
+    { scope: 'test' },
+  ],
+
+  authenticatedPage: [
+    async ({ page, provider: _provider }, use) => {
+      if (MODE === 'real') {
+        await page.reload();
+        await page.waitForLoadState('domcontentloaded');
+      }
       await use(page);
-      sharedMockProvider = null;
-    } else {
-      await realLogin(page);
-      await use(page);
-    }
-  }, { scope: 'test' }],
+    },
+    { scope: 'test' },
+  ],
 });
 
 export { expect } from '@playwright/test';
