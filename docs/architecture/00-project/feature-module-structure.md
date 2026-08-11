@@ -4,6 +4,12 @@
 > `apps/salon-app`. Only framework-free behavior with demonstrated reuse is
 > extracted into `@emme/business`.
 
+The frontend feature model is FSD-inspired vertical slicing, not canonical FSD.
+Hexagonal/Clean layers are introduced inside a feature only when the feature
+has a real application port or adapter. See
+[architecture patterns](architecture-patterns.md) for the scope of each
+architecture pattern.
+
 ## Salon feature template
 
 ```text
@@ -84,5 +90,6 @@ boundary, not a security control.
 - [ ] Generic visual components are under `@emme/ui`.
 - [ ] Auth gating uses `@emme/auth`; login and tenant-selection pages are
       app-local.
-- [ ] No app imports `@emme/features`; the package is retired.
+- [ ] No app imports a shared product-feature package; product features are
+      app-local and `@emme/features` is retired.
 - [ ] Each feature has loading, empty, error, forbidden, and success tests.

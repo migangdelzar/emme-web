@@ -26,4 +26,4 @@ other business policy.
 - [ ] Raw DTOs and transport errors do not leak into domain or presentation.
 - [ ] Application ports are injected and concrete adapters are composition-root
       registrations.
-- [ ] Private GraphQL documents and mapper internals are not public exports.
+- [ ] Private transport documents and mapper internals are not public exports.

@@ -22,6 +22,11 @@ captures the current branch topology, the FSD-inspired/Hexagonal/DDD/Component-
 Driven Development scopes, package boundaries, and the client/admin replication
 contract in one document.
 
+The detailed handbook is split by concern. Use the [architecture pattern
+map](00-project/architecture-patterns.md) to understand the four pattern
+scopes, and the [AI Studio handoff](00-project/ai-studio-handoff.md) when
+importing the repository into another coding agent.
+
 ## Handbook status key
 
 | Status | Meaning |
@@ -44,8 +49,10 @@ is normative within its stated scope.
 | [Package ownership](00-project/package-ownership.md) | Canonical | Package responsibilities and forbidden ownership. |
 | [Dependency rules](00-project/dependency-rules.md) | Canonical | Allowed dependency graph and boundary checklist. |
 | [Naming conventions](00-project/naming-conventions.md) | Canonical | Directory, file, symbol, schema, test, and barrel names. |
+| [Architecture patterns](00-project/architecture-patterns.md) | Canonical | FSD-inspired, Hexagonal/Clean, DDD, and CDD scope mapping. |
+| [AI Studio handoff](00-project/ai-studio-handoff.md) | Canonical | Import links, prompts, exclusions, and agent invariants. |
 | [Feature module structure](00-project/feature-module-structure.md) | Updated | Salon-local feature structure and business package boundary. |
-| [App shell structure](00-project/app-shell-structure.md) | Canonical | Salon, client, and platform-admin workflow trees. |
+| [App shell structure](00-project/app-shell-structure.md) | Canonical | Salon, client, and admin workflow trees. |
 | [Testing architecture](00-project/testing-architecture.md) | Canonical | Test locations, lanes, doubles, and completion checklist. |
 | [Web/native UI boundary](00-project/web-native-ui-boundary.md) | Canonical | Portable UI contract and platform extension points. |
 | [Documentation and decisions](00-project/documentation-and-decisions.md) | Updated | Source hierarchy, ADR lifecycle, and review policy. |

@@ -59,7 +59,7 @@ does not replace critical browser journeys.
 ```mermaid
 flowchart LR
     Root["root scripts + bun.lock"] --> Apps["three app shells"]
-    Root --> Packages["eight target packages"]
+    Root --> Packages["ten target packages"]
     Root --> E2E["Playwright workspace"]
     Apps --> Packages
     E2E --> Apps

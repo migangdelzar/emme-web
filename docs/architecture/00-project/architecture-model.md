@@ -23,6 +23,17 @@ flowchart LR
 The repositories release independently while contracts remain compatible. A
 breaking contract requires a coordinated compatibility window and migration.
 
+## Pattern scope
+
+The web repository uses a hybrid model. The frontend is FSD-inspired and
+feature-oriented; it is not canonical FSD with mandatory `entities`, `widgets`,
+and `pages` layers. Shared business capabilities use pragmatic DDD boundaries
+with internal domain/application layers. API and infrastructure boundaries use
+Hexagonal/Clean dependency direction. Generic UI uses Component-Driven
+Development in `@emme/ui`.
+
+See [architecture patterns](architecture-patterns.md) for the complete mapping.
+
 ## Vertical ownership
 
 ```mermaid

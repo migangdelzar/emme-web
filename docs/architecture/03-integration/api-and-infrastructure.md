@@ -1,10 +1,10 @@
 # API and Infrastructure
 
-`@emme/api` defines abstract transport protocols and safe API errors.
-`@emme/infrastructure` implements global `fetch`/Apollo clients, retries,
-headers, session/tenant storage, telemetry, and provider mechanics. A
-feature-specific repository adapter remains inside that feature when it
-implements the feature's application port.
+`@emme/api` defines abstract transport protocols, request context, contract
+types, and safe API errors. `@emme/infrastructure` implements the concrete HTTP
+client, retries, headers, session/tenant storage, telemetry, and provider
+mechanics. A feature-specific repository adapter remains inside that feature
+when it implements the feature's application port.
 
 ```mermaid
 flowchart LR

@@ -46,7 +46,7 @@
 - Factory names begin with `create`, declarative configuration helpers with
   `define`, hooks with `use`, and boolean predicates with `is`, `has`, or `can`.
 - Protocol names describe the capability (`AppointmentRepository`, `Clock`),
-  while concrete adapters include their mechanism (`GraphQLAppointmentRepository`).
+while concrete adapters include their mechanism (`HttpAppointmentRepository`).
 - A public symbol keeps the same name at every barrel; aliases require an
   explicit compatibility reason and removal plan.
 

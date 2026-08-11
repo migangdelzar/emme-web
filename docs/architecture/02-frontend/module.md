@@ -27,7 +27,7 @@ flowchart LR
 | app consumers | which app workflows compose the capability |
 | state | server, URL, workflow, local, and persistence ownership |
 | API | contracts, schemas, tenant/auth requirements, error codes |
-| dependencies | allowed packages/features and injected ports |
+| dependencies | allowed packages and injected ports |
 | testing | domain through E2E locations and scenario matrix |
 | removal | consumer migration and export cleanup sequence |
 

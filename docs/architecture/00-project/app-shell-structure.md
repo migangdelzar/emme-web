@@ -12,10 +12,11 @@ apps/<app>/src/
 ├── app/
 │   ├── App.tsx
 │   ├── AppProviders.tsx
-│   ├── app-config.ts
 │   ├── router.tsx
-│   └── layouts/
-├── features/                 # only salon-app owns product features today
+│   ├── config/               # validated public runtime config when needed
+│   ├── layouts/              # app-wide layout when needed
+│   └── error-boundary/       # normalized error UI when needed
+├── features/                 # app-owned vertical workflows
 └── main.tsx
 ```
 
@@ -27,16 +28,17 @@ Backend authorization remains authoritative.
 
 ```text
 apps/salon-app/src/features/
-├── appointments/{api,components,hooks,mappers,presentation,validation}/
-├── clients/{api,components,hooks}/
+├── appointments/{api,components,hooks,mappers,presentation,shared,validation}/
+├── auth/components/
+├── clients/{api,components,domain,hooks}/
 ├── dashboard/{components,hooks}/
 ├── finances/{components,hooks}/
 ├── google-workspace/{components,hooks}/
 ├── navigation/
-├── onboarding/{components}/
-├── services/{api,components,domain,hooks,validation}/
-├── settings/{components,context,hooks}/
-├── shared/{components,hooks,uiStore}/
+├── onboarding/{api,application,components,infrastructure,presentation,test}/
+├── services/{api,components,domain,hooks,mappers}/
+├── settings/{api,components,context,hooks}/
+├── shared/{apiErrorMessage,queryFactory,uiStore}.ts
 └── feature-boundary.test.ts
 ```
 
@@ -48,12 +50,13 @@ and use cases are consumed from `@emme/business`.
 
 ```text
 apps/admin-app/src/
-├── app/
+├── app/{App,AppProviders,router,routes}/
+├── features/{auth,feature-flags,provisioning}/
 └── main.tsx
 
 apps/client-app/src/
-├── app/
-├── features/auth/            # app-local login presentation only
+├── app/{App,AppProviders,router,routes}/
+├── features/{auth,calendar}/
 └── main.tsx
 ```
 
@@ -61,7 +64,7 @@ The admin and client applications remain separate deployable shells so their
 security policies, URLs, environments, releases, and rollback paths stay
 independent. They may render the shared `@emme/auth` gate and call shared
 API/core packages, but their login pages remain local and they do not consume
-salon product features or `@emme/features`.
+salon product features or private salon feature paths.
 
 ## Composition flow
 
