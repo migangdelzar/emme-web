@@ -137,6 +137,33 @@ export async function validateWorkspaceArchitecture({ root } = {}) {
     }
   }
 
+  const appsRoot = join(workspaceRoot, 'apps');
+  if (await exists(appsRoot)) {
+    const apps = await readdir(appsRoot, { withFileTypes: true });
+
+    for (const appEntry of apps) {
+      if (!appEntry.isDirectory()) continue;
+
+      const appSourceRoot = join(appsRoot, appEntry.name, 'src');
+      const manifestPath = join(appsRoot, appEntry.name, 'package.json');
+      if (!(await exists(appSourceRoot)) || !(await exists(manifestPath))) continue;
+
+      const appPackageName = JSON.parse(await readFile(manifestPath, 'utf8')).name;
+      for (const file of await sourceFiles(appSourceRoot)) {
+        const source = await readFile(file, 'utf8');
+
+        for (const specifier of importSpecifiers(source)) {
+          const isOwnAppImport =
+            specifier === appPackageName || specifier.startsWith(`${appPackageName}/`);
+
+          if (isApplicationImport(specifier, applicationPackages) && !isOwnAppImport) {
+            addViolation(violations, 'app-cannot-import-app', workspaceRoot, file, specifier);
+          }
+        }
+      }
+    }
+  }
+
   return { violations };
 }
 

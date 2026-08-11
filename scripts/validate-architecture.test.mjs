@@ -10,6 +10,8 @@ test('reports each prohibited dependency from an isolated workspace fixture', as
   try {
     await Promise.all([
       writeFixtureFile(root, 'apps/web/package.json', '{"name":"@emme/web"}'),
+      writeFixtureFile(root, 'apps/admin/package.json', '{"name":"admin-app"}'),
+      writeFixtureFile(root, 'apps/web/src/app.ts', "import 'admin-app';"),
       writeFixtureFile(root, 'packages/core/src/package-to-app.ts', "import '@emme/web';"),
       writeFixtureFile(root, 'packages/core/src/package-app-alias.ts', "import '@/lib/api';"),
       writeFixtureFile(root, 'packages/ui/src/ui-business.ts', "import '@emme/domain/orders';"),
@@ -22,9 +24,14 @@ test('reports each prohibited dependency from an isolated workspace fixture', as
 
     const { violations } = await validateWorkspaceArchitecture({ root });
 
-    expect(violations).toHaveLength(4);
+    expect(violations).toHaveLength(5);
     expect(violations).toEqual(
       expect.arrayContaining([
+        {
+          rule: 'app-cannot-import-app',
+          file: 'apps/web/src/app.ts',
+          specifier: 'admin-app',
+        },
         {
           rule: 'package-cannot-import-app',
           file: 'packages/core/src/package-to-app.ts',
