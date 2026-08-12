@@ -74,6 +74,40 @@
 
 ## Results
 
+## Project-wide code structure migration — 2026-08-11
+
+Plan: `docs/superpowers/plans/2026-08-11-project-wide-code-structure.md`
+
+### Acceptance criteria
+
+- [ ] Apply the canonical package and app topology from the approved design.
+- [ ] Normalize appointments, clients, and services into explicit domain/application boundaries.
+- [ ] Preserve behavior and compatibility exports while consumers migrate.
+- [ ] Give every boundary either focused tests or architecture validation.
+- [ ] Keep feature workflows inside their owning app feature slices.
+- [ ] Update architecture documentation and remove stale current-topology references.
+- [ ] Pass architecture/docs/typecheck/lint/test/coverage/build/security verification.
+- [ ] Commit and push all intended changes without staging unrelated work.
+
+### Working notes
+
+- Branch: `feat/project-architecture-structure`.
+- Approved design: `docs/superpowers/specs/2026-08-11-project-wide-code-structure-design.md`.
+- Migration strategy: canonical folders first, compatibility exports during consumer migration, shim removal only after repository-wide import scans.
+- Current baseline and verification output must be recorded before the first source move.
+
+### Execution checklist
+
+- [ ] Capture baseline and confirm unrelated worktree changes.
+- [ ] Add structure tests and canonical boundary markers.
+- [ ] Normalize reusable business capabilities.
+- [ ] Align infrastructure adapters and API contracts.
+- [ ] Standardize core and UI package boundaries.
+- [ ] Apply the FSD shell/feature contract to salon, client, and admin apps.
+- [ ] Migrate consumers and enforce final architecture rules.
+- [ ] Update documentation.
+- [ ] Run full verification, commit, push, and verify the remote ref.
+
 ### Google-only customer login — 2026-08-10
 
 - [x] Force the customer OIDC request to Keycloak's `google` provider.
